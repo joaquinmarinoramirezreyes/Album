@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nuestro álbum de barro — Comparte tus recuerdos de cerámica en nuestra boda.">
+  <title>Nuestro álbum de barro</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       PANTALLA A — ACCESO (Login estático)
+       ═══════════════════════════════════════════════ -->
+  <section id="screen-login" class="screen screen--active" aria-label="Acceso al álbum">
+    <div class="login">
+      <div class="login__ornament" aria-hidden="true">
+        <svg viewBox="0 0 120 40" class="login__leaf">
+          <path d="M10 35 Q30 0 60 20 Q90 40 110 5" stroke="var(--color-terracotta)" stroke-width="1.5" fill="none" opacity=".45"/>
+          <path d="M15 30 Q40 5 65 22 Q85 35 105 10" stroke="var(--color-terracotta)" stroke-width="1" fill="none" opacity=".25"/>
+        </svg>
+      </div>
+
+      <h1 class="login__title">Nuestro álbum<br>de barro</h1>
+      <p class="login__subtitle">Ayúdanos a moldear nuestros recuerdos</p>
+
+      <form id="login-form" class="login__form" autocomplete="off">
+        <label for="access-code" class="sr-only">Fecha de la boda</label>
+        <input
+          id="access-code"
+          class="login__input"
+          type="text"
+          maxlength="20"
+          placeholder="Ingresa el código del evento"
+          aria-describedby="login-hint"
+          required
+        >
+        <small id="login-hint" class="login__hint" hidden>Fecha incorrecta, intenta de nuevo.</small>
+        <button type="submit" class="btn btn--primary login__btn">Entrar al álbum</button>
+      </form>
+
+      <div class="login__ornament login__ornament--bottom" aria-hidden="true">
+        <svg viewBox="0 0 120 40" class="login__leaf">
+          <path d="M10 5 Q30 40 60 20 Q90 0 110 35" stroke="var(--color-terracotta)" stroke-width="1.5" fill="none" opacity=".45"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       PANTALLA B — ESPACIO DEL ÁLBUM
+       ═══════════════════════════════════════════════ -->
+  <section id="screen-album" class="screen" aria-label="Álbum de la boda">
+
+    <!-- — Hero — -->
+    <header class="hero">
+      <h1 class="hero__title">Nuestro álbum de barro</h1>
+      <p class="hero__subtitle">Sube tu foto con tu pieza de cerámica y déjanos un mensaje</p>
+    </header>
+
+    <!-- — Formulario de Subida — -->
+    <div class="upload" id="upload-section">
+      <form id="upload-form" class="upload__form" novalidate>
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="guest-name" class="form-label">Tu Nombre</label>
+          <input
+            id="guest-name"
+            class="form-input"
+            type="text"
+            placeholder="Escribe tu nombre"
+            maxlength="60"
+            required
+          >
+        </div>
+
+        <!-- Selector de imagen -->
+        <div class="form-group">
+          <label class="form-label">Tu Foto</label>
+          <input
+            id="photo-input"
+            class="sr-only"
+            type="file"
+            accept="image/*"
+            capture="environment"
+          >
+          <button type="button" id="photo-btn" class="upload__photo-btn" aria-controls="photo-input">
+            <span class="upload__photo-icon" aria-hidden="true">📷</span>
+            <span>Tocar para tomar foto o elegir de la galería</span>
+          </button>
+          <!-- Preview de la imagen seleccionada -->
+          <div id="photo-preview" class="upload__preview" hidden>
+            <img id="preview-img" class="upload__preview-img" src="" alt="Vista previa de tu foto">
+            <button type="button" id="preview-remove" class="upload__preview-remove" aria-label="Quitar foto">✕</button>
+          </div>
+        </div>
+
+        <!-- Dedicatoria -->
+        <div class="form-group">
+          <label for="guest-message" class="form-label">Tu dedicatoria</label>
+          <textarea
+            id="guest-message"
+            class="form-input form-input--textarea"
+            placeholder="Escribe tu mensaje para los novios…"
+            maxlength="280"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <!-- CTA -->
+        <button type="submit" id="upload-submit" class="btn btn--primary btn--full">
+          <span class="btn__text">Agregar al álbum</span>
+          <span class="btn__spinner" hidden aria-label="Subiendo…">
+            <svg class="spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <!-- — Galería en Vivo — -->
+    <div class="gallery" id="gallery-section">
+      <h2 class="gallery__heading">Galería</h2>
+      <div id="gallery-grid" class="gallery__grid">
+        <!-- Las tarjetas Polaroid se insertan aquí dinámicamente desde Firestore -->
+
+      </div>
+    </div>
+
+    <!-- — Descarga PDF y Footer — -->
+    <div class="download" id="download-section">
+      <button id="download-pdf" class="btn btn--secondary btn--full">
+        📄 Descargar álbum completo (PDF)
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>&copy; 2026 — Hecho con amor</p>
+    </footer>
+
+  </section>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
