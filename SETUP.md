@@ -95,7 +95,10 @@ service cloud.firestore {
                     && request.resource.data.nombre.size() <= 60
                     && request.resource.data.imageUrl is string
                     && request.resource.data.imageUrl.matches('^https://.*');
-      allow update, delete: if false;
+      // Solo permitir actualización del contador de likes
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']) 
+                       && request.resource.data.likes is number;
+      allow delete: if false;
     }
 
     // Bloquear todo lo demás
