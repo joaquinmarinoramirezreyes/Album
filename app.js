@@ -123,9 +123,9 @@ const $adminEventList  = document.getElementById('admin-event-list');
  */
 function showToast(message, type = 'info', duration = 4000) {
   const icons = {
-    info:    '🏺',
-    success: '✅',
-    error:   '⚠️',
+    info:    '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>',
+    success: '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+    error:   '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
   };
 
   const toast = document.createElement('div');
@@ -137,7 +137,7 @@ function showToast(message, type = 'info', duration = 4000) {
   }
 
   toast.innerHTML = `
-    <span class="toast__icon" aria-hidden="true">${icons[type]}</span>
+    <span class="toast__icon" aria-hidden="true" style="display:flex; align-items:center; justify-content:center;">${icons[type]}</span>
     <span class="toast__text">${escapeHTML(message)}</span>
     <button class="toast__close" aria-label="Cerrar notificación">✕</button>
     ${duration > 0 ? '<div class="toast__progress"></div>' : ''}
@@ -439,7 +439,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
       activo: true
     });
 
-    showToast(`¡Evento ${code} creado exitosamente! 🏺`, 'success', 5000);
+    showToast(`¡Evento ${code} creado exitosamente!`, 'success', 5000);
     $inputNewEvent.value = '';
     $inputEventDate.value = '';
     
@@ -655,7 +655,7 @@ $uploadForm.addEventListener('submit', async (e) => {
 
     // ✅ Éxito
     dismissToast(progressToast);
-    showToast('¡Tu recuerdo se agregó al álbum! 💙', 'success', 5000);
+    showToast('¡Tu recuerdo se agregó al álbum!', 'success', 5000);
     resetForm();
 
   } catch (err) {
