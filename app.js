@@ -552,193 +552,186 @@ function renderPolaroidCard(data) {
 
 
 // ═══════════════════════════════════════════════════════════
-//  PDF DOWNLOAD — html2pdf.js (con conversión base64 anti-CORS)
+//  PDF DOWNLOAD — html2pdf.js (canvas + cache-bust anti-CORS)
 // ═══════════════════════════════════════════════════════════
 
 /**
- * Convierte una URL de imagen externa a base64 data URL.
- * Esto evita por completo el problema de CORS/canvas tainting.
+ * Carga una imagen externa en un nuevo elemento Image con CORS,
+ * la dibuja en un canvas y extrae el base64.
+ * El cache-bust (?_cb=timestamp) fuerza una recarga limpia con headers CORS.
  */
-async function imageUrlToBase64(url) {
-  try {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = () => resolve('');
-      reader.readAsDataURL(blob);
-    });
-  } catch {
-    console.warn('No se pudo convertir imagen a base64:', url);
-    return '';
-  }
+function imageUrlToBase64(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      } catch (e) {
+        console.warn('Canvas tainted, no se pudo extraer base64:', e);
+        resolve('');
+      }
+    };
+    img.onerror = () => {
+      console.warn('No se pudo cargar imagen para PDF:', url);
+      resolve('');
+    };
+    // Cache-bust: forzar recarga con CORS habilitado
+    img.src = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+  });
 }
 
 /**
- * Construye un contenedor HTML temporal con diseño bonito
- * exclusivo para el PDF, con todas las imágenes en base64.
+ * Construye el HTML del PDF con portada + cuadrícula de 3 columnas.
  */
 async function buildPdfLayout() {
   const cards = $galleryGrid.querySelectorAll('.polaroid');
-  const pdfContainer = document.createElement('div');
-
-  // ── Estilos del contenedor PDF ──
-  pdfContainer.style.cssText = `
+  const container = document.createElement('div');
+  container.style.cssText = `
     width: 794px;
     font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-    background: #ffffff;
+    background: #fff;
     color: #1C2331;
-    padding: 0;
   `;
 
-  // ── Portada ──
-  pdfContainer.innerHTML = `
+  // ── PORTADA ──
+  container.innerHTML = `
     <div style="
       text-align: center;
-      padding: 80px 40px 60px;
+      padding: 60px 40px;
       background: linear-gradient(135deg, #1E3888 0%, #2E5CB8 50%, #1E3888 100%);
-      color: #ffffff;
+      color: #fff;
+      min-height: 1120px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
       page-break-after: always;
-      min-height: 1060px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
     ">
-      <div style="
-        font-size: 60px;
-        margin-bottom: 20px;
-      ">🏺</div>
+      <div style="font-size: 56px; margin-bottom: 16px;">🏺</div>
       <h1 style="
         font-family: 'Playfair Display', Georgia, serif;
-        font-size: 42px;
-        font-weight: 700;
-        margin-bottom: 16px;
-        letter-spacing: 1px;
+        font-size: 40px; font-weight: 700;
+        letter-spacing: 1px; margin-bottom: 12px;
       ">Nuestro Álbum de Barro</h1>
-      <div style="
-        width: 80px;
-        height: 3px;
-        background: rgba(255,255,255,0.5);
-        margin: 20px auto;
-        border-radius: 2px;
-      "></div>
-      <p style="
-        font-size: 18px;
-        font-style: italic;
-        opacity: 0.85;
-        margin-top: 12px;
-        max-width: 400px;
-      ">Recuerdos moldeados con amor por quienes estuvieron con nosotros</p>
-      <p style="
-        font-size: 14px;
-        opacity: 0.6;
-        margin-top: 40px;
-      ">${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'} en este álbum</p>
+      <div style="width: 60px; height: 3px; background: rgba(255,255,255,.5);
+        margin: 16px auto; border-radius: 2px;"></div>
+      <p style="font-size: 16px; font-style: italic; opacity: .85;
+        margin-top: 10px; max-width: 380px;">
+        Recuerdos moldeados con amor por quienes estuvieron con nosotros
+      </p>
+      <p style="font-size: 13px; opacity: .55; margin-top: 36px;">
+        ${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'}
+      </p>
     </div>
   `;
 
-  // ── Tarjetas ──
-  let cardsHtml = '';
+  // ── PREPARAR DATOS DE TARJETAS ──
+  const cardsData = [];
+  for (const card of cards) {
+    const img = card.querySelector('.polaroid__img');
+    const nameEl = card.querySelector('.polaroid__name');
+    const msgEl = card.querySelector('.polaroid__message');
 
-  for (let i = 0; i < cards.length; i++) {
-    const img = cards[i].querySelector('.polaroid__img');
-    const nameEl = cards[i].querySelector('.polaroid__name');
-    const msgEl = cards[i].querySelector('.polaroid__message');
-
-    const nombre = nameEl ? nameEl.textContent : '';
-    const dedicatoria = msgEl ? msgEl.textContent : '';
-
-    // Convertir imagen a base64
-    let imgSrc = '';
+    let b64 = '';
     if (img && img.src) {
-      imgSrc = await imageUrlToBase64(img.src);
+      b64 = await imageUrlToBase64(img.src);
     }
 
-    // Calcular si necesitamos salto de página (2 tarjetas por página)
-    const pageBreak = (i > 0 && i % 2 === 0) ? 'page-break-before: always;' : '';
-
-    cardsHtml += `
-      <div style="
-        ${pageBreak}
-        margin: 30px auto;
-        max-width: 500px;
-        background: #ffffff;
-        border: 1px solid #DFE4EC;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(30, 56, 136, 0.08);
-      ">
-        ${imgSrc ? `
-          <img
-            src="${imgSrc}"
-            style="
-              width: 100%;
-              height: 360px;
-              object-fit: cover;
-              display: block;
-            "
-          >
-        ` : `
-          <div style="
-            width: 100%;
-            height: 360px;
-            background: #EAF0F6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #525E75;
-            font-size: 14px;
-          ">Imagen no disponible</div>
-        `}
-        <div style="
-          padding: 20px 24px 24px;
-          border-top: 3px solid #1E3888;
-        ">
-          <p style="
-            font-family: 'Playfair Display', Georgia, serif;
-            font-weight: 700;
-            font-size: 18px;
-            color: #1C2331;
-            margin-bottom: ${dedicatoria ? '8px' : '0'};
-          ">${escapeHTML(nombre)}</p>
-          ${dedicatoria ? `
-            <p style="
-              font-style: italic;
-              color: #525E75;
-              font-size: 15px;
-              line-height: 1.5;
-            ">"${escapeHTML(dedicatoria)}"</p>
-          ` : ''}
-        </div>
-      </div>
-    `;
+    cardsData.push({
+      nombre: nameEl ? nameEl.textContent : '',
+      dedicatoria: msgEl ? msgEl.textContent : '',
+      imgSrc: b64,
+    });
   }
 
-  // Envolver tarjetas en un contenedor con padding
-  const pagesDiv = document.createElement('div');
-  pagesDiv.style.cssText = 'padding: 20px 40px;';
-  pagesDiv.innerHTML = cardsHtml;
-  pdfContainer.appendChild(pagesDiv);
+  // ── CUADRÍCULA 3 COLUMNAS ──
+  const gridDiv = document.createElement('div');
+  gridDiv.style.cssText = 'padding: 24px 20px;';
 
-  // ── Pie de página final ──
+  // Partir en filas de 3
+  for (let row = 0; row < cardsData.length; row += 3) {
+    const rowItems = cardsData.slice(row, row + 3);
+
+    // Salto de página cada 2 filas (6 fotos por página)
+    const pageBreak = (row > 0 && row % 6 === 0)
+      ? 'page-break-before: always; margin-top: 24px;'
+      : '';
+
+    let rowHtml = `<div style="
+      display: flex; gap: 12px; margin-bottom: 12px; ${pageBreak}
+    ">`;
+
+    for (const item of rowItems) {
+      rowHtml += `
+        <div style="
+          flex: 1; background: #fff;
+          border: 1px solid #DFE4EC; border-radius: 8px;
+          overflow: hidden;
+        ">
+          ${item.imgSrc
+            ? `<img src="${item.imgSrc}" style="
+                width: 100%; height: 160px;
+                object-fit: cover; display: block;">`
+            : `<div style="
+                width: 100%; height: 160px;
+                background: #EAF0F6;
+                display: flex; align-items: center; justify-content: center;
+                color: #525E75; font-size: 11px;
+              ">Sin imagen</div>`
+          }
+          <div style="
+            padding: 8px 10px 10px;
+            border-top: 2px solid #1E3888;
+          ">
+            <p style="
+              font-family: 'Playfair Display', Georgia, serif;
+              font-weight: 700; font-size: 12px;
+              color: #1C2331;
+              margin-bottom: ${item.dedicatoria ? '4px' : '0'};
+              white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            ">${escapeHTML(item.nombre)}</p>
+            ${item.dedicatoria ? `
+              <p style="
+                font-style: italic; color: #525E75;
+                font-size: 10px; line-height: 1.4;
+                display: -webkit-box; -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical; overflow: hidden;
+              ">"${escapeHTML(item.dedicatoria)}"</p>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Celdas vacías para completar la fila si tiene menos de 3
+    const empty = 3 - rowItems.length;
+    for (let e = 0; e < empty; e++) {
+      rowHtml += `<div style="flex: 1;"></div>`;
+    }
+
+    rowHtml += '</div>';
+    gridDiv.innerHTML += rowHtml;
+  }
+
+  container.appendChild(gridDiv);
+
+  // ── PIE DE PÁGINA ──
   const footer = document.createElement('div');
   footer.style.cssText = `
-    text-align: center;
-    padding: 40px 20px;
-    color: #525E75;
-    font-size: 12px;
-    border-top: 1px solid #DFE4EC;
-    margin-top: 40px;
+    text-align: center; padding: 30px 20px;
+    color: #525E75; font-size: 11px;
+    border-top: 1px solid #DFE4EC; margin-top: 20px;
   `;
   footer.innerHTML = `
     <p>💙 Nuestro Álbum de Barro — ${new Date().getFullYear()}</p>
-    <p style="margin-top: 4px; opacity: 0.6;">Hecho con amor</p>
+    <p style="margin-top: 3px; opacity: .6;">Hecho con amor</p>
   `;
-  pdfContainer.appendChild(footer);
+  container.appendChild(footer);
 
-  return pdfContainer;
+  return container;
 }
 
 
@@ -757,11 +750,11 @@ $downloadPdf.addEventListener('click', async () => {
   $downloadPdf.disabled = true;
 
   try {
-    // 1️⃣  Construir layout PDF con imágenes en base64
+    // 1️⃣  Construir layout con imágenes en base64
     updateToast(pdfToast, 'Convirtiendo imágenes…');
     const pdfLayout = await buildPdfLayout();
 
-    // 2️⃣  Montar temporalmente en el DOM (necesario para html2pdf)
+    // 2️⃣  Montar fuera de pantalla (html2pdf necesita el DOM)
     pdfLayout.style.position = 'absolute';
     pdfLayout.style.left = '-9999px';
     pdfLayout.style.top = '0';
@@ -773,7 +766,7 @@ $downloadPdf.addEventListener('click', async () => {
     const opt = {
       margin:       0,
       filename:     'nuestro-album-de-barro.pdf',
-      image:        { type: 'jpeg', quality: 0.95 },
+      image:        { type: 'jpeg', quality: 0.92 },
       html2canvas:  { scale: 2, backgroundColor: '#ffffff', logging: false },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css'] }
@@ -783,7 +776,6 @@ $downloadPdf.addEventListener('click', async () => {
 
     // 4️⃣  Limpiar
     document.body.removeChild(pdfLayout);
-
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
 
