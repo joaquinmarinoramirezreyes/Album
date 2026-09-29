@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   NUESTRO ÁLBUM DE BARRO — App Logic + Firebase + ImgBB + Toasts
+   NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + ImgBB + Toasts
    Firebase Firestore (datos) + ImgBB (imágenes) — 100% gratuito
    ═══════════════════════════════════════════════════════════ */
 
@@ -650,7 +650,7 @@ $downloadPdf.addEventListener('click', async () => {
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(32);
-    doc.text('Nuestro Album de Barro', W / 2, H / 2 - 20, { align: 'center' });
+    doc.text('Nuestro Album Cerámico', W / 2, H / 2 - 20, { align: 'center' });
 
     // Línea decorativa
     doc.setDrawColor(255, 255, 255, 120);
@@ -777,13 +777,13 @@ $downloadPdf.addEventListener('click', async () => {
       doc.setFontSize(7);
       doc.setTextColor(160, 170, 185);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Nuestro Album de Barro — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
+      doc.text(`Nuestro Album Cerámico — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
     }
 
     // ══════════════════════════════════
     //  GUARDAR
     // ══════════════════════════════════
-    doc.save('nuestro-album-de-barro.pdf');
+    doc.save('nuestro-album-ceramico.pdf');
 
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
