@@ -122,9 +122,8 @@ img {
   justify-content: center;
   min-height: 100dvh;
   background:
-    radial-gradient(ellipse at 20% 80%, rgba(30, 56, 136, .06) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(30, 56, 136, .04) 0%, transparent 60%),
-    var(--color-bg);
+    linear-gradient(rgba(234, 240, 246, .88), rgba(234, 240, 246, .88)),
+    url('assets/talavera-pattern.jpg') center / 400px repeat;
 }
 
 .login {
@@ -132,6 +131,11 @@ img {
   max-width: 400px;
   padding: var(--sp-6) var(--sp-5);
   text-align: center;
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 /* Ornaments */
@@ -321,8 +325,8 @@ img {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(30, 56, 136, .06) 0%, transparent 70%),
-    var(--color-bg);
+    linear-gradient(rgba(234, 240, 246, .92), rgba(234, 240, 246, .92)),
+    url('assets/talavera-pattern.jpg') center / 400px repeat;
 }
 
 .hero__title {
@@ -606,6 +610,9 @@ img {
   font-size: 0.8125rem;
   border-top: 1px solid var(--color-divider);
   margin-top: var(--sp-6);
+  background:
+    linear-gradient(rgba(234, 240, 246, .90), rgba(234, 240, 246, .90)),
+    url('assets/talavera-pattern.jpg') center / 400px repeat;
 }
 
 
