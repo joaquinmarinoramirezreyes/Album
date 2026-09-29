@@ -410,15 +410,20 @@ img {
   justify-content: center;
   gap: var(--sp-2);
   width: 100%;
-  padding: var(--sp-6) var(--sp-4);
+  padding: var(--sp-8) var(--sp-4);
   background: var(--color-bg-warm);
   border: 2px dashed var(--color-divider);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   color: var(--color-charcoal-light);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: border-color var(--transition-base), background-color var(--transition-base);
+  transition: border-color var(--transition-base), background-color var(--transition-base), transform var(--transition-base);
+}
+
+.upload__photo-btn:active {
+  transform: scale(0.98);
 }
 
 .upload__photo-btn:hover,
@@ -507,11 +512,12 @@ img {
   border-radius: 2px;
 }
 
-/* Grid — 1 col mobile */
+/* Grid — Default to 2 columns for mobile, so it feels like scattered polaroids */
 .gallery__grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--sp-5);
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 
@@ -521,22 +527,32 @@ img {
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-polaroid);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
+  transform-origin: center center;
+  /* Slightly smaller padding on mobile */
+  padding-bottom: var(--sp-1);
 }
 
-.polaroid:hover {
-  transform: translateY(-3px);
+/* Scattering Effect using nth-child */
+.polaroid:nth-child(even) { transform: rotate(3deg); }
+.polaroid:nth-child(odd) { transform: rotate(-2deg); }
+.polaroid:nth-child(3n) { transform: rotate(1.5deg); }
+.polaroid:nth-child(5n) { transform: rotate(-3deg); }
+
+.polaroid:hover, .polaroid:active {
+  transform: rotate(0deg) scale(1.05) !important;
   box-shadow: var(--shadow-float);
+  z-index: 10;
 }
 
 /* Stagger animation for cards */
 .polaroid:nth-child(1)  { animation-delay: 0s; }
-.polaroid:nth-child(2)  { animation-delay: 0.08s; }
-.polaroid:nth-child(3)  { animation-delay: 0.16s; }
-.polaroid:nth-child(4)  { animation-delay: 0.24s; }
-.polaroid:nth-child(5)  { animation-delay: 0.32s; }
-.polaroid:nth-child(6)  { animation-delay: 0.40s; }
+.polaroid:nth-child(2)  { animation-delay: 0.05s; }
+.polaroid:nth-child(3)  { animation-delay: 0.10s; }
+.polaroid:nth-child(4)  { animation-delay: 0.15s; }
+.polaroid:nth-child(5)  { animation-delay: 0.20s; }
+.polaroid:nth-child(6)  { animation-delay: 0.25s; }
 
 @keyframes cardIn {
   from {
@@ -666,7 +682,7 @@ img {
   }
 
   .gallery__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -688,7 +704,7 @@ img {
   }
 
   .gallery__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--sp-6);
   }
 
