@@ -1,19 +1,19 @@
 /* ═══════════════════════════════════════════════════════════
    NUESTRO ÁLBUM DE BARRO — Design System & Styles
-   Mobile-First · Terracotta Warm Theme
+   Mobile-First · Talavera Blue Theme
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── Design Tokens ─── */
 :root {
   /* Palette */
   --color-bg:           #FAFAFA;
-  --color-bg-warm:      #F5F0EB;
-  --color-terracotta:   #E07A5F;
-  --color-terracotta-dark: #C4654D;
-  --color-charcoal:     #3D405B;
-  --color-charcoal-light: #6B6E8A;
+  --color-bg-warm:      #EAF0F6;
+  --color-talavera:     #1E3888;
+  --color-talavera-dark: #12245C;
+  --color-charcoal:     #1C2331;
+  --color-charcoal-light: #525E75;
   --color-white:        #FFFFFF;
-  --color-divider:      #E8E2DC;
+  --color-divider:      #DFE4EC;
   --color-error:        #D32F2F;
 
   /* Typography */
@@ -198,7 +198,7 @@ img {
 }
 
 .login__input:focus {
-  border-color: var(--color-terracotta);
+  border-color: var(--color-talavera);
   box-shadow: 0 0 0 3px rgba(224, 122, 95, .15);
 }
 
@@ -258,18 +258,18 @@ img {
 }
 
 .btn--primary {
-  background-color: var(--color-terracotta);
+  background-color: var(--color-talavera);
   color: var(--color-white);
 }
 
 .btn--primary:hover {
-  background-color: var(--color-terracotta-dark);
+  background-color: var(--color-talavera-dark);
 }
 
 .btn--secondary {
   background-color: transparent;
-  color: var(--color-terracotta);
-  border: 1.5px solid var(--color-terracotta);
+  color: var(--color-talavera);
+  border: 1.5px solid var(--color-talavera);
 }
 
 .btn--secondary:hover {
@@ -385,7 +385,7 @@ img {
 }
 
 .form-input:focus {
-  border-color: var(--color-terracotta);
+  border-color: var(--color-talavera);
   box-shadow: 0 0 0 3px rgba(224, 122, 95, .12);
 }
 
@@ -415,7 +415,7 @@ img {
 
 .upload__photo-btn:hover,
 .upload__photo-btn:focus-visible {
-  border-color: var(--color-terracotta);
+  border-color: var(--color-talavera);
   background-color: rgba(224, 122, 95, .04);
 }
 
@@ -494,7 +494,7 @@ img {
   display: block;
   width: 40px;
   height: 2px;
-  background: var(--color-terracotta);
+  background: var(--color-talavera);
   margin: var(--sp-3) auto 0;
   border-radius: 2px;
 }
@@ -681,7 +681,7 @@ img {
   border-radius: var(--radius-md);
   background: var(--color-white);
   box-shadow: var(--shadow-float);
-  border-left: 4px solid var(--color-terracotta);
+  border-left: 4px solid var(--color-talavera);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   color: var(--color-charcoal);
@@ -697,7 +697,7 @@ img {
 
 /* Variants */
 .toast--info {
-  border-left-color: var(--color-terracotta);
+  border-left-color: var(--color-talavera);
 }
 
 .toast--success {
@@ -750,7 +750,7 @@ img {
   bottom: 0;
   left: 0;
   height: 3px;
-  background: var(--color-terracotta);
+  background: var(--color-talavera);
   border-radius: 0 0 0 var(--radius-md);
   animation: toastProgress var(--toast-duration, 4s) linear forwards;
 }
