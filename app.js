@@ -108,6 +108,7 @@ const $adminError    = document.getElementById('admin-error');
 const $modalAdminPanel = document.getElementById('modal-admin-panel');
 const $formCreateEvent = document.getElementById('form-create-event');
 const $inputNewEvent   = document.getElementById('input-new-event');
+const $inputEventDate  = document.getElementById('input-event-date');
 const $adminEventList  = document.getElementById('admin-event-list');
 // ═══════════════════════════════════════════════════════════
 //  TOAST NOTIFICATION SYSTEM
@@ -325,8 +326,39 @@ async function loadAdminEvents() {
     docsArray.forEach(docSnap => {
       const code = docSnap.id;
       const li = document.createElement('li');
+      const data = docSnap.data();
+      let dateInfoHtml = '';
+      
+      if (data.fechaEvento) {
+         // Calcular días usando zona horaria local para evitar saltos de día por UTC
+         const [year, month, day] = data.fechaEvento.split('-');
+         const eventDate = new Date(year, month - 1, day);
+         const today = new Date();
+         today.setHours(0,0,0,0);
+         eventDate.setHours(0,0,0,0);
+         
+         const diffTime = today - eventDate;
+         const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+         
+         let daysText = '';
+         let color = '#888';
+         if (diffDays > 0) {
+            daysText = `Terminó hace ${diffDays} día(s)`;
+            if (diffDays > 15) color = '#d32f2f'; // Highlight old ones
+         } else if (diffDays === 0) {
+            daysText = 'Hoy es el evento';
+            color = '#2e7d32';
+         } else {
+            daysText = `Faltan ${Math.abs(diffDays)} día(s)`;
+         }
+         dateInfoHtml = `<div style="font-size:0.75rem; color:${color}; margin-top:2px;">${data.fechaEvento} • ${daysText}</div>`;
+      }
+
       li.innerHTML = `
-        <span>${escapeHTML(code)}</span>
+        <div style="display:flex; flex-direction:column; max-width: 60%;">
+          <span>${escapeHTML(code)}</span>
+          ${dateInfoHtml}
+        </div>
         <div style="display:flex; gap:8px;">
           <button type="button" class="qr-btn" aria-label="Código QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -345,11 +377,18 @@ async function loadAdminEvents() {
       li.querySelector('.del-btn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         const codeToDelete = btn.getAttribute('data-code');
-        if (confirm(`¿Estás seguro de eliminar el acceso al evento "${codeToDelete}"?\nLas fotos guardadas no se borrarán de la base de datos, pero ya nadie podrá entrar.`)) {
+        if (confirm(`¿Estás seguro de ELIMINAR COMPLETAMENTE el evento "${codeToDelete}"?\n\nSi aceptas, se borrará el acceso y TODAS las dedicatorias de la base de datos para liberar espacio en Firestore.`)) {
           try {
             btn.disabled = true;
+            // 1. Obtener y borrar todas las fotos de Firestore (liberar espacio)
+            const entriesSnap = await getDocs(collection(db, 'events', codeToDelete, 'guest_entries'));
+            const deletePromises = entriesSnap.docs.map(d => deleteDoc(d.ref));
+            await Promise.all(deletePromises);
+            
+            // 2. Borrar el acceso
             await deleteDoc(doc(db, 'eventos_activos', codeToDelete));
-            showToast(`Evento ${codeToDelete} eliminado`, 'info');
+            
+            showToast(`Evento y fotos de ${codeToDelete} eliminados`, 'info');
             loadAdminEvents(); // Recargar la lista
           } catch (err) {
             console.error(err);
@@ -384,6 +423,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
   let code = $inputNewEvent.value.toUpperCase().trim().replace(/\s+/g, ''); // Sin espacios
   if (!code) return;
 
+  const eventDate = $inputEventDate.value; // Formato YYYY-MM-DD
   const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
   const originalText = btnSubmit.textContent;
   
@@ -395,11 +435,13 @@ $formCreateEvent.addEventListener('submit', async (e) => {
     const eventRef = doc(db, 'eventos_activos', code);
     await setDoc(eventRef, {
       creadoEn: serverTimestamp(),
+      fechaEvento: eventDate,
       activo: true
     });
 
     showToast(`¡Evento ${code} creado exitosamente! 🏺`, 'success', 5000);
     $inputNewEvent.value = '';
+    $inputEventDate.value = '';
     
     // Recargar lista y auto-rellenar
     loadAdminEvents();

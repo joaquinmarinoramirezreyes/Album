@@ -82,9 +82,11 @@ service cloud.firestore {
     
     // Permitir leer la colección de eventos_activos para validar el login
     // Permitir create para poder crear nuevos eventos desde la UI
+    // Permitir delete para que el admin pueda borrar eventos
     match /eventos_activos/{eventId} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasAll(['creadoEn']) || request.resource.data.keys().hasAll(['activo']);
+      allow create: if true;
+      allow delete: if true;
     }
 
     // Permitir leer/escribir entries dentro de cualquier evento
@@ -98,7 +100,7 @@ service cloud.firestore {
       // Solo permitir actualización del contador de likes
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']) 
                        && request.resource.data.likes is number;
-      allow delete: if false;
+      allow delete: if true;
     }
 
     // Bloquear todo lo demás
