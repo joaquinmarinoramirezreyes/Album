@@ -552,9 +552,197 @@ function renderPolaroidCard(data) {
 
 
 // ═══════════════════════════════════════════════════════════
-//  PDF DOWNLOAD — html2pdf.js
+//  PDF DOWNLOAD — html2pdf.js (con conversión base64 anti-CORS)
 // ═══════════════════════════════════════════════════════════
-$downloadPdf.addEventListener('click', () => {
+
+/**
+ * Convierte una URL de imagen externa a base64 data URL.
+ * Esto evita por completo el problema de CORS/canvas tainting.
+ */
+async function imageUrlToBase64(url) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    console.warn('No se pudo convertir imagen a base64:', url);
+    return '';
+  }
+}
+
+/**
+ * Construye un contenedor HTML temporal con diseño bonito
+ * exclusivo para el PDF, con todas las imágenes en base64.
+ */
+async function buildPdfLayout() {
+  const cards = $galleryGrid.querySelectorAll('.polaroid');
+  const pdfContainer = document.createElement('div');
+
+  // ── Estilos del contenedor PDF ──
+  pdfContainer.style.cssText = `
+    width: 794px;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    background: #ffffff;
+    color: #1C2331;
+    padding: 0;
+  `;
+
+  // ── Portada ──
+  pdfContainer.innerHTML = `
+    <div style="
+      text-align: center;
+      padding: 80px 40px 60px;
+      background: linear-gradient(135deg, #1E3888 0%, #2E5CB8 50%, #1E3888 100%);
+      color: #ffffff;
+      page-break-after: always;
+      min-height: 1060px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    ">
+      <div style="
+        font-size: 60px;
+        margin-bottom: 20px;
+      ">🏺</div>
+      <h1 style="
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        letter-spacing: 1px;
+      ">Nuestro Álbum de Barro</h1>
+      <div style="
+        width: 80px;
+        height: 3px;
+        background: rgba(255,255,255,0.5);
+        margin: 20px auto;
+        border-radius: 2px;
+      "></div>
+      <p style="
+        font-size: 18px;
+        font-style: italic;
+        opacity: 0.85;
+        margin-top: 12px;
+        max-width: 400px;
+      ">Recuerdos moldeados con amor por quienes estuvieron con nosotros</p>
+      <p style="
+        font-size: 14px;
+        opacity: 0.6;
+        margin-top: 40px;
+      ">${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'} en este álbum</p>
+    </div>
+  `;
+
+  // ── Tarjetas ──
+  let cardsHtml = '';
+
+  for (let i = 0; i < cards.length; i++) {
+    const img = cards[i].querySelector('.polaroid__img');
+    const nameEl = cards[i].querySelector('.polaroid__name');
+    const msgEl = cards[i].querySelector('.polaroid__message');
+
+    const nombre = nameEl ? nameEl.textContent : '';
+    const dedicatoria = msgEl ? msgEl.textContent : '';
+
+    // Convertir imagen a base64
+    let imgSrc = '';
+    if (img && img.src) {
+      imgSrc = await imageUrlToBase64(img.src);
+    }
+
+    // Calcular si necesitamos salto de página (2 tarjetas por página)
+    const pageBreak = (i > 0 && i % 2 === 0) ? 'page-break-before: always;' : '';
+
+    cardsHtml += `
+      <div style="
+        ${pageBreak}
+        margin: 30px auto;
+        max-width: 500px;
+        background: #ffffff;
+        border: 1px solid #DFE4EC;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(30, 56, 136, 0.08);
+      ">
+        ${imgSrc ? `
+          <img
+            src="${imgSrc}"
+            style="
+              width: 100%;
+              height: 360px;
+              object-fit: cover;
+              display: block;
+            "
+          >
+        ` : `
+          <div style="
+            width: 100%;
+            height: 360px;
+            background: #EAF0F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #525E75;
+            font-size: 14px;
+          ">Imagen no disponible</div>
+        `}
+        <div style="
+          padding: 20px 24px 24px;
+          border-top: 3px solid #1E3888;
+        ">
+          <p style="
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1C2331;
+            margin-bottom: ${dedicatoria ? '8px' : '0'};
+          ">${escapeHTML(nombre)}</p>
+          ${dedicatoria ? `
+            <p style="
+              font-style: italic;
+              color: #525E75;
+              font-size: 15px;
+              line-height: 1.5;
+            ">"${escapeHTML(dedicatoria)}"</p>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // Envolver tarjetas en un contenedor con padding
+  const pagesDiv = document.createElement('div');
+  pagesDiv.style.cssText = 'padding: 20px 40px;';
+  pagesDiv.innerHTML = cardsHtml;
+  pdfContainer.appendChild(pagesDiv);
+
+  // ── Pie de página final ──
+  const footer = document.createElement('div');
+  footer.style.cssText = `
+    text-align: center;
+    padding: 40px 20px;
+    color: #525E75;
+    font-size: 12px;
+    border-top: 1px solid #DFE4EC;
+    margin-top: 40px;
+  `;
+  footer.innerHTML = `
+    <p>💙 Nuestro Álbum de Barro — ${new Date().getFullYear()}</p>
+    <p style="margin-top: 4px; opacity: 0.6;">Hecho con amor</p>
+  `;
+  pdfContainer.appendChild(footer);
+
+  return pdfContainer;
+}
+
+
+$downloadPdf.addEventListener('click', async () => {
   if (typeof html2pdf === 'undefined') {
     showToast('La librería de PDF no se pudo cargar. Revisa tu conexión.', 'error');
     return;
@@ -565,31 +753,47 @@ $downloadPdf.addEventListener('click', () => {
     return;
   }
 
-  const pdfToast = showToast('Generando tu álbum en PDF…', 'info', 0);
+  const pdfToast = showToast('Preparando imágenes para el PDF…', 'info', 0);
+  $downloadPdf.disabled = true;
 
-  // Seleccionamos directamente el grid que envuelve todas las fotos
-  const elemento = $galleryGrid;
+  try {
+    // 1️⃣  Construir layout PDF con imágenes en base64
+    updateToast(pdfToast, 'Convirtiendo imágenes…');
+    const pdfLayout = await buildPdfLayout();
 
-  const opt = {
-    margin:       10,
-    filename:     'nuestro-album.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+    // 2️⃣  Montar temporalmente en el DOM (necesario para html2pdf)
+    pdfLayout.style.position = 'absolute';
+    pdfLayout.style.left = '-9999px';
+    pdfLayout.style.top = '0';
+    document.body.appendChild(pdfLayout);
 
-  setTimeout(() => {
-    html2pdf().set(opt).from(elemento).save()
-      .then(() => {
-        dismissToast(pdfToast);
-        showToast('¡Álbum descargado! 📄', 'success', 4000);
-      })
-      .catch((err) => {
-        console.error('Error generando PDF:', err);
-        dismissToast(pdfToast);
-        showToast('Error al generar el PDF. Inténtalo de nuevo.', 'error');
-      });
-  }, 800);
+    // 3️⃣  Generar PDF
+    updateToast(pdfToast, 'Generando tu álbum en PDF…');
+
+    const opt = {
+      margin:       0,
+      filename:     'nuestro-album-de-barro.pdf',
+      image:        { type: 'jpeg', quality: 0.95 },
+      html2canvas:  { scale: 2, backgroundColor: '#ffffff', logging: false },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['css'] }
+    };
+
+    await html2pdf().set(opt).from(pdfLayout).save();
+
+    // 4️⃣  Limpiar
+    document.body.removeChild(pdfLayout);
+
+    dismissToast(pdfToast);
+    showToast('¡Álbum descargado! 📄', 'success', 4000);
+
+  } catch (err) {
+    console.error('Error generando PDF:', err);
+    dismissToast(pdfToast);
+    showToast('Error al generar el PDF. Inténtalo de nuevo.', 'error', 5000);
+  } finally {
+    $downloadPdf.disabled = false;
+  }
 });
 
 
