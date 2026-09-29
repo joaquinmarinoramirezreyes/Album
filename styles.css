@@ -530,6 +530,7 @@ img {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
   transform-origin: center center;
+  will-change: transform;
   /* Slightly smaller padding on mobile */
   padding-bottom: var(--sp-1);
 }

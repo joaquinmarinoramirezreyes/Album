@@ -51,11 +51,11 @@ const IMGBB_API_KEY = '349a78e237c6ce840d9f9356b4a32ae6';
 //  IMAGE COMPRESSION CONFIG
 // ═══════════════════════════════════════════════════════════
 const COMPRESSION_OPTIONS = {
-  maxSizeMB: 0.5,              // Máximo 500 KB
-  maxWidthOrHeight: 1000,      // Máximo 1000px de ancho o alto
-  useWebWorker: true,          // Usar Web Worker para no bloquear el hilo principal
-  fileType: 'image/jpeg',      // Convertir a JPEG para mejor compresión
-  initialQuality: 0.85,        // Calidad inicial
+  maxSizeMB: 0.3,              // Máximo 300 KB (muy ligero para celular)
+  maxWidthOrHeight: 800,       // Máximo 800px (suficiente para pantalla y PDF)
+  useWebWorker: true,
+  fileType: 'image/jpeg',
+  initialQuality: 0.7,         // Calidad más baja para ahorrar peso
 };
 
 
@@ -493,7 +493,7 @@ async function compressImage(file) {
 
   const originalSizeKB = (file.size / 1024).toFixed(0);
 
-  // Si ya es menor a 500KB, no comprimir
+  // Si ya es menor al límite, no comprimir
   if (file.size <= COMPRESSION_OPTIONS.maxSizeMB * 1024 * 1024) {
     console.log(`Imagen ya optimizada (${originalSizeKB} KB), omitiendo compresión.`);
     return file;
@@ -716,6 +716,8 @@ function renderPolaroidCard(id, data) {
         src="${escapeAttr(data.imageUrl)}"
         alt="Foto de ${escapeHTML(data.nombre)}"
         crossorigin="anonymous"
+        loading="lazy"
+        decoding="async"
       >
     </div>
     <div class="polaroid__caption">
