@@ -15,7 +15,9 @@ import {
   query,
   orderBy,
   serverTimestamp,
-  setDoc
+  setDoc,
+  getDocs,
+  deleteDoc
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 
@@ -101,9 +103,10 @@ const $formAdminAuth = document.getElementById('form-admin-auth');
 const $inputAdminPass = document.getElementById('input-admin-pass');
 const $adminError    = document.getElementById('admin-error');
 
-const $modalCreateEvent = document.getElementById('modal-create-event');
-const $formCreateEvent  = document.getElementById('form-create-event');
-const $inputNewEvent    = document.getElementById('input-new-event');
+const $modalAdminPanel = document.getElementById('modal-admin-panel');
+const $formCreateEvent = document.getElementById('form-create-event');
+const $inputNewEvent   = document.getElementById('input-new-event');
+const $adminEventList  = document.getElementById('admin-event-list');
 // ═══════════════════════════════════════════════════════════
 //  TOAST NOTIFICATION SYSTEM
 // ═══════════════════════════════════════════════════════════
@@ -270,17 +273,74 @@ $btnAdminModal.addEventListener('click', () => {
 });
 
 // Validar contraseña
-$formAdminAuth.addEventListener('submit', (e) => {
+$formAdminAuth.addEventListener('submit', async (e) => {
   e.preventDefault();
   if ($inputAdminPass.value === ADMIN_PASSWORD) {
     $modalAdminAuth.hidden = true;
-    $modalCreateEvent.hidden = false;
+    $modalAdminPanel.hidden = false;
     $inputNewEvent.value = '';
     $inputNewEvent.focus();
+    await loadAdminEvents();
   } else {
     $adminError.hidden = false;
   }
 });
+
+// Cargar y listar eventos en el modal
+async function loadAdminEvents() {
+  $adminEventList.innerHTML = '<li style="text-align:center; font-size: 0.8rem; color:#888;">Cargando eventos...</li>';
+  try {
+    const q = query(collection(db, 'eventos_activos'), orderBy('creadoEn', 'desc'));
+    const snapshot = await getDocs(q);
+    
+    $adminEventList.innerHTML = '';
+    
+    if (snapshot.empty) {
+      $adminEventList.innerHTML = '<li style="text-align:center; font-size: 0.8rem; color:#888;">No hay eventos activos.</li>';
+      return;
+    }
+
+    snapshot.forEach(docSnap => {
+      const code = docSnap.id;
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${escapeHTML(code)}</span>
+        <button type="button" aria-label="Eliminar evento" title="Borrar evento" data-code="${escapeAttr(code)}">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+          </svg>
+        </button>
+      `;
+      // Event listener para borrar
+      li.querySelector('button').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        const codeToDelete = btn.getAttribute('data-code');
+        if (confirm(`¿Estás seguro de eliminar el acceso al evento "${codeToDelete}"?\nLas fotos guardadas no se borrarán de la base de datos, pero ya nadie podrá entrar.`)) {
+          try {
+            btn.disabled = true;
+            await deleteDoc(doc(db, 'eventos_activos', codeToDelete));
+            showToast(`Evento ${codeToDelete} eliminado`, 'info');
+            loadAdminEvents(); // Recargar la lista
+          } catch (err) {
+            console.error(err);
+            showToast('Error al eliminar. Revisa permisos.', 'error');
+            btn.disabled = false;
+          }
+        }
+      });
+      $adminEventList.appendChild(li);
+    });
+
+  } catch (error) {
+    console.error('Error al cargar eventos:', error);
+    if (error.code === 'failed-precondition' || error.message.includes('index')) {
+      $adminEventList.innerHTML = `<li style="text-align:center; font-size: 0.75rem; color:#d32f2f;">Se requiere crear un índice en Firestore para ordenar por 'creadoEn'.</li>`;
+    } else {
+      $adminEventList.innerHTML = `<li style="text-align:center; font-size: 0.75rem; color:#d32f2f;">Error de permisos o red.</li>`;
+    }
+  }
+}
 
 // Crear Evento en Firestore
 $formCreateEvent.addEventListener('submit', async (e) => {
@@ -302,10 +362,11 @@ $formCreateEvent.addEventListener('submit', async (e) => {
       activo: true
     });
 
-    $modalCreateEvent.hidden = true;
     showToast(`¡Evento ${code} creado exitosamente! 🏺`, 'success', 5000);
+    $inputNewEvent.value = '';
     
-    // Auto-rellenar el input de login con el código recién creado
+    // Recargar lista y auto-rellenar
+    loadAdminEvents();
     $accessCode.value = code;
     
   } catch (err) {
@@ -321,7 +382,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
 document.querySelectorAll('.modal-close').forEach(btn => {
   btn.addEventListener('click', () => {
     $modalAdminAuth.hidden = true;
-    $modalCreateEvent.hidden = true;
+    $modalAdminPanel.hidden = true;
   });
 });
 

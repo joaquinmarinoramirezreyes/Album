@@ -936,6 +936,42 @@ img {
   opacity: 1;
 }
 
+/* Lista de eventos del admin */
+.admin-list {
+  list-style: none;
+  padding: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(30, 56, 136, 0.05);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--color-charcoal);
+}
+
+.admin-list button {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.admin-list button:hover {
+  background: rgba(211, 47, 47, 0.1);
+}
+
 .mt-2 { margin-top: var(--sp-2); }
 .mt-4 { margin-top: var(--sp-4); }
 
