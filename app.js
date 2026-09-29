@@ -435,7 +435,7 @@ $uploadForm.addEventListener('submit', async (e) => {
 
     // ✅ Éxito
     dismissToast(progressToast);
-    showToast('¡Tu recuerdo se agregó al álbum! 🤎', 'success', 5000);
+    showToast('¡Tu recuerdo se agregó al álbum! 💙', 'success', 5000);
     resetForm();
 
   } catch (err) {

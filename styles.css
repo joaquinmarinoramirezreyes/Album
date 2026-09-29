@@ -122,8 +122,8 @@ img {
   justify-content: center;
   min-height: 100dvh;
   background:
-    radial-gradient(ellipse at 20% 80%, rgba(224, 122, 95, .06) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(224, 122, 95, .04) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(30, 56, 136, .06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(30, 56, 136, .04) 0%, transparent 60%),
     var(--color-bg);
 }
 
@@ -199,7 +199,7 @@ img {
 
 .login__input:focus {
   border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(224, 122, 95, .15);
+  box-shadow: 0 0 0 3px rgba(30, 56, 136, .15);
 }
 
 .login__input--error {
@@ -254,7 +254,7 @@ img {
 }
 
 .btn:focus-visible {
-  box-shadow: 0 0 0 3px rgba(224, 122, 95, .3);
+  box-shadow: 0 0 0 3px rgba(30, 56, 136, .3);
 }
 
 .btn--primary {
@@ -273,7 +273,7 @@ img {
 }
 
 .btn--secondary:hover {
-  background-color: rgba(224, 122, 95, .06);
+  background-color: rgba(30, 56, 136, .06);
 }
 
 .btn--full {
@@ -283,6 +283,10 @@ img {
 /* Spinner inside button */
 .btn__spinner {
   display: inline-flex;
+}
+
+.btn__spinner[hidden] {
+  display: none !important;
 }
 
 .spinner {
@@ -317,7 +321,7 @@ img {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(224, 122, 95, .06) 0%, transparent 70%),
+    radial-gradient(ellipse at 50% 0%, rgba(30, 56, 136, .06) 0%, transparent 70%),
     var(--color-bg);
 }
 
@@ -386,7 +390,7 @@ img {
 
 .form-input:focus {
   border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(224, 122, 95, .12);
+  box-shadow: 0 0 0 3px rgba(30, 56, 136, .12);
 }
 
 .form-input--textarea {
@@ -416,7 +420,7 @@ img {
 .upload__photo-btn:hover,
 .upload__photo-btn:focus-visible {
   border-color: var(--color-talavera);
-  background-color: rgba(224, 122, 95, .04);
+  background-color: rgba(30, 56, 136, .04);
 }
 
 .upload__photo-icon {
