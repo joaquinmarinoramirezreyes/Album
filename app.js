@@ -552,196 +552,41 @@ function renderPolaroidCard(data) {
 
 
 // ═══════════════════════════════════════════════════════════
-//  PDF DOWNLOAD — html2pdf.js (canvas + cache-bust anti-CORS)
+//  PDF DOWNLOAD — jsPDF directo (sin html2canvas)
 // ═══════════════════════════════════════════════════════════
 
 /**
- * Carga una imagen externa en un nuevo elemento Image con CORS,
- * la dibuja en un canvas y extrae el base64.
- * El cache-bust (?_cb=timestamp) fuerza una recarga limpia con headers CORS.
+ * Carga una imagen y devuelve su base64 via canvas.
+ * Cache-bust + crossOrigin fuerzan recarga limpia con CORS.
  */
-function imageUrlToBase64(url) {
+function loadImageAsBase64(url) {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        canvas.getContext('2d').drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/jpeg', 0.85));
-      } catch (e) {
-        console.warn('Canvas tainted, no se pudo extraer base64:', e);
-        resolve('');
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        resolve(c.toDataURL('image/jpeg', 0.85));
+      } catch {
+        resolve(null);
       }
     };
-    img.onerror = () => {
-      console.warn('No se pudo cargar imagen para PDF:', url);
-      resolve('');
-    };
-    // Cache-bust: forzar recarga con CORS habilitado
+    img.onerror = () => resolve(null);
     img.src = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
   });
 }
 
-/**
- * Construye el HTML del PDF con portada + cuadrícula de 3 columnas.
- */
-async function buildPdfLayout() {
-  const cards = $galleryGrid.querySelectorAll('.polaroid');
-  const container = document.createElement('div');
-  container.style.cssText = `
-    width: 794px;
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-    background: #fff;
-    color: #1C2331;
-  `;
-
-  // ── PORTADA ──
-  container.innerHTML = `
-    <div style="
-      text-align: center;
-      padding: 60px 40px;
-      background: linear-gradient(135deg, #1E3888 0%, #2E5CB8 50%, #1E3888 100%);
-      color: #fff;
-      min-height: 1120px;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      page-break-after: always;
-    ">
-      <div style="font-size: 56px; margin-bottom: 16px;">🏺</div>
-      <h1 style="
-        font-family: 'Playfair Display', Georgia, serif;
-        font-size: 40px; font-weight: 700;
-        letter-spacing: 1px; margin-bottom: 12px;
-      ">Nuestro Álbum de Barro</h1>
-      <div style="width: 60px; height: 3px; background: rgba(255,255,255,.5);
-        margin: 16px auto; border-radius: 2px;"></div>
-      <p style="font-size: 16px; font-style: italic; opacity: .85;
-        margin-top: 10px; max-width: 380px;">
-        Recuerdos moldeados con amor por quienes estuvieron con nosotros
-      </p>
-      <p style="font-size: 13px; opacity: .55; margin-top: 36px;">
-        ${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'}
-      </p>
-    </div>
-  `;
-
-  // ── PREPARAR DATOS DE TARJETAS ──
-  const cardsData = [];
-  for (const card of cards) {
-    const img = card.querySelector('.polaroid__img');
-    const nameEl = card.querySelector('.polaroid__name');
-    const msgEl = card.querySelector('.polaroid__message');
-
-    let b64 = '';
-    if (img && img.src) {
-      b64 = await imageUrlToBase64(img.src);
-    }
-
-    cardsData.push({
-      nombre: nameEl ? nameEl.textContent : '',
-      dedicatoria: msgEl ? msgEl.textContent : '',
-      imgSrc: b64,
-    });
-  }
-
-  // ── CUADRÍCULA 3 COLUMNAS ──
-  const gridDiv = document.createElement('div');
-  gridDiv.style.cssText = 'padding: 24px 20px;';
-
-  // Partir en filas de 3
-  for (let row = 0; row < cardsData.length; row += 3) {
-    const rowItems = cardsData.slice(row, row + 3);
-
-    // Salto de página cada 2 filas (6 fotos por página)
-    const pageBreak = (row > 0 && row % 6 === 0)
-      ? 'page-break-before: always; margin-top: 24px;'
-      : '';
-
-    let rowHtml = `<div style="
-      display: flex; gap: 12px; margin-bottom: 12px; ${pageBreak}
-    ">`;
-
-    for (const item of rowItems) {
-      rowHtml += `
-        <div style="
-          flex: 1; background: #fff;
-          border: 1px solid #DFE4EC; border-radius: 8px;
-          overflow: hidden;
-        ">
-          ${item.imgSrc
-            ? `<img src="${item.imgSrc}" style="
-                width: 100%; height: 160px;
-                object-fit: cover; display: block;">`
-            : `<div style="
-                width: 100%; height: 160px;
-                background: #EAF0F6;
-                display: flex; align-items: center; justify-content: center;
-                color: #525E75; font-size: 11px;
-              ">Sin imagen</div>`
-          }
-          <div style="
-            padding: 8px 10px 10px;
-            border-top: 2px solid #1E3888;
-          ">
-            <p style="
-              font-family: 'Playfair Display', Georgia, serif;
-              font-weight: 700; font-size: 12px;
-              color: #1C2331;
-              margin-bottom: ${item.dedicatoria ? '4px' : '0'};
-              white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            ">${escapeHTML(item.nombre)}</p>
-            ${item.dedicatoria ? `
-              <p style="
-                font-style: italic; color: #525E75;
-                font-size: 10px; line-height: 1.4;
-                display: -webkit-box; -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical; overflow: hidden;
-              ">"${escapeHTML(item.dedicatoria)}"</p>
-            ` : ''}
-          </div>
-        </div>
-      `;
-    }
-
-    // Celdas vacías para completar la fila si tiene menos de 3
-    const empty = 3 - rowItems.length;
-    for (let e = 0; e < empty; e++) {
-      rowHtml += `<div style="flex: 1;"></div>`;
-    }
-
-    rowHtml += '</div>';
-    gridDiv.innerHTML += rowHtml;
-  }
-
-  container.appendChild(gridDiv);
-
-  // ── PIE DE PÁGINA ──
-  const footer = document.createElement('div');
-  footer.style.cssText = `
-    text-align: center; padding: 30px 20px;
-    color: #525E75; font-size: 11px;
-    border-top: 1px solid #DFE4EC; margin-top: 20px;
-  `;
-  footer.innerHTML = `
-    <p>💙 Nuestro Álbum de Barro — ${new Date().getFullYear()}</p>
-    <p style="margin-top: 3px; opacity: .6;">Hecho con amor</p>
-  `;
-  container.appendChild(footer);
-
-  return container;
-}
-
-
 $downloadPdf.addEventListener('click', async () => {
-  if (typeof html2pdf === 'undefined') {
+  if (typeof window.jspdf === 'undefined') {
     showToast('La librería de PDF no se pudo cargar. Revisa tu conexión.', 'error');
     return;
   }
 
-  if (!$galleryGrid.children.length || $galleryGrid.querySelector('.gallery__empty')) {
+  const cards = $galleryGrid.querySelectorAll('.polaroid');
+  if (!cards.length || $galleryGrid.querySelector('.gallery__empty')) {
     showToast('La galería está vacía. ¡Agrega fotos antes de descargar!', 'info');
     return;
   }
@@ -750,32 +595,154 @@ $downloadPdf.addEventListener('click', async () => {
   $downloadPdf.disabled = true;
 
   try {
-    // 1️⃣  Construir layout con imágenes en base64
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const W = 210, H = 297; // A4
+
+    // ══════════════════════════════════
+    //  PORTADA
+    // ══════════════════════════════════
+    doc.setFillColor(30, 56, 136); // #1E3888
+    doc.rect(0, 0, W, H, 'F');
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(32);
+    doc.text('Nuestro Album de Barro', W / 2, H / 2 - 20, { align: 'center' });
+
+    // Línea decorativa
+    doc.setDrawColor(255, 255, 255, 120);
+    doc.setLineWidth(0.5);
+    doc.line(W / 2 - 25, H / 2, W / 2 + 25, H / 2);
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(12);
+    doc.text('Recuerdos moldeados con amor', W / 2, H / 2 + 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setTextColor(200, 210, 230);
+    doc.text(`${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'} en este album`, W / 2, H / 2 + 30, { align: 'center' });
+
+    // ══════════════════════════════════
+    //  CARGAR IMÁGENES
+    // ══════════════════════════════════
     updateToast(pdfToast, 'Convirtiendo imágenes…');
-    const pdfLayout = await buildPdfLayout();
 
-    // 2️⃣  Montar fuera de pantalla (html2pdf necesita el DOM)
-    pdfLayout.style.position = 'absolute';
-    pdfLayout.style.left = '-9999px';
-    pdfLayout.style.top = '0';
-    document.body.appendChild(pdfLayout);
+    const entries = [];
+    for (const card of cards) {
+      const img = card.querySelector('.polaroid__img');
+      const nameEl = card.querySelector('.polaroid__name');
+      const msgEl = card.querySelector('.polaroid__message');
 
-    // 3️⃣  Generar PDF
+      let b64 = null;
+      if (img && img.src) {
+        b64 = await loadImageAsBase64(img.src);
+      }
+
+      entries.push({
+        nombre: nameEl ? nameEl.textContent.trim() : '',
+        dedicatoria: msgEl ? msgEl.textContent.trim() : '',
+        imgData: b64,
+      });
+    }
+
+    // ══════════════════════════════════
+    //  CUADRÍCULA 3 COLUMNAS
+    // ══════════════════════════════════
     updateToast(pdfToast, 'Generando tu álbum en PDF…');
 
-    const opt = {
-      margin:       0,
-      filename:     'nuestro-album-de-barro.pdf',
-      image:        { type: 'jpeg', quality: 0.92 },
-      html2canvas:  { scale: 2, backgroundColor: '#ffffff', logging: false },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css'] }
-    };
+    const MARGIN = 12;
+    const GAP = 8;
+    const COLS = 3;
+    const colW = (W - MARGIN * 2 - GAP * (COLS - 1)) / COLS; // ~58mm
+    const imgH = colW;  // Cuadrada
+    const textH = 18;   // Espacio para texto
+    const cardH = imgH + textH;
+    const ROWS_PER_PAGE = Math.floor((H - MARGIN * 2) / (cardH + GAP)); // ~3 filas
 
-    await html2pdf().set(opt).from(pdfLayout).save();
+    let cardIndex = 0;
 
-    // 4️⃣  Limpiar
-    document.body.removeChild(pdfLayout);
+    while (cardIndex < entries.length) {
+      doc.addPage();
+
+      // Encabezado sutil de la página
+      doc.setFillColor(30, 56, 136);
+      doc.rect(0, 0, W, 6, 'F');
+
+      for (let row = 0; row < ROWS_PER_PAGE && cardIndex < entries.length; row++) {
+        for (let col = 0; col < COLS && cardIndex < entries.length; col++) {
+          const entry = entries[cardIndex];
+          const x = MARGIN + col * (colW + GAP);
+          const y = MARGIN + 8 + row * (cardH + GAP);
+
+          // Fondo de tarjeta
+          doc.setFillColor(250, 250, 250);
+          doc.setDrawColor(220, 225, 235);
+          doc.roundedRect(x, y, colW, cardH, 2, 2, 'FD');
+
+          // Imagen
+          if (entry.imgData) {
+            try {
+              doc.addImage(entry.imgData, 'JPEG', x + 1, y + 1, colW - 2, imgH - 2);
+            } catch (e) {
+              // Si falla, dibujar placeholder gris
+              doc.setFillColor(234, 240, 246);
+              doc.rect(x + 1, y + 1, colW - 2, imgH - 2, 'F');
+              doc.setTextColor(130, 140, 160);
+              doc.setFontSize(7);
+              doc.text('Sin imagen', x + colW / 2, y + imgH / 2, { align: 'center' });
+            }
+          } else {
+            doc.setFillColor(234, 240, 246);
+            doc.rect(x + 1, y + 1, colW - 2, imgH - 2, 'F');
+            doc.setTextColor(130, 140, 160);
+            doc.setFontSize(7);
+            doc.text('Sin imagen', x + colW / 2, y + imgH / 2, { align: 'center' });
+          }
+
+          // Línea azul decorativa
+          doc.setFillColor(30, 56, 136);
+          doc.rect(x, y + imgH, colW, 1.5, 'F');
+
+          // Nombre
+          doc.setTextColor(28, 35, 49);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          const maxTextW = colW - 4;
+          const nombreCorto = doc.splitTextToSize(entry.nombre, maxTextW)[0] || '';
+          doc.text(nombreCorto, x + 2, y + imgH + 6);
+
+          // Dedicatoria
+          if (entry.dedicatoria) {
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(6.5);
+            doc.setTextColor(82, 94, 117);
+            const lines = doc.splitTextToSize(`"${entry.dedicatoria}"`, maxTextW);
+            doc.text(lines.slice(0, 2), x + 2, y + imgH + 11);
+          }
+
+          cardIndex++;
+        }
+      }
+    }
+
+    // ══════════════════════════════════
+    //  PIE DE PÁGINA
+    // ══════════════════════════════════
+    const totalPages = doc.getNumberOfPages();
+    for (let p = 2; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(7);
+      doc.setTextColor(160, 170, 185);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Nuestro Album de Barro — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
+    }
+
+    // ══════════════════════════════════
+    //  GUARDAR
+    // ══════════════════════════════════
+    doc.save('nuestro-album-de-barro.pdf');
+
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
 
