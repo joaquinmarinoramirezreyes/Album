@@ -573,6 +573,23 @@ img {
   gap: var(--sp-1);
 }
 
+.polaroid__message {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--color-charcoal-light);
+  line-height: 1.4;
+  margin-bottom: var(--sp-2);
+}
+
+.polaroid__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--color-divider);
+}
+
 .polaroid__name {
   font-family: var(--font-sans);
   font-size: 0.9375rem;
@@ -580,13 +597,28 @@ img {
   color: var(--color-charcoal);
 }
 
-.polaroid__message {
+.polaroid__like {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #999;
+  font-size: 0.875rem;
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-style: italic;
-  color: var(--color-charcoal-light);
-  line-height: 1.5;
+  transition: color 0.2s, transform 0.2s;
+  padding: 4px;
 }
+
+.polaroid__like.liked {
+  color: #e91e63;
+}
+
+.polaroid__like:active {
+  transform: scale(1.3);
+}
+
 
 
 /* ═══════════════════════════════════════════════════════════

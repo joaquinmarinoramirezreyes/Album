@@ -17,7 +17,9 @@ import {
   serverTimestamp,
   setDoc,
   getDocs,
-  deleteDoc
+  deleteDoc,
+  updateDoc,
+  increment
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 
@@ -201,6 +203,19 @@ function updateToast(toast, message) {
 
 
 // ═══════════════════════════════════════════════════════════
+//  INIT / LECTURA DE URL (PARA CÓDIGOS QR)
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const codeParam = params.get('code');
+  if (codeParam) {
+    $accessCode.value = codeParam.toUpperCase();
+    // Auto-enviar si se entra por QR
+    $loginForm.dispatchEvent(new Event('submit', { cancelable: true }));
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
 //  PANTALLA A — LOGIN
 // ═══════════════════════════════════════════════════════════
 $loginForm.addEventListener('submit', async (e) => {
@@ -312,15 +327,22 @@ async function loadAdminEvents() {
       const li = document.createElement('li');
       li.innerHTML = `
         <span>${escapeHTML(code)}</span>
-        <button type="button" aria-label="Eliminar evento" title="Borrar evento" data-code="${escapeAttr(code)}">
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-          </svg>
-        </button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="qr-btn" aria-label="Código QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M2 2h2v2H2V2Z"/><path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/><path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/><path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/><path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/>
+            </svg>
+          </button>
+          <button type="button" class="del-btn" aria-label="Eliminar evento" title="Borrar evento" data-code="${escapeAttr(code)}">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+          </button>
+        </div>
       `;
       // Event listener para borrar
-      li.querySelector('button').addEventListener('click', async (e) => {
+      li.querySelector('.del-btn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         const codeToDelete = btn.getAttribute('data-code');
         if (confirm(`¿Estás seguro de eliminar el acceso al evento "${codeToDelete}"?\nLas fotos guardadas no se borrarán de la base de datos, pero ya nadie podrá entrar.`)) {
@@ -335,6 +357,13 @@ async function loadAdminEvents() {
             btn.disabled = false;
           }
         }
+      });
+      // Event listener para QR
+      li.querySelector('.qr-btn').addEventListener('click', (e) => {
+        const codeQR = e.currentTarget.getAttribute('data-code');
+        const url = window.location.origin + window.location.pathname + "?code=" + encodeURIComponent(codeQR);
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(url)}`;
+        window.open(qrUrl, '_blank');
       });
       $adminEventList.appendChild(li);
     });
@@ -661,7 +690,7 @@ function startGalleryListener() {
 
     snapshot.forEach((doc) => {
       const data = doc.data();
-      renderPolaroidCard(data);
+      renderPolaroidCard(doc.id, data);
     });
   }, (error) => {
     console.error('Error en el listener de la galería:', error);
@@ -670,13 +699,15 @@ function startGalleryListener() {
 }
 
 
-/**
- * Crea e inserta una tarjeta Polaroid en la galería.
- * @param {{ nombre: string, dedicatoria: string, imageUrl: string }} data
- */
-function renderPolaroidCard(data) {
+function renderPolaroidCard(id, data) {
   const card = document.createElement('article');
   card.className = 'polaroid';
+  card.dataset.id = id;
+
+  const likesCount = data.likes || 0;
+  // Checking local storage for likes (anonymous "auth")
+  const likedArray = JSON.parse(localStorage.getItem('liked_photos') || '[]');
+  const isLiked = likedArray.includes(id);
 
   card.innerHTML = `
     <div class="polaroid__img-wrapper">
@@ -688,13 +719,54 @@ function renderPolaroidCard(data) {
       >
     </div>
     <div class="polaroid__caption">
-      <strong class="polaroid__name">${escapeHTML(data.nombre)}</strong>
       ${data.dedicatoria
         ? `<em class="polaroid__message">${escapeHTML(data.dedicatoria)}</em>`
         : ''
       }
+      <div class="polaroid__footer">
+        <strong class="polaroid__name">${escapeHTML(data.nombre)}</strong>
+        <button class="polaroid__like ${isLiked ? 'liked' : ''}" aria-label="Me gusta">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            ${isLiked 
+              ? '<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>' 
+              : '<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>'
+            }
+          </svg>
+          <span>${likesCount}</span>
+        </button>
+      </div>
     </div>
   `;
+
+  // Heart click listener
+  const btnLike = card.querySelector('.polaroid__like');
+  btnLike.addEventListener('click', async () => {
+    // Optimistic UI update
+    const likedNow = !btnLike.classList.contains('liked');
+    const inc = likedNow ? 1 : -1;
+    btnLike.classList.toggle('liked');
+    btnLike.querySelector('span').textContent = Math.max(0, likesCount + inc);
+
+    // Save to local storage
+    let ls = JSON.parse(localStorage.getItem('liked_photos') || '[]');
+    if (likedNow) {
+      ls.push(id);
+    } else {
+      ls = ls.filter(i => i !== id);
+    }
+    localStorage.setItem('liked_photos', JSON.stringify(ls));
+
+    // Update in Firestore
+    try {
+      const entryRef = doc(db, 'events', currentEventId, 'guest_entries', id);
+      await updateDoc(entryRef, {
+        likes: increment(inc)
+      });
+    } catch (err) {
+      console.error('Error al dar me gusta:', err);
+      // rollback UI could go here but it will refresh via onSnapshot anyway
+    }
+  });
 
   $galleryGrid.appendChild(card);
 }
@@ -993,3 +1065,78 @@ function escapeAttr(str) {
   div.textContent = str || '';
   return div.innerHTML.replace(/"/g, '&quot;');
 }
+
+// ═══════════════════════════════════════════════════════════
+//  SLIDESHOW (PRESENTACIÓN EN VIVO)
+// ═══════════════════════════════════════════════════════════
+const $btnSlideshow = document.getElementById('btn-slideshow');
+const $slideshowModal = document.getElementById('slideshow');
+const $slideshowClose = document.getElementById('slideshow-close');
+const $slideshowImg = document.getElementById('slideshow-img');
+const $slideshowCaption = document.getElementById('slideshow-caption');
+
+let slideshowInterval;
+let currentSlideIndex = 0;
+
+$btnSlideshow.addEventListener('click', async () => {
+  const cards = document.querySelectorAll('.polaroid');
+  if (cards.length === 0) {
+    showToast('La galería está vacía.', 'info');
+    return;
+  }
+  
+  // Try to go fullscreen
+  try {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch (e) {
+    console.log("Fullscreen API not supported or denied.");
+  }
+  
+  $slideshowModal.hidden = false;
+  currentSlideIndex = 0;
+  showNextSlide();
+  
+  slideshowInterval = setInterval(() => {
+    showNextSlide();
+  }, 4000); // 4 seconds per slide
+});
+
+function showNextSlide() {
+  const cards = document.querySelectorAll('.polaroid');
+  if (cards.length === 0) {
+    stopSlideshow();
+    return;
+  }
+  
+  if (currentSlideIndex >= cards.length) {
+    currentSlideIndex = 0; // Loop back
+  }
+  
+  const card = cards[currentSlideIndex];
+  const imgSrc = card.querySelector('.polaroid__img').src;
+  const name = card.querySelector('.polaroid__name').textContent;
+  const msgEl = card.querySelector('.polaroid__message');
+  const msg = msgEl ? msgEl.textContent : '';
+  
+  // Triggers CSS animation re-flow
+  $slideshowImg.style.animation = 'none';
+  $slideshowImg.offsetHeight; /* trigger reflow */
+  $slideshowImg.style.animation = null;
+
+  $slideshowImg.src = imgSrc;
+  $slideshowCaption.innerHTML = `<strong>${escapeHTML(name)}</strong><br>${escapeHTML(msg)}`;
+  
+  currentSlideIndex++;
+}
+
+function stopSlideshow() {
+  clearInterval(slideshowInterval);
+  $slideshowModal.hidden = true;
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(err => console.log(err));
+  }
+}
+
+$slideshowClose.addEventListener('click', stopSlideshow);

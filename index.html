@@ -173,6 +173,9 @@
 
     <!-- — Descarga PDF y Footer — -->
     <div class="download" id="download-section">
+      <button id="btn-slideshow" class="btn btn--secondary btn--full" style="margin-bottom: 15px;">
+        📽️ Presentación en vivo
+      </button>
       <button id="download-pdf" class="btn btn--secondary btn--full">
         📄 Descargar álbum completo (PDF)
       </button>
@@ -192,6 +195,15 @@
     <button class="lightbox__close" id="lightbox-close" aria-label="Cerrar">&times;</button>
     <img id="lightbox-img" class="lightbox__img" src="" alt="Foto en grande">
     <div id="lightbox-caption" class="lightbox__caption"></div>
+  </div>
+
+  <!-- Slideshow Modal -->
+  <div id="slideshow" class="lightbox" hidden style="background: black;">
+    <button class="lightbox__close" id="slideshow-close" aria-label="Cerrar" style="z-index: 1000;">&times;</button>
+    <div id="slideshow-content" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%;">
+      <img id="slideshow-img" src="" alt="Slideshow" style="max-height:75vh; max-width:90vw; border-radius:8px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: lightboxZoom 0.5s ease;">
+      <p id="slideshow-caption" style="color: white; font-family: var(--font-serif); font-size: 1.5rem; margin-top: 20px; max-width: 80vw;"></p>
+    </div>
   </div>
 
   <!-- Scripts -->
