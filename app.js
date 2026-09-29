@@ -290,8 +290,7 @@ $formAdminAuth.addEventListener('submit', async (e) => {
 async function loadAdminEvents() {
   $adminEventList.innerHTML = '<li style="text-align:center; font-size: 0.8rem; color:#888;">Cargando eventos...</li>';
   try {
-    const q = query(collection(db, 'eventos_activos'), orderBy('creadoEn', 'desc'));
-    const snapshot = await getDocs(q);
+    const snapshot = await getDocs(collection(db, 'eventos_activos'));
     
     $adminEventList.innerHTML = '';
     
@@ -300,7 +299,15 @@ async function loadAdminEvents() {
       return;
     }
 
-    snapshot.forEach(docSnap => {
+    // Ordenar localmente (los que no tengan creadoEn se van al fondo)
+    const docsArray = snapshot.docs;
+    docsArray.sort((a, b) => {
+      const timeA = a.data().creadoEn?.toMillis() || 0;
+      const timeB = b.data().creadoEn?.toMillis() || 0;
+      return timeB - timeA;
+    });
+
+    docsArray.forEach(docSnap => {
       const code = docSnap.id;
       const li = document.createElement('li');
       li.innerHTML = `
