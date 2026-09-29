@@ -882,6 +882,63 @@ img {
   cursor: pointer;
 }
 
+/* Modal Cards (dentro de lightbox) */
+.modal-card {
+  background: var(--color-white);
+  padding: var(--sp-6) var(--sp-5);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: lightboxZoom 0.3s ease;
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--color-charcoal);
+  margin-bottom: var(--sp-2);
+}
+
+.modal-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-charcoal-light);
+  margin-bottom: var(--sp-5);
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-charcoal-light);
+  cursor: pointer;
+}
+
+.btn--text {
+  background: transparent;
+  border: none;
+  color: var(--color-talavera);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: var(--sp-2);
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
+}
+
+.btn--text:hover {
+  opacity: 1;
+}
+
+.mt-2 { margin-top: var(--sp-2); }
+.mt-4 { margin-top: var(--sp-4); }
+
 
 /* ═══════════════════════════════════════════════════════════
    REDUCED MOTION

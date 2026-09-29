@@ -81,8 +81,10 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // Permitir leer la colección de eventos_activos para validar el login
+    // Permitir create para poder crear nuevos eventos desde la UI
     match /eventos_activos/{eventId} {
       allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['creadoEn']) || request.resource.data.keys().hasAll(['activo']);
     }
 
     // Permitir leer/escribir entries dentro de cualquier evento

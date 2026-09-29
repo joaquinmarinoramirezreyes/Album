@@ -14,7 +14,8 @@ import {
   onSnapshot,
   query,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  setDoc
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 
@@ -92,6 +93,17 @@ const $uploadSubmit  = document.getElementById('upload-submit');
 const $galleryGrid   = document.getElementById('gallery-grid');
 const $downloadPdf   = document.getElementById('download-pdf');
 const $toastContainer = document.getElementById('toast-container');
+
+// Admin DOM Refs
+const $btnAdminModal = document.getElementById('btn-admin-modal');
+const $modalAdminAuth = document.getElementById('modal-admin-auth');
+const $formAdminAuth = document.getElementById('form-admin-auth');
+const $inputAdminPass = document.getElementById('input-admin-pass');
+const $adminError    = document.getElementById('admin-error');
+
+const $modalCreateEvent = document.getElementById('modal-create-event');
+const $formCreateEvent  = document.getElementById('form-create-event');
+const $inputNewEvent    = document.getElementById('input-new-event');
 // ═══════════════════════════════════════════════════════════
 //  TOAST NOTIFICATION SYSTEM
 // ═══════════════════════════════════════════════════════════
@@ -242,6 +254,75 @@ function triggerLoginError() {
 $accessCode.addEventListener('input', () => {
   $loginHint.hidden = true;
   $accessCode.classList.remove('login__input--error');
+});
+
+// ═══════════════════════════════════════════════════════════
+//  ADMIN: CREAR NUEVO EVENTO
+// ═══════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = "ceramica"; // Contraseña simple para el modal
+
+// Abrir modal de autenticación
+$btnAdminModal.addEventListener('click', () => {
+  $modalAdminAuth.hidden = false;
+  $inputAdminPass.value = '';
+  $adminError.hidden = true;
+  $inputAdminPass.focus();
+});
+
+// Validar contraseña
+$formAdminAuth.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if ($inputAdminPass.value === ADMIN_PASSWORD) {
+    $modalAdminAuth.hidden = true;
+    $modalCreateEvent.hidden = false;
+    $inputNewEvent.value = '';
+    $inputNewEvent.focus();
+  } else {
+    $adminError.hidden = false;
+  }
+});
+
+// Crear Evento en Firestore
+$formCreateEvent.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let code = $inputNewEvent.value.toUpperCase().trim().replace(/\s+/g, ''); // Sin espacios
+  if (!code) return;
+
+  const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
+  const originalText = btnSubmit.textContent;
+  
+  try {
+    btnSubmit.textContent = 'Creando...';
+    btnSubmit.disabled = true;
+
+    // Crear el documento en 'eventos_activos'
+    const eventRef = doc(db, 'eventos_activos', code);
+    await setDoc(eventRef, {
+      creadoEn: serverTimestamp(),
+      activo: true
+    });
+
+    $modalCreateEvent.hidden = true;
+    showToast(`¡Evento ${code} creado exitosamente! 🏺`, 'success', 5000);
+    
+    // Auto-rellenar el input de login con el código recién creado
+    $accessCode.value = code;
+    
+  } catch (err) {
+    console.error('Error al crear evento:', err);
+    showToast('Error al crear el evento. Revisa permisos en Firebase.', 'error', 5000);
+  } finally {
+    btnSubmit.textContent = originalText;
+    btnSubmit.disabled = false;
+  }
+});
+
+// Cerrar modales (botones X)
+document.querySelectorAll('.modal-close').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $modalAdminAuth.hidden = true;
+    $modalCreateEvent.hidden = true;
+  });
 });
 
 
