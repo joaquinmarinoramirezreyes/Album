@@ -641,11 +641,37 @@ $downloadPdf.addEventListener('click', async () => {
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const W = 210, H = 297; // A4
 
+    // Helper: dibuja patrón de fondo con overlay
+    updateToast(pdfToast, 'Preparando diseño...');
+    const patternUrl = new URL('assets/talavera-pattern.jpg', document.baseURI).href;
+    const patternB64 = await loadImageAsBase64(patternUrl);
+
+    function drawBackground(r, g, b, opacity) {
+      if (patternB64) {
+        const pw = 120, ph = 150;
+        for (let x = 0; x < W; x += pw) {
+          for (let y = 0; y < H; y += ph) {
+            doc.addImage(patternB64, 'JPEG', x, y, pw, ph);
+          }
+        }
+        if (typeof doc.setGState === 'function') {
+          doc.setGState(new doc.GState({ opacity }));
+        }
+        doc.setFillColor(r, g, b);
+        doc.rect(0, 0, W, H, 'F');
+        if (typeof doc.setGState === 'function') {
+          doc.setGState(new doc.GState({ opacity: 1.0 }));
+        }
+      } else {
+        doc.setFillColor(r, g, b);
+        doc.rect(0, 0, W, H, 'F');
+      }
+    }
+
     // ══════════════════════════════════
     //  PORTADA
     // ══════════════════════════════════
-    doc.setFillColor(30, 56, 136); // #1E3888
-    doc.rect(0, 0, W, H, 'F');
+    drawBackground(30, 56, 136, 0.88); // Azul fuerte difuminado
 
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
@@ -706,6 +732,9 @@ $downloadPdf.addEventListener('click', async () => {
 
     while (cardIndex < entries.length) {
       doc.addPage();
+      
+      // Fondo de la página de contenido
+      drawBackground(234, 240, 246, 0.92); // Blanco-azulado difuminado
 
       // Encabezado sutil de la página
       doc.setFillColor(30, 56, 136);
