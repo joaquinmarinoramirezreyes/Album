@@ -552,6 +552,48 @@ function renderPolaroidCard(data) {
 
 
 // ═══════════════════════════════════════════════════════════
+//  LIGHTBOX — Click en foto para verla en grande
+// ═══════════════════════════════════════════════════════════
+const $lightbox      = document.getElementById('lightbox');
+const $lightboxImg   = document.getElementById('lightbox-img');
+const $lightboxCaption = document.getElementById('lightbox-caption');
+const $lightboxClose = document.getElementById('lightbox-close');
+
+// Delegación de eventos: click en cualquier imagen de la galería
+$galleryGrid.addEventListener('click', (e) => {
+  const img = e.target.closest('.polaroid__img');
+  if (!img) return;
+
+  const card = img.closest('.polaroid');
+  const nameEl = card?.querySelector('.polaroid__name');
+  const msgEl  = card?.querySelector('.polaroid__message');
+
+  $lightboxImg.src = img.src;
+  $lightboxCaption.textContent = nameEl ? nameEl.textContent : '';
+  $lightbox.hidden = false;
+  document.body.style.overflow = 'hidden'; // Bloquear scroll
+});
+
+function closeLightbox() {
+  $lightbox.hidden = true;
+  $lightboxImg.src = '';
+  document.body.style.overflow = '';
+}
+
+$lightboxClose.addEventListener('click', closeLightbox);
+
+// Cerrar al hacer click en el fondo oscuro (no en la imagen)
+$lightbox.addEventListener('click', (e) => {
+  if (e.target === $lightbox) closeLightbox();
+});
+
+// Cerrar con Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !$lightbox.hidden) closeLightbox();
+});
+
+
+// ═══════════════════════════════════════════════════════════
 //  PDF DOWNLOAD — jsPDF directo (sin html2canvas)
 // ═══════════════════════════════════════════════════════════
 
