@@ -21,16 +21,8 @@ import {
   setDoc,
   getDocs,
   deleteDoc,
-  updateDoc,
   increment
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
-
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js';
 
 // ═══════════════════════════════════════════════════════════
 //  FIREBASE CONFIG
@@ -52,13 +44,10 @@ const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
 
-const storage = getStorage(app);
-
-
 // ═══════════════════════════════════════════════════════════
-//  ALMACENAMIENTO DE FOTOS
+//  IMGBB CONFIG — Hosting gratuito de imágenes
 // ═══════════════════════════════════════════════════════════
-// Usamos Firebase Storage para asegurar el 100% de éxito en subidas.
+const IMGBB_API_KEY = '07723a3884a4b63f2ddb7fb04fb8532b';
 
 // ═══════════════════════════════════════════════════════════
 //  IMAGE COMPRESSION CONFIG
@@ -566,29 +555,45 @@ async function compressImage(file) {
 
 
 // ═══════════════════════════════════════════════════════════
-//  FIREBASE STORAGE UPLOAD
+//  IMGBB UPLOAD
 // ═══════════════════════════════════════════════════════════
 
 /**
- * Sube una imagen a Firebase Storage y devuelve la URL pública.
+ * Sube una imagen a ImgBB y devuelve la URL pública.
  * @param {File|Blob} file — Archivo de imagen (ya comprimido)
  * @param {string} name    — Nombre para la imagen
  * @returns {Promise<string>} — URL directa de la imagen
  */
-async function uploadToFirebaseStorage(file, name) {
-  // Limpiar el nombre para que no tenga caracteres raros en la URL
+async function uploadToImgBB(file, name) {
+  if (!IMGBB_API_KEY) {
+    throw new Error('Falta la API Key de ImgBB. Agrégala en app.js (línea IMGBB_API_KEY).');
+  }
+
+  const formData = new FormData();
+  formData.append('key', IMGBB_API_KEY);
+  formData.append('image', file); // Binario puro para evitar error 111
+  
+  // Limpiamos el nombre por si trae emojis o caracteres raros que rompan la API
   const safeName = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-  const fileName = `fotos/${Date.now()}_${safeName}.jpg`;
-  
-  // Referencia a donde se va a guardar en Firebase Storage
-  const storageRef = ref(storage, fileName);
-  
-  // Subir el archivo (ya comprimido en .jpg o .webp)
-  await uploadBytes(storageRef, file);
-  
-  // Obtener y devolver la URL pública para leerla en la galería
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
+  formData.append('name', `${safeName}_${Date.now()}`);
+
+  const response = await fetch('https://api.imgbb.com/1/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`ImgBB error (${response.status}): ${errText}`);
+  }
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(`ImgBB rechazó la imagen: ${JSON.stringify(result.error)}`);
+  }
+
+  return result.data.display_url;
 }
 
 
@@ -623,9 +628,9 @@ $uploadForm.addEventListener('submit', async (e) => {
     // 1️⃣  Comprimir imagen en el cliente
     const compressedFile = await compressImage(file);
 
-    // 2️⃣  Subir imagen comprimida a Firebase Storage
+    // 2️⃣  Subir imagen comprimida a ImgBB
     updateToast(progressToast, 'Revelando fotografía...');
-    const imageUrl = await uploadToFirebaseStorage(compressedFile, name);
+    const imageUrl = await uploadToImgBB(compressedFile, name);
 
     // 3️⃣  Guardar entrada en Firestore
     updateToast(progressToast, 'Escribiendo dedicatoria a mano...');
