@@ -21,6 +21,7 @@ import {
   setDoc,
   getDocs,
   deleteDoc,
+  updateDoc,
   increment
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
