@@ -640,30 +640,12 @@ img {
 /* Heartbeat animation when liking */
 @keyframes heartbeat {
   0%   { transform: scale(1); }
-  15%  { transform: scale(1.35); }
-  30%  { transform: scale(0.9); }
-  45%  { transform: scale(1.2); }
-  60%  { transform: scale(1); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }
 
 .polaroid__like.pop {
-  animation: heartbeat 0.5s ease-in-out;
-}
-
-/* Sparkle particles on like */
-@keyframes sparkle-fly {
-  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
-}
-
-.polaroid__like .sparkle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #e91e63;
-  pointer-events: none;
-  animation: sparkle-fly 0.6s ease-out forwards;
+  animation: heartbeat 0.3s ease-out;
 }
 
 
