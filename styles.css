@@ -523,10 +523,11 @@ img {
 
 /* — Polaroid Card — */
 .polaroid {
-  background: #FCF9F2; /* Tono "Hueso/Barro" */
+  background: #F7EFE5; /* Tono "Barro/Papel Antiguo" más marcado */
+  border: 1px solid rgba(0,0,0,0.04);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03), 0 6px 20px rgba(30, 56, 136, 0.08); /* Sombra más realista */
+  box-shadow: 0 10px 25px rgba(30, 56, 136, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mucho más pronunciada */
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
   transform-origin: center center;
@@ -543,7 +544,7 @@ img {
 
 .polaroid:hover, .polaroid:active {
   transform: rotate(0deg) scale(1.05) !important;
-  box-shadow: var(--shadow-float);
+  box-shadow: 0 15px 35px rgba(30, 56, 136, 0.25), 0 5px 15px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
