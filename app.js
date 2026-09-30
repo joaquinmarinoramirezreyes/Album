@@ -642,18 +642,18 @@ $uploadForm.addEventListener('submit', async (e) => {
   setSubmitLoading(true);
 
   // Toast de progreso (sin auto-dismiss, lo controlamos manualmente)
-  const progressToast = showToast('Preparando foto…', 'info', 0);
+  const progressToast = showToast('Preparando la cámara...', 'info', 0);
 
   try {
     // 1️⃣  Comprimir imagen en el cliente
     const compressedFile = await compressImage(file);
 
     // 2️⃣  Subir imagen comprimida a ImgBB (hosting gratuito)
-    updateToast(progressToast, 'Subiendo foto al álbum…');
+    updateToast(progressToast, 'Revelando fotografía...');
     const imageUrl = await uploadToImgBB(compressedFile, name);
 
     // 3️⃣  Guardar entrada en Firestore
-    updateToast(progressToast, 'Guardando tu dedicatoria…');
+    updateToast(progressToast, 'Escribiendo dedicatoria a mano...');
     await addDoc(getEntriesRef(), {
       nombre:      name,
       dedicatoria: message,
@@ -663,7 +663,7 @@ $uploadForm.addEventListener('submit', async (e) => {
 
     // ✅ Éxito
     dismissToast(progressToast);
-    showToast('¡Tu recuerdo se agregó al álbum!', 'success', 5000);
+    showToast('¡Tu recuerdo ya está en el álbum!', 'success', 5000);
     resetForm();
 
   } catch (err) {
