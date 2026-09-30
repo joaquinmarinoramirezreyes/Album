@@ -25,6 +25,12 @@ import {
   increment
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js';
 
 // ═══════════════════════════════════════════════════════════
 //  FIREBASE CONFIG
@@ -46,13 +52,13 @@ const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
 
+const storage = getStorage(app);
+
 
 // ═══════════════════════════════════════════════════════════
-//  IMGBB CONFIG — Hosting gratuito de imágenes
-//  Obtén tu API key en: https://api.imgbb.com/
+//  ALMACENAMIENTO DE FOTOS
 // ═══════════════════════════════════════════════════════════
-const IMGBB_API_KEY = '349a78e237c6ce840d9f9356b4a32ae6';
-
+// Usamos Firebase Storage para asegurar el 100% de éxito en subidas.
 
 // ═══════════════════════════════════════════════════════════
 //  IMAGE COMPRESSION CONFIG
@@ -560,48 +566,29 @@ async function compressImage(file) {
 
 
 // ═══════════════════════════════════════════════════════════
-//  IMGBB UPLOAD
+//  FIREBASE STORAGE UPLOAD
 // ═══════════════════════════════════════════════════════════
 
 /**
- * Convierte un File/Blob a base64 puro (sin prefijo data:...).
- * @param {File|Blob} file
- * @returns {Promise<string>}
- */
-/**
- * Sube una imagen a ImgBB y devuelve la URL pública.
+ * Sube una imagen a Firebase Storage y devuelve la URL pública.
  * @param {File|Blob} file — Archivo de imagen (ya comprimido)
  * @param {string} name    — Nombre para la imagen
  * @returns {Promise<string>} — URL directa de la imagen
  */
-async function uploadToImgBB(file, name) {
-  if (!IMGBB_API_KEY) {
-    throw new Error('Falta la API Key de ImgBB. Agrégala en app.js (línea IMGBB_API_KEY).');
-  }
-
-  const formData = new FormData();
-  formData.append('key', IMGBB_API_KEY);
-  formData.append('image', file); // PASAR COMO ARCHIVO BINARIO, NO BASE64
-  formData.append('name', `${name}_${Date.now()}`);
-
-  const response = await fetch('https://api.imgbb.com/1/upload', {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`ImgBB error (${response.status}): ${errText}`);
-  }
-
-  const result = await response.json();
-
-  if (!result.success) {
-    throw new Error(`ImgBB rechazó la imagen: ${JSON.stringify(result.error)}`);
-  }
-
-  // result.data.display_url = URL directa a la imagen
-  return result.data.display_url;
+async function uploadToFirebaseStorage(file, name) {
+  // Limpiar el nombre para que no tenga caracteres raros en la URL
+  const safeName = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+  const fileName = `fotos/${Date.now()}_${safeName}.jpg`;
+  
+  // Referencia a donde se va a guardar en Firebase Storage
+  const storageRef = ref(storage, fileName);
+  
+  // Subir el archivo (ya comprimido en .jpg o .webp)
+  await uploadBytes(storageRef, file);
+  
+  // Obtener y devolver la URL pública para leerla en la galería
+  const downloadURL = await getDownloadURL(storageRef);
+  return downloadURL;
 }
 
 
@@ -636,9 +623,9 @@ $uploadForm.addEventListener('submit', async (e) => {
     // 1️⃣  Comprimir imagen en el cliente
     const compressedFile = await compressImage(file);
 
-    // 2️⃣  Subir imagen comprimida a ImgBB (hosting gratuito)
+    // 2️⃣  Subir imagen comprimida a Firebase Storage
     updateToast(progressToast, 'Revelando fotografía...');
-    const imageUrl = await uploadToImgBB(compressedFile, name);
+    const imageUrl = await uploadToFirebaseStorage(compressedFile, name);
 
     // 3️⃣  Guardar entrada en Firestore
     updateToast(progressToast, 'Escribiendo dedicatoria a mano...');
