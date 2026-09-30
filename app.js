@@ -725,15 +725,14 @@ function startGalleryListener() {
 
     if (snapshot.empty) {
       $galleryGrid.innerHTML = `
-        <p class="gallery__empty" style="
-          grid-column: 1 / -1;
-          text-align: center;
-          color: var(--color-charcoal-light);
-          font-style: italic;
-          padding: var(--sp-8) var(--sp-4);
-        ">
-          Aún no hay fotos. ¡Sé el primero en agregar una! 📷
-        </p>
+        <div class="gallery__empty-state">
+          <svg class="gallery__empty-icon" width="80" height="80" fill="none" stroke="var(--color-talavera)" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          <p class="gallery__empty-title">El álbum está vacío</p>
+          <p class="gallery__empty-text">¡Sé el primero en romper el hielo! Sube la primera foto de la fiesta.</p>
+        </div>
       `;
       return;
     }
@@ -798,6 +797,25 @@ function renderPolaroidCard(id, data) {
     const inc = likedNow ? 1 : -1;
     btnLike.classList.toggle('liked');
     btnLike.querySelector('span').textContent = Math.max(0, likesCount + inc);
+
+    // Heartbeat pop animation
+    btnLike.classList.remove('pop');
+    void btnLike.offsetWidth; // Force reflow to restart animation
+    btnLike.classList.add('pop');
+
+    // Sparkle particles (only when liking, not unliking)
+    if (likedNow) {
+      for (let i = 0; i < 6; i++) {
+        const spark = document.createElement('span');
+        spark.className = 'sparkle';
+        const angle = (Math.PI * 2 * i) / 6;
+        const dist = 18 + Math.random() * 12;
+        spark.style.setProperty('--sx', `${Math.cos(angle) * dist}px`);
+        spark.style.setProperty('--sy', `${Math.sin(angle) * dist}px`);
+        btnLike.appendChild(spark);
+        spark.addEventListener('animationend', () => spark.remove());
+      }
+    }
 
     // Save to local storage
     let ls = JSON.parse(localStorage.getItem('liked_photos') || '[]');
@@ -1201,5 +1219,37 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
       .then(registration => console.log('PWA ServiceWorker registrado exitosamente con scope: ', registration.scope))
       .catch(err => console.log('Falló el registro del ServiceWorker: ', err));
+  });
+}
+
+
+// ═══════════════════════════════════════════════════════════
+//  FAB — Floating Camera Button (aparece al hacer scroll)
+// ═══════════════════════════════════════════════════════════
+const $fabCamera = document.getElementById('fab-camera');
+const $uploadSection = document.getElementById('upload-section');
+
+if ($fabCamera && $uploadSection) {
+  // Show/hide FAB based on scroll position
+  const fabObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      // When the upload form scrolls OUT of view, show the FAB
+      if (!entry.isIntersecting) {
+        $fabCamera.classList.add('visible');
+      } else {
+        $fabCamera.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0 });
+
+  fabObserver.observe($uploadSection);
+
+  // Click FAB → scroll up to photo button and trigger it
+  $fabCamera.addEventListener('click', () => {
+    $uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Small delay to let the scroll finish, then trigger the photo input
+    setTimeout(() => {
+      $photoBtn.click();
+    }, 400);
   });
 }

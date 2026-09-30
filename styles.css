@@ -626,6 +626,7 @@ img {
   font-family: var(--font-sans);
   transition: color 0.2s, transform 0.2s;
   padding: 4px;
+  position: relative;
 }
 
 .polaroid__like.liked {
@@ -634,6 +635,35 @@ img {
 
 .polaroid__like:active {
   transform: scale(1.3);
+}
+
+/* Heartbeat animation when liking */
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  15%  { transform: scale(1.35); }
+  30%  { transform: scale(0.9); }
+  45%  { transform: scale(1.2); }
+  60%  { transform: scale(1); }
+}
+
+.polaroid__like.pop {
+  animation: heartbeat 0.5s ease-in-out;
+}
+
+/* Sparkle particles on like */
+@keyframes sparkle-fly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+}
+
+.polaroid__like .sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e91e63;
+  pointer-events: none;
+  animation: sparkle-fly 0.6s ease-out forwards;
 }
 
 
@@ -1023,6 +1053,85 @@ img {
 
 .mt-2 { margin-top: var(--sp-2); }
 .mt-4 { margin-top: var(--sp-4); }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FLOATING ACTION BUTTON (FAB) — Cámara flotante
+   ═══════════════════════════════════════════════════════════ */
+.fab-camera {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 900;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-talavera);
+  color: var(--color-white);
+  box-shadow: 0 4px 16px rgba(30, 56, 136, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s var(--ease-out), opacity 0.3s, box-shadow 0.2s;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.fab-camera.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.fab-camera:hover {
+  box-shadow: 0 6px 24px rgba(30, 56, 136, 0.55);
+  transform: scale(1.08);
+}
+
+.fab-camera:active {
+  transform: scale(0.95);
+}
+
+.fab-camera svg {
+  width: 26px;
+  height: 26px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   EMPTY STATE — Galería vacía
+   ═══════════════════════════════════════════════════════════ */
+.gallery__empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--sp-10) var(--sp-4);
+  color: var(--color-charcoal-light);
+}
+
+.gallery__empty-icon {
+  opacity: 0.25;
+  margin-bottom: var(--sp-5);
+}
+
+.gallery__empty-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--color-talavera);
+  margin-bottom: var(--sp-2);
+}
+
+.gallery__empty-text {
+  font-size: 0.9rem;
+  max-width: 280px;
+  line-height: 1.5;
+}
 
 
 /* ═══════════════════════════════════════════════════════════
