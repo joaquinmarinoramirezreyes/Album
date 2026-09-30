@@ -842,12 +842,20 @@ function renderPolaroidCard(id, data) {
     // Update in Firestore
     try {
       const entryRef = doc(db, 'events', currentEventId, 'guest_entries', id);
-      await updateDoc(entryRef, {
-        likes: increment(inc)
-      });
+      
+      if (likedNow) {
+        // Sumar like: siempre seguro
+        await updateDoc(entryRef, { likes: increment(1) });
+      } else {
+        // Restar like: leer primero para no caer en negativos
+        const snap = await getDoc(entryRef);
+        const currentDbLikes = snap.exists() ? (snap.data().likes || 0) : 0;
+        if (currentDbLikes > 0) {
+          await updateDoc(entryRef, { likes: increment(-1) });
+        }
+      }
     } catch (err) {
       console.error('Error al dar me gusta:', err);
-      // rollback UI could go here but it will refresh via onSnapshot anyway
     }
   });
 
