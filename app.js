@@ -587,6 +587,7 @@ async function uploadToImgBB(file, name) {
   formData.append('key', IMGBB_API_KEY);
   formData.append('image', base64);
   formData.append('name', `${name}_${Date.now()}`);
+  formData.append('expiration', '2592000'); // 2592000 segundos = 30 días de autodestrucción
 
   const response = await fetch('https://api.imgbb.com/1/upload', {
     method: 'POST',
