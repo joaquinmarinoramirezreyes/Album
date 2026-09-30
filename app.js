@@ -720,9 +720,37 @@ function startGalleryListener() {
   );
 
   unsubscribeGallery = onSnapshot(q, (snapshot) => {
-    // Limpiar galería completa y reconstruir
-    $galleryGrid.innerHTML = '';
+    // Use docChanges() for incremental updates (preserves animations)
+    snapshot.docChanges().forEach((change) => {
+      const id = change.doc.id;
+      const data = change.doc.data();
 
+      if (change.type === 'added') {
+        // Remove empty state if present
+        const emptyState = $galleryGrid.querySelector('.gallery__empty-state');
+        if (emptyState) emptyState.remove();
+
+        renderPolaroidCard(id, data);
+      }
+
+      if (change.type === 'modified') {
+        // Only update the likes count in-place (don't rebuild the card)
+        const existingCard = $galleryGrid.querySelector(`[data-id="${id}"]`);
+        if (existingCard) {
+          const likeSpan = existingCard.querySelector('.polaroid__like span');
+          if (likeSpan) {
+            likeSpan.textContent = data.likes || 0;
+          }
+        }
+      }
+
+      if (change.type === 'removed') {
+        const existingCard = $galleryGrid.querySelector(`[data-id="${id}"]`);
+        if (existingCard) existingCard.remove();
+      }
+    });
+
+    // Show empty state if gallery is now empty
     if (snapshot.empty) {
       $galleryGrid.innerHTML = `
         <div class="gallery__empty-state">
@@ -734,13 +762,7 @@ function startGalleryListener() {
           <p class="gallery__empty-text">¡Sé el primero en romper el hielo! Sube la primera foto de la fiesta.</p>
         </div>
       `;
-      return;
     }
-
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      renderPolaroidCard(doc.id, data);
-    });
   }, (error) => {
     console.error('Error en el listener de la galería:', error);
     showToast('Error al cargar la galería. Recarga la página.', 'error', 6000);
