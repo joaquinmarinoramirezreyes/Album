@@ -7,6 +7,9 @@
 import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   collection,
   doc,
   getDoc,
@@ -37,7 +40,11 @@ const firebaseConfig = {
 
 // ─── Init Firebase (solo Firestore) ───
 const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+
+// Inicializar base de datos activando la persistencia offline (Caché)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
 
 
 // ═══════════════════════════════════════════════════════════
