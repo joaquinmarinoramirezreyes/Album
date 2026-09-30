@@ -537,13 +537,9 @@ async function compressImage(file) {
 
   const originalSizeKB = (file.size / 1024).toFixed(0);
 
-  // Si ya es menor al límite, no comprimir
-  if (file.size <= COMPRESSION_OPTIONS.maxSizeMB * 1024 * 1024) {
-    console.log(`Imagen ya optimizada (${originalSizeKB} KB), omitiendo compresión.`);
-    return file;
-  }
-
-  console.log(`Comprimiendo imagen: ${originalSizeKB} KB...`);
+  // Aunque la imagen sea pequeña, debemos pasarla por el compresor
+  // para forzar la conversión a JPEG, ya que ImgBB (Error 111) rechaza formatos nativos como WEBP/AVIF
+  console.log(`Procesando imagen (Original: ${originalSizeKB} KB)...`);
 
   const compressedFile = await imageCompression(file, COMPRESSION_OPTIONS);
   const compressedSizeKB = (compressedFile.size / 1024).toFixed(0);
