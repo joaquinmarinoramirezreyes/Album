@@ -813,12 +813,17 @@ function renderPolaroidCard(id, data) {
 
   // Heart click listener
   const btnLike = card.querySelector('.polaroid__like');
-  btnLike.addEventListener('click', async () => {
+  btnLike.addEventListener('click', async (e) => {
+    e.preventDefault(); // Por si acaso evita comportamientos default
+    
     // Optimistic UI update
     const likedNow = !btnLike.classList.contains('liked');
     const inc = likedNow ? 1 : -1;
     btnLike.classList.toggle('liked');
-    btnLike.querySelector('span').textContent = Math.max(0, likesCount + inc);
+    
+    // Leer el número actual directamente del HTML, no de la variable inicial
+    const currentLikes = parseInt(btnLike.querySelector('span').textContent) || 0;
+    btnLike.querySelector('span').textContent = Math.max(0, currentLikes + inc);
 
     // Heartbeat pop animation
     btnLike.classList.remove('pop');
