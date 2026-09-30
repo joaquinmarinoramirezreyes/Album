@@ -583,10 +583,7 @@ async function uploadToImgBB(file, name) {
   formData.append('key', IMGBB_API_KEY);
   formData.append('image', file); // PASAR COMO ARCHIVO BINARIO, NO BASE64
   formData.append('name', `${name}_${Date.now()}`);
-  
-  // ImgBB a veces tira error 111 con expiration en ciertas cuentas gratuitas, 
-  // si sigue fallando, lo removemos. Por ahora lo dejamos comentado para asegurar que suba.
-  // formData.append('expiration', '2592000'); 
+  formData.append('expiration', '2592000'); // 2592000 segundos = 30 días de autodestrucción
 
   const response = await fetch('https://api.imgbb.com/1/upload', {
     method: 'POST',
