@@ -1043,7 +1043,7 @@ img {
    ═══════════════════════════════════════════════════════════ */
 .fab-camera {
   position: fixed;
-  bottom: 24px;
+  bottom: calc(24px + env(safe-area-inset-bottom));
   right: 24px;
   z-index: 900;
   width: 56px;
