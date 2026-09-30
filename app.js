@@ -568,15 +568,6 @@ async function compressImage(file) {
  * @param {File|Blob} file
  * @returns {Promise<string>}
  */
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(',')[1]); // quitar prefijo
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
 /**
  * Sube una imagen a ImgBB y devuelve la URL pública.
  * @param {File|Blob} file — Archivo de imagen (ya comprimido)
@@ -588,13 +579,14 @@ async function uploadToImgBB(file, name) {
     throw new Error('Falta la API Key de ImgBB. Agrégala en app.js (línea IMGBB_API_KEY).');
   }
 
-  const base64 = await fileToBase64(file);
-
   const formData = new FormData();
   formData.append('key', IMGBB_API_KEY);
-  formData.append('image', base64);
+  formData.append('image', file); // PASAR COMO ARCHIVO BINARIO, NO BASE64
   formData.append('name', `${name}_${Date.now()}`);
-  formData.append('expiration', '2592000'); // 2592000 segundos = 30 días de autodestrucción
+  
+  // ImgBB a veces tira error 111 con expiration en ciertas cuentas gratuitas, 
+  // si sigue fallando, lo removemos. Por ahora lo dejamos comentado para asegurar que suba.
+  // formData.append('expiration', '2592000'); 
 
   const response = await fetch('https://api.imgbb.com/1/upload', {
     method: 'POST',
