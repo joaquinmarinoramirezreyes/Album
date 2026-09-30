@@ -554,9 +554,19 @@ async function compressImage(file) {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  IMGBB UPLOAD
-// ═══════════════════════════════════════════════════════════
+/**
+ * Convierte un File/Blob a base64 puro (sin prefijo data:...).
+ * @param {File|Blob} file
+ * @returns {Promise<string>}
+ */
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]); // quitar prefijo
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 /**
  * Sube una imagen a ImgBB y devuelve la URL pública.
@@ -569,9 +579,12 @@ async function uploadToImgBB(file, name) {
     throw new Error('Falta la API Key de ImgBB. Agrégala en app.js (línea IMGBB_API_KEY).');
   }
 
+  // Convertimos a Base64 porque algunos navegadores/dispositivos fallan al mandar el File binario (Error 111)
+  const base64 = await fileToBase64(file);
+
   const formData = new FormData();
   formData.append('key', IMGBB_API_KEY);
-  formData.append('image', file); // Binario puro para evitar error 111
+  formData.append('image', base64);
   
   // Limpiamos el nombre por si trae emojis o caracteres raros que rompan la API
   const safeName = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
