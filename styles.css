@@ -67,6 +67,10 @@ body {
   font-family: var(--font-sans);
   color: var(--color-charcoal);
   background-color: var(--color-bg);
+  /* Patrón de Azulejo Sutil (Talavera vibe) */
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30zm0 15l15 15-15 15L15 30z' fill='%231E3888' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  background-attachment: fixed;
   line-height: 1.6;
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
@@ -523,10 +527,10 @@ img {
 
 /* — Polaroid Card — */
 .polaroid {
-  background: var(--color-white);
+  background: #FCF9F2; /* Tono "Hueso/Barro" */
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-polaroid);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03), 0 6px 20px rgba(30, 56, 136, 0.08); /* Sombra más realista */
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
   transform-origin: center center;
