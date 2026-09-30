@@ -1,0 +1,16 @@
+{
+  "name": "Nuestro Álbum",
+  "short_name": "Álbum",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FDF8F5",
+  "theme_color": "#1E3888",
+  "description": "Álbum de fotos interactivo para eventos",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
