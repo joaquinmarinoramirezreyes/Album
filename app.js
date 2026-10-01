@@ -879,16 +879,25 @@ document.addEventListener('keydown', (e) => {
  * Carga una imagen y devuelve su base64 via canvas.
  * Cache-bust + crossOrigin fuerzan recarga limpia con CORS.
  */
-function loadImageAsBase64(url) {
+function loadImageAsBase64(url, makeSquare = false) {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       try {
         const c = document.createElement('canvas');
-        c.width = img.naturalWidth;
-        c.height = img.naturalHeight;
-        c.getContext('2d').drawImage(img, 0, 0);
+        if (makeSquare) {
+          const side = Math.min(img.naturalWidth, img.naturalHeight);
+          const dx = (img.naturalWidth - side) / 2;
+          const dy = (img.naturalHeight - side) / 2;
+          c.width = side;
+          c.height = side;
+          c.getContext('2d').drawImage(img, dx, dy, side, side, 0, 0, side, side);
+        } else {
+          c.width = img.naturalWidth;
+          c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+        }
         resolve(c.toDataURL('image/jpeg', 0.85));
       } catch {
         resolve(null);
@@ -986,7 +995,7 @@ $downloadPdf.addEventListener('click', async () => {
 
       let b64 = null;
       if (img && img.src) {
-        b64 = await loadImageAsBase64(img.src);
+        b64 = await loadImageAsBase64(img.src, true);
       }
 
       entries.push({
@@ -997,18 +1006,21 @@ $downloadPdf.addEventListener('click', async () => {
     }
 
     // ══════════════════════════════════
-    //  CUADRÍCULA 3 COLUMNAS
+    //  CUADRÍCULA 2 COLUMNAS (POLAROID)
     // ══════════════════════════════════
     updateToast(pdfToast, 'Generando tu álbum en PDF…');
 
-    const MARGIN = 12;
-    const GAP = 8;
-    const COLS = 3;
-    const colW = (W - MARGIN * 2 - GAP * (COLS - 1)) / COLS; // ~58mm
-    const imgH = colW;  // Cuadrada
-    const textH = 18;   // Espacio para texto
-    const cardH = imgH + textH;
-    const ROWS_PER_PAGE = Math.floor((H - MARGIN * 2) / (cardH + GAP)); // ~3 filas
+    const MARGIN = 20;
+    const GAP_X = 15;
+    const GAP_Y = 20;
+    const COLS = 2;
+    const colW = (W - MARGIN * 2 - GAP_X * (COLS - 1)) / COLS;
+    
+    const pMargin = colW * 0.05; // Margen blanco lateral y superior
+    const imgH = colW - (pMargin * 2); // Foto cuadrada
+    const textH = colW * 0.28; // Espacio inferior texto
+    const cardH = pMargin + imgH + textH;
+    const ROWS_PER_PAGE = 2;
 
     let cardIndex = 0;
 
@@ -1025,53 +1037,48 @@ $downloadPdf.addEventListener('click', async () => {
       for (let row = 0; row < ROWS_PER_PAGE && cardIndex < entries.length; row++) {
         for (let col = 0; col < COLS && cardIndex < entries.length; col++) {
           const entry = entries[cardIndex];
-          const x = MARGIN + col * (colW + GAP);
-          const y = MARGIN + 8 + row * (cardH + GAP);
+          const x = MARGIN + col * (colW + GAP_X);
+          const y = MARGIN + 8 + row * (cardH + GAP_Y);
 
-          // Fondo de tarjeta
-          doc.setFillColor(250, 250, 250);
+          // Fondo de tarjeta polaroid
+          doc.setFillColor(255, 255, 255);
           doc.setDrawColor(220, 225, 235);
           doc.roundedRect(x, y, colW, cardH, 2, 2, 'FD');
 
-          // Imagen
+          // Imagen (ya cuadrada)
           if (entry.imgData) {
             try {
-              doc.addImage(entry.imgData, 'JPEG', x + 1, y + 1, colW - 2, imgH - 2);
+              doc.addImage(entry.imgData, 'JPEG', x + pMargin, y + pMargin, imgH, imgH);
             } catch (e) {
-              // Si falla, dibujar placeholder gris
               doc.setFillColor(234, 240, 246);
-              doc.rect(x + 1, y + 1, colW - 2, imgH - 2, 'F');
+              doc.rect(x + pMargin, y + pMargin, imgH, imgH, 'F');
               doc.setTextColor(130, 140, 160);
-              doc.setFontSize(7);
-              doc.text('Sin imagen', x + colW / 2, y + imgH / 2, { align: 'center' });
+              doc.setFontSize(10);
+              doc.text('Sin imagen', x + colW / 2, y + pMargin + imgH / 2, { align: 'center' });
             }
           } else {
             doc.setFillColor(234, 240, 246);
-            doc.rect(x + 1, y + 1, colW - 2, imgH - 2, 'F');
+            doc.rect(x + pMargin, y + pMargin, imgH, imgH, 'F');
             doc.setTextColor(130, 140, 160);
-            doc.setFontSize(7);
-            doc.text('Sin imagen', x + colW / 2, y + imgH / 2, { align: 'center' });
+            doc.setFontSize(10);
+            doc.text('Sin imagen', x + colW / 2, y + pMargin + imgH / 2, { align: 'center' });
           }
 
-          // Línea azul decorativa
-          doc.setFillColor(30, 56, 136);
-          doc.rect(x, y + imgH, colW, 1.5, 'F');
-
-          // Nombre
+          // Nombre (centrado, tipo marcador)
           doc.setTextColor(28, 35, 49);
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
-          const maxTextW = colW - 4;
-          const nombreCorto = doc.splitTextToSize(entry.nombre, maxTextW)[0] || '';
-          doc.text(nombreCorto, x + 2, y + imgH + 6);
+          doc.setFont('times', 'bold');
+          doc.setFontSize(14);
+          const textY = y + pMargin + imgH + 8;
+          doc.text(entry.nombre || '', x + colW / 2, textY, { align: 'center' });
 
-          // Dedicatoria
+          // Dedicatoria (centrada, cursiva)
           if (entry.dedicatoria) {
-            doc.setFont('helvetica', 'italic');
-            doc.setFontSize(6.5);
-            doc.setTextColor(82, 94, 117);
-            const lines = doc.splitTextToSize(`"${entry.dedicatoria}"`, maxTextW);
-            doc.text(lines.slice(0, 2), x + 2, y + imgH + 11);
+            doc.setFont('times', 'italic');
+            doc.setFontSize(11);
+            doc.setTextColor(80, 85, 95);
+            const maxTextW = colW - (pMargin * 2);
+            const lineas = doc.splitTextToSize(entry.dedicatoria, maxTextW);
+            doc.text(lineas.slice(0, 4), x + colW / 2, textY + 6, { align: 'center' });
           }
 
           cardIndex++;
