@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + ImgBB + Toasts
-   Firebase Firestore (datos) + ImgBB (imágenes) — 100% gratuito
+   NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + Toasts
+   Firebase Firestore (datos + imágenes inline) — 100% gratuito
    ═══════════════════════════════════════════════════════════ */
 
 // ─── Firebase SDK Imports (CDN ESM) — Solo Firestore, sin Storage ───
@@ -46,9 +46,10 @@ const db = initializeFirestore(app, {
 });
 
 // ═══════════════════════════════════════════════════════════
-//  IMGBB CONFIG — Hosting gratuito de imágenes
+//  ALMACENAMIENTO DE IMÁGENES
 // ═══════════════════════════════════════════════════════════
-const IMGBB_API_KEY = '07723a3884a4b63f2ddb7fb04fb8532b';
+// Las imágenes se comprimen a ~13KB y se guardan como Data URL (base64)
+// directamente en Firestore. Cero dependencias externas, cero APIs de terceros.
 
 // ═══════════════════════════════════════════════════════════
 //  IMAGE COMPRESSION CONFIG
@@ -551,64 +552,29 @@ async function compressImage(file) {
 }
 
 
+// ═══════════════════════════════════════════════════════════
+//  IMAGEN → DATA URL (para guardar directo en Firestore)
+// ═══════════════════════════════════════════════════════════
+
 /**
- * Convierte un File/Blob a base64 puro (sin prefijo data:...).
- * @param {File|Blob} file
- * @returns {Promise<string>}
+ * Convierte un File/Blob a Data URL (base64 con prefijo data:image/...).
+ * Esto se guarda directamente en Firestore como string en el campo imageUrl.
+ * Un <img src="data:image/jpeg;base64,..."> funciona igual que una URL normal.
+ * @param {File|Blob} file — Archivo de imagen (ya comprimido a ~13KB)
+ * @returns {Promise<string>} — Data URL lista para usar en <img src="">
  */
-function fileToBase64(file) {
+function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(',')[1]); // quitar prefijo
+    reader.onload  = () => resolve(reader.result); // data:image/jpeg;base64,...
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-/**
- * Sube una imagen a ImgBB y devuelve la URL pública.
- * @param {File|Blob} file — Archivo de imagen (ya comprimido)
- * @param {string} name    — Nombre para la imagen
- * @returns {Promise<string>} — URL directa de la imagen
- */
-async function uploadToImgBB(file, name) {
-  if (!IMGBB_API_KEY) {
-    throw new Error('Falta la API Key de ImgBB. Agrégala en app.js (línea IMGBB_API_KEY).');
-  }
-
-  // Convertimos a Base64 porque algunos navegadores/dispositivos fallan al mandar el File binario (Error 111)
-  const base64 = await fileToBase64(file);
-
-  const formData = new FormData();
-  formData.append('key', IMGBB_API_KEY);
-  formData.append('image', base64);
-  
-  // Limpiamos el nombre por si trae emojis o caracteres raros que rompan la API
-  const safeName = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-  formData.append('name', `${safeName}_${Date.now()}`);
-
-  const response = await fetch('https://api.imgbb.com/1/upload', {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`ImgBB error (${response.status}): ${errText}`);
-  }
-
-  const result = await response.json();
-
-  if (!result.success) {
-    throw new Error(`ImgBB rechazó la imagen: ${JSON.stringify(result.error)}`);
-  }
-
-  return result.data.display_url;
-}
-
 
 // ═══════════════════════════════════════════════════════════
-//  UPLOAD FORM — Submit → Compress → ImgBB → Firestore
+//  UPLOAD FORM — Submit → Compress → Data URL → Firestore
 // ═══════════════════════════════════════════════════════════
 $uploadForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -635,14 +601,14 @@ $uploadForm.addEventListener('submit', async (e) => {
   const progressToast = showToast('Preparando la cámara...', 'info', 0);
 
   try {
-    // 1️⃣  Comprimir imagen en el cliente
+    // 1️⃣  Comprimir imagen en el cliente (de cualquier tamaño → ~13KB JPEG)
     const compressedFile = await compressImage(file);
 
-    // 2️⃣  Subir imagen comprimida a ImgBB
+    // 2️⃣  Convertir a Data URL (base64) para guardar directo en Firestore
     updateToast(progressToast, 'Revelando fotografía...');
-    const imageUrl = await uploadToImgBB(compressedFile, name);
+    const imageUrl = await fileToDataUrl(compressedFile);
 
-    // 3️⃣  Guardar entrada en Firestore
+    // 3️⃣  Guardar entrada en Firestore (imagen incluida como Data URL)
     updateToast(progressToast, 'Escribiendo dedicatoria a mano...');
     await addDoc(getEntriesRef(), {
       nombre:      name,
