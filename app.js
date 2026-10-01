@@ -1231,8 +1231,11 @@ if ($fabCamera && $uploadSection) {
   // Show/hide FAB based on scroll position
   const fabObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
+      // Solo mostrar el FAB si estamos realmente en la pantalla del álbum
+      const isAlbumActive = document.getElementById('screen-album').classList.contains('screen--active');
+      
       // When the upload form scrolls OUT of view, show the FAB
-      if (!entry.isIntersecting) {
+      if (!entry.isIntersecting && isAlbumActive) {
         $fabCamera.classList.add('visible');
       } else {
         $fabCamera.classList.remove('visible');
