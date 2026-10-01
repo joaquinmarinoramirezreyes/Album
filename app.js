@@ -895,7 +895,11 @@ function loadImageAsBase64(url) {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+    if (url.startsWith('data:')) {
+      img.src = url;
+    } else {
+      img.src = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+    }
   });
 }
 
