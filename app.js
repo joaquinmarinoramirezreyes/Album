@@ -440,7 +440,7 @@ async function loadAdminEvents() {
         : '<span class="admin-chip" style="opacity:.6">Sin PIN</span>';
       li.innerHTML = `
         <div class="admin-ev">
-          <span class="admin-ev__code">${escapeHTML(code)}</span>
+          <a href="/${escapeAttr(data.theme || 'marli')}?code=${escapeAttr(code)}" target="_blank" class="admin-ev__code" style="text-decoration:none; color:var(--color-talavera); display:inline-flex; align-items:center; gap:4px;" title="Entrar al evento">${escapeHTML(code)} <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
           <div class="admin-ev__meta"><span class="admin-chip">${escapeHTML(themeName)}</span>${pinHtml}</div>
           ${dateInfoHtml}
         </div>
@@ -1483,5 +1483,6 @@ document.addEventListener('click', (e) => {
   navigator.clipboard?.writeText(chip.dataset.copy);
   showToast('PIN copiado', 'success', 2000);
 });
+
 
 
