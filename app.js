@@ -1,7 +1,7 @@
 ﻿const THEMES = {
   default: {
-    name: 'Nuestro Álbum',
-    slogan: 'Recuerdos moldeados con amor',
+    name: 'Central de Eventos',
+    slogan: 'Plataforma administrativa de galerías cerámicas.',
     bgImage: '/assets/talavera-pattern.jpg',
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
