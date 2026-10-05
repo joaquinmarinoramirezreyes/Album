@@ -472,6 +472,15 @@ $formCreateEvent.addEventListener('submit', async (e) => {
 
 
 // ── Modo Anfitrión ──
+// __hostLoginGuard: si entran por el login normal, se pierden los permisos de moderador
+document.addEventListener('submit', (e) => {
+  if (e.target && e.target.id === 'login-form') {
+    if (!window.__hostLogin) {
+      Object.keys(localStorage).filter(k => k.startsWith('host_')).forEach(k => localStorage.removeItem(k));
+    }
+    window.__hostLogin = false;
+  }
+}, true);
 if ($btnHostModal) {
   $btnHostModal.addEventListener('click', () => {
     $modalHostAuth.hidden = false;
@@ -501,6 +510,7 @@ if ($formHostAuth) {
         $inputHostPin.value = '';
         const accessInput = document.getElementById('access-code');
         accessInput.value = codeEvent;
+        window.__hostLogin = true;
         document.getElementById('login-form').requestSubmit();
         showToast('Modo Moderador activado. Puedes borrar fotos.', 'success', 5000);
       } else {
@@ -791,8 +801,8 @@ function renderPolaroidCard(id, data) {
   if (isHost) {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete-photo';
-    delBtn.innerHTML = '🗑️';
-    delBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);';
+    delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>';
+    delBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); color: #B5533C; border: 1px solid rgba(181,83,60,0.3); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.18); backdrop-filter: blur(4px);';
     delBtn.title = 'Borrar foto';
     
     delBtn.addEventListener('click', async (e) => {
