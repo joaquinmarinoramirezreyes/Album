@@ -1,4 +1,39 @@
-﻿/* ═══════════════════════════════════════════════════════════
+﻿const THEMES = {
+  'marli': {
+    name: 'Marli Cerámica',
+    bgImage: '/assets/talavera-pattern.jpg',
+    colorBg: '#FAFAFA',
+    colorBgWarm: '#EAF0F6',
+    colorTalavera: '#1E3888',
+    colorTalaveraDark: '#12245C'
+  },
+  'shots': {
+    name: 'Cerámica Shots',
+    bgImage: '/assets/shots-pattern.jpg',
+    colorBg: '#F5EBE1',
+    colorBgWarm: '#F5EBE1',
+    colorTalavera: '#244579',
+    colorTalaveraDark: '#355C9D'
+  }
+};
+
+function applyTheme(themeKey) {
+  const theme = THEMES[themeKey] || THEMES['marli'];
+  document.documentElement.style.setProperty('--bg-pattern', url( + theme.bgImage + ));
+  document.documentElement.style.setProperty('--color-bg', theme.colorBg);
+  document.documentElement.style.setProperty('--color-bg-warm', theme.colorBgWarm);
+  document.documentElement.style.setProperty('--color-talavera', theme.colorTalavera);
+  document.documentElement.style.setProperty('--color-talavera-dark', theme.colorTalaveraDark);
+  
+  document.title = theme.name;
+  const loginTitle = document.querySelector('.login__title');
+  if(loginTitle) loginTitle.innerHTML = theme.name.replace(' ', '<br>');
+  const heroTitle = document.querySelector('.hero__title');
+  if(heroTitle) heroTitle.textContent = theme.name;
+  
+  window.currentEventTheme = theme;
+}
+/* ═══════════════════════════════════════════════════════════
    NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + Toasts
    Firebase Firestore (datos + imágenes inline) — 100% gratuito
    ═══════════════════════════════════════════════════════════ */
@@ -251,6 +286,12 @@ $loginForm.addEventListener('submit', async (e) => {
       // Establecer el evento activo
       currentEventId = code;
 
+      // Aplicar tema dinámico
+      const eventData = eventSnap.data();
+      if (eventData.theme) {
+        applyTheme(eventData.theme);
+      }
+
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album' }, '', '#album');
@@ -438,6 +479,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
 
   const eventDate = $inputEventDate.value;
     const eventPin = $inputEventPin.value.trim();
+  const eventTheme = document.getElementById('input-event-theme').value;
   const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
   const originalText = btnSubmit.textContent;
   
@@ -451,7 +493,8 @@ $formCreateEvent.addEventListener('submit', async (e) => {
       creadoEn: serverTimestamp(),
       fechaEvento: eventDate,
         activo: true,
-        adminPin: eventPin || null
+        adminPin: eventPin || null,
+        theme: eventTheme
     });
 
     showToast(`¡Evento ${code} creado exitosamente!`, 'success', 5000);
@@ -1085,7 +1128,7 @@ $downloadPdf.addEventListener('click', async () => {
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(32);
-    doc.text('Marli Cerámica', W / 2, H / 2 - 20, { align: 'center' });
+    doc.text(window.currentEventTheme?.name || 'Nuestro Álbum', W / 2, H / 2 - 20, { align: 'center' });
 
     // Línea decorativa
     doc.setDrawColor(255, 255, 255, 120);
@@ -1213,13 +1256,14 @@ $downloadPdf.addEventListener('click', async () => {
       doc.setFontSize(7);
       doc.setTextColor(160, 170, 185);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Marli Cerámica — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
+      doc.text(`${window.currentEventTheme?.name || 'Nuestro Álbum'} - pág. ${p - 1}`, W / 2, H - 6, { align: 'center' });
     }
 
     // ══════════════════════════════════
     //  GUARDAR
     // ══════════════════════════════════
-    doc.save('marli-ceramica.pdf');
+    const slug = (window.currentEventTheme?.name || 'album').toLowerCase().replace(/\s+/g, '-');
+    doc.save(${slug}.pdf);
 
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
@@ -1372,6 +1416,15 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+
+
+
+
+
+
+
+
+
 
 
 

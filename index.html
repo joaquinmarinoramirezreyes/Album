@@ -101,6 +101,10 @@
           <p class="modal-subtitle" style="margin-bottom: 8px;">Crear Nuevo Evento</p>
           <input type="text" id="input-new-event" class="login__input" placeholder="Código (Ej: BODA2026)" maxlength="20" required>
           <input type="date" id="input-event-date" class="login__input mt-2" required title="Fecha del evento">
+          <select id="input-event-theme" class="login__input mt-2" required>
+            <option value="marli">Marli Cerámica (Azul Talavera)</option>
+            <option value="shots">Cerámica Shots (Naranja Floral)</option>
+          </select>
           <input type="text" id="input-event-pin" class="login__input mt-2" placeholder="PIN secreto anfitrión (Opcional)" maxlength="10">
           <button type="submit" class="btn btn--primary btn--full mt-2">Crear Evento</button>
         </form>
@@ -254,4 +258,5 @@
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
+
 
