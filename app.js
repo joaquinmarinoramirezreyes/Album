@@ -748,6 +748,7 @@ function resetForm() {
 // ═══════════════════════════════════════════════════════════
 
 function startGalleryListener() {
+  $galleryGrid.innerHTML = '';
   // Desuscribir listener previo si existe (cambio de evento)
   if (unsubscribeGallery) {
     unsubscribeGallery();
@@ -785,8 +786,8 @@ function startGalleryListener() {
       }
 
       if (change.type === 'removed') {
-        const existingCard = $galleryGrid.querySelector(`[data-id="${id}"]`);
-        if (existingCard) existingCard.remove();
+        const existingCards = $galleryGrid.querySelectorAll(`[data-id="${id}"]`);
+        existingCards.forEach(c => c.remove());
       }
     });
 
@@ -1367,3 +1368,4 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+

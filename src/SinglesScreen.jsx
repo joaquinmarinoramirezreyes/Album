@@ -84,7 +84,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
       {!showForm ? (
         <div className="singles-form-container">
           <button type="button" className="btn btn--primary btn--full" style={{ marginBottom: '1.5rem' }} onClick={() => setShowForm(true)}>
-            💘 Anotarme como soltero(a)
+            Anotarme como soltero(a)
           </button>
         </div>
       ) : (
@@ -155,11 +155,11 @@ export default function SinglesScreen({ eventCode, isHost }) {
             <img className="single-card__img" src={p.photoUrl} alt={p.name} loading="lazy" />
             <div className="single-card__body">
               <h3 className="single-card__name">{p.name}</h3>
-              <p className="single-card__row">💼 {p.profession}</p>
+              <p className="single-card__row"><svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg> {p.profession}</p>
               <p className="single-card__fact">“{p.funFact}”</p>
               <div className="single-card__footer">
                 <span>De parte de {p.side}</span>
-                <span className="single-card__table">🍽️ Mesa {p.table}</span>
+                <span className="single-card__table"><svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg> Mesa {p.table}</span>
               </div>
             </div>
           </article>
