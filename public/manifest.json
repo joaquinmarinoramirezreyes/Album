@@ -1,6 +1,6 @@
-{
-  "name": "Nuestro Álbum",
-  "short_name": "Álbum",
+﻿{
+  "name": "Marli Cerámica",
+  "short_name": "Marli",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#FDF8F5",
@@ -14,3 +14,4 @@
     }
   ]
 }
+

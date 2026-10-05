@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + Toasts
    Firebase Firestore (datos + imágenes inline) — 100% gratuito
    ═══════════════════════════════════════════════════════════ */
@@ -1085,7 +1085,7 @@ $downloadPdf.addEventListener('click', async () => {
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(32);
-    doc.text('Nuestro Album Cerámico', W / 2, H / 2 - 20, { align: 'center' });
+    doc.text('Marli Cerámica', W / 2, H / 2 - 20, { align: 'center' });
 
     // Línea decorativa
     doc.setDrawColor(255, 255, 255, 120);
@@ -1213,13 +1213,13 @@ $downloadPdf.addEventListener('click', async () => {
       doc.setFontSize(7);
       doc.setTextColor(160, 170, 185);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Nuestro Album Cerámico — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
+      doc.text(`Marli Cerámica — pag. ${p - 1}`, W / 2, H - 6, { align: 'center' });
     }
 
     // ══════════════════════════════════
     //  GUARDAR
     // ══════════════════════════════════
-    doc.save('nuestro-album-ceramico.pdf');
+    doc.save('marli-ceramica.pdf');
 
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
@@ -1372,5 +1372,6 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+
 
 
