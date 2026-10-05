@@ -3,8 +3,8 @@
   "short_name": "Shots",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#FDF8F5",
-  "theme_color": "#1E3888",
+  "background_color": "#F5EBE1",
+  "theme_color": "#244579",
   "description": "Álbum de fotos interactivo para eventos",
   "icons": [
     {
@@ -14,5 +14,6 @@
     }
   ]
 }
+
 
 

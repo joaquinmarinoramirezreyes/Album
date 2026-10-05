@@ -203,7 +203,7 @@ img {
 
 .login__input:focus {
   border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .15);
+  box-shadow: 0 0 0 3px rgba(36, 69, 121, .15);
 }
 
 .login__input--error {
@@ -258,7 +258,7 @@ img {
 }
 
 .btn:focus-visible {
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .3);
+  box-shadow: 0 0 0 3px rgba(36, 69, 121, .3);
 }
 
 .btn--primary {
@@ -277,7 +277,7 @@ img {
 }
 
 .btn--secondary:hover {
-  background-color: rgba(30, 56, 136, .06);
+  background-color: rgba(36, 69, 121, .06);
 }
 
 .btn--full {
@@ -394,7 +394,7 @@ img {
 
 .form-input:focus {
   border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .12);
+  box-shadow: 0 0 0 3px rgba(36, 69, 121, .12);
 }
 
 .form-input--textarea {
@@ -429,7 +429,7 @@ img {
 .upload__photo-btn:hover,
 .upload__photo-btn:focus-visible {
   border-color: var(--color-talavera);
-  background-color: rgba(30, 56, 136, .04);
+  background-color: rgba(36, 69, 121, .04);
 }
 
 .upload__photo-icon {
@@ -527,7 +527,7 @@ img {
   border: 1px solid rgba(0,0,0,0.04);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(30, 56, 136, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mucho más pronunciada */
+  box-shadow: 0 10px 25px rgba(36, 69, 121, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mucho más pronunciada */
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
   transform-origin: center center;
@@ -544,7 +544,7 @@ img {
 
 .polaroid:hover, .polaroid:active {
   transform: rotate(0deg) scale(1.05) !important;
-  box-shadow: 0 15px 35px rgba(30, 56, 136, 0.25), 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 35px rgba(36, 69, 121, 0.25), 0 5px 15px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
 
@@ -1013,7 +1013,7 @@ img {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(30, 56, 136, 0.05);
+  background: rgba(36, 69, 121, 0.05);
   border-radius: var(--radius-md);
   margin-bottom: 6px;
   font-family: var(--font-sans);
@@ -1053,7 +1053,7 @@ img {
   border: none;
   background: var(--color-talavera);
   color: var(--color-white);
-  box-shadow: 0 4px 16px rgba(30, 56, 136, 0.4);
+  box-shadow: 0 4px 16px rgba(36, 69, 121, 0.4);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1071,7 +1071,7 @@ img {
 }
 
 .fab-camera:hover {
-  box-shadow: 0 6px 24px rgba(30, 56, 136, 0.55);
+  box-shadow: 0 6px 24px rgba(36, 69, 121, 0.55);
   transform: scale(1.08);
 }
 
@@ -1142,7 +1142,7 @@ body.show-singles #fab-camera { display: none !important; }
 .singles { max-width: 1000px; margin: 0 auto; padding: 0 20px 100px; }
 .singles-form-container { max-width: 480px; margin: 0 auto; }
 .singles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-.single-card { background: #F7EFE5; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 10px 25px rgba(30,56,136,.15); margin-bottom: 0; position: relative; }
+.single-card { background: #F7EFE5; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 10px 25px rgba(36,69,121,.15); margin-bottom: 0; position: relative; }
 .single-card__img { cursor: pointer; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
 .single-card__body { padding: 16px 18px 18px; }
 .single-card__name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--color-talavera); margin: 0 0 6px; }
@@ -1151,6 +1151,8 @@ body.show-singles #fab-camera { display: none !important; }
 .single-card__footer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-divider); padding-top: 12px; margin-top: 12px; font-size: .85rem; color: var(--color-charcoal-light); }
 .single-card__table { display: inline-flex; align-items: center; white-space: nowrap; background: var(--color-talavera); color: #fff; padding: 4px 12px; border-radius: 999px; font-weight: 600; }
 .single-card__delete { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); color: #B5533C; border: 1px solid rgba(181,83,60,.3); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
+
+
 
 
 
