@@ -71,10 +71,9 @@ function applyBrandLogin() {
     const words = (THEMES[BRAND || 'default'].name).split(' ');
     t.innerHTML = words.length > 1 ? words[0] + '<br>' + words.slice(1).join(' ') : words[0];
   }
-  const subtitle = document.querySelector('.hero__subtitle');
-  if (subtitle) {
-    subtitle.textContent = THEMES[BRAND || 'default'].slogan;
-  }
+  document.querySelectorAll('.hero__subtitle, .login__subtitle').forEach(el => {
+    el.textContent = THEMES[BRAND || 'default'].slogan;
+  });
   if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
 }
 applyBrandLogin();

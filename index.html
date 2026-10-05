@@ -34,19 +34,21 @@
       <h1 class="login__title">Nuestro<br>Álbum</h1>
       <p class="login__subtitle">Ayúdanos a moldear nuestros recuerdos</p>
 
-      <form id="login-form" class="login__form" autocomplete="off">
-        <label for="access-code" class="sr-only">Fecha de la boda</label>
+      <form id="login-form" class="login__form" autocomplete="off" style="margin-bottom: 2rem;">
+        <label for="access-code" style="display:block; margin-bottom: 1rem; color: var(--color-charcoal); font-size: 0.95rem; line-height: 1.4;">
+          ¡Bienvenido!<br>Escribe la clave secreta de tu evento para entrar a la galería.
+        </label>
         <input
           id="access-code"
-          class="login__input"
+          class="login__input login__input--vip"
           type="text"
           maxlength="20"
           placeholder="Ej: BODA2026"
           aria-describedby="login-hint"
           required
         >
-        <small id="login-hint" class="login__hint" hidden>Fecha incorrecta, intenta de nuevo.</small>
-        <button type="submit" class="btn btn--primary login__btn">Entrar a la galería</button>
+        <small id="login-hint" class="login__hint" hidden>Clave incorrecta, intenta de nuevo.</small>
+        <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galería</button>
       </form>
 
       <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-charcoal-light); font-size: 0.75rem; text-decoration: underline; opacity: 0.7; margin-top: 1.5rem;">
@@ -269,6 +271,7 @@
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
+
 
 
 
