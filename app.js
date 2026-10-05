@@ -1,6 +1,7 @@
 ﻿const THEMES = {
   default: {
     name: 'Nuestro Álbum',
+    slogan: 'Recuerdos moldeados con amor',
     bgImage: '/assets/talavera-pattern.jpg',
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
@@ -9,6 +10,7 @@
   },
   marli: {
     name: 'Marli Cerámica',
+    slogan: 'Hecho a mano, no en serie. Hecho con historia.',
     bgImage: '/assets/talavera-pattern.jpg',
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
@@ -17,11 +19,21 @@
   },
   shots: {
     name: 'Cerámica Shots',
+    slogan: 'Cerámica lenta en un mundo rápido.',
     bgImage: '/assets/shots-pattern.jpg',
     colorBg: '#FBF5EE', colorBgWarm: '#F6E7D8',
     colorTalavera: '#C0582F', colorTalaveraDark: '#9A4322',
     colorTerracotta: '#2F4F8F', overlay: '251, 241, 230',
     charcoal: '#3A2418', charcoalLight: '#7A5A48', divider: '#EAD6C3'
+  },
+  odimar: {
+    name: 'Cerámica Odimar',
+    slogan: 'IMPERFECTA COMO TODO LO HECHO A MANO, PERFECTA POR ESO.',
+    bgImage: '/assets/odimar-pattern.jpg',
+    colorBg: '#F6EFEA', colorBgWarm: '#F0E5DE',
+    colorTalavera: '#8FA3C6', colorTalaveraDark: '#7588AA',
+    colorTerracotta: '#D89E99', overlay: '246, 239, 234',
+    charcoal: '#4A5B66', charcoalLight: '#7A8B99', divider: '#E0D2C8'
   }
 };
 
@@ -57,6 +69,10 @@ function applyBrandLogin() {
   if (t) {
     const words = (THEMES[BRAND || 'default'].name).split(' ');
     t.innerHTML = words.length > 1 ? words[0] + '<br>' + words.slice(1).join(' ') : words[0];
+  }
+  const subtitle = document.querySelector('.hero__subtitle');
+  if (subtitle) {
+    subtitle.textContent = THEMES[BRAND || 'default'].slogan;
   }
   if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
 }
@@ -1182,7 +1198,7 @@ $downloadPdf.addEventListener('click', async () => {
 
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(12);
-    doc.text('Recuerdos moldeados con amor', W / 2, H / 2 + 15, { align: 'center' });
+    doc.text(window.currentEventTheme?.slogan || 'Recuerdos moldeados con amor', W / 2, H / 2 + 15, { align: 'center' });
 
     doc.setFontSize(10);
     doc.setTextColor(200, 210, 230);
