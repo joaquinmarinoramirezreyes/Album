@@ -40,9 +40,9 @@ export default function LoginScreen({ onLogin, openAdmin }) {
   };
 
   return (
-    <div className="screen screen--active">
-      <div className="login-card">
-        <h1 className="login__title">Nuestro Álbum<br/>cerámico</h1>
+    <section className="screen screen--active" style={{display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100dvh', background: 'var(--color-bg)'}}>
+      <div className="login">
+        <h1 className="login__title" style={{fontFamily: 'Instrument Serif, serif'}}>Nuestro Álbum<br/>cerámico</h1>
         <form onSubmit={handleSubmit} className="login__form">
           <input 
             className="login__input" 
@@ -55,24 +55,25 @@ export default function LoginScreen({ onLogin, openAdmin }) {
               type="password"
               placeholder="PIN de anfitrión" 
               value={hostPin} onChange={e => setHostPin(e.target.value)} required 
+              style={{marginTop: '0.5rem'}}
             />
           )}
-          {error && <small className="login__hint mt-2" style={{display: 'block'}}>Datos incorrectos.</small>}
+          {error && <small className="login__hint mt-2" style={{display: 'block', color:'red'}}>Datos incorrectos.</small>}
           <button type="submit" className="btn btn--primary login__btn" disabled={loading} style={{marginTop: '1rem'}}>
             {loading ? 'Verificando...' : (showHost ? 'Entrar como Moderador' : 'Entrar al álbum')}
           </button>
         </form>
         
         {!showHost && (
-          <button type="button" className="btn--text mt-4 text-terracotta underline text-sm" onClick={() => setShowHost(true)}>
+          <button type="button" className="btn--text mt-4" style={{marginTop: '1rem', color: 'var(--color-talavera)', textDecoration: 'underline'}} onClick={() => setShowHost(true)}>
             ¿Eres el anfitrión de este evento?
           </button>
         )}
         
-        <button type="button" onClick={openAdmin} className="btn--text mt-8 opacity-50">
+        <button type="button" onClick={openAdmin} className="btn--text mt-8 opacity-50" style={{marginTop: '2rem'}}>
           Admin Panel
         </button>
       </div>
-    </div>
+    </section>
   );
 }
