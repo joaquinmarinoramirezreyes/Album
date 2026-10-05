@@ -1139,13 +1139,14 @@ body.show-singles #fab-camera { display: none !important; }
 .tabs { display: flex; gap: 8px; max-width: 480px; margin: 0 auto 1.5rem; padding: 6px; background: rgba(255,255,255,.85); border-radius: 999px; box-shadow: var(--shadow-card); position: sticky; top: 10px; z-index: 50; backdrop-filter: blur(8px); }
 .tabs__btn { flex: 1; border: none; background: transparent; padding: 10px 12px; border-radius: 999px; font: 600 .95rem var(--font-sans); color: var(--color-charcoal-light); cursor: pointer; transition: background .2s, color .2s; }
 .tabs__btn--active { background: var(--color-talavera); color: #fff; }
-.singles { max-width: 480px; margin: 0 auto; padding: 0 20px 100px; }
-.single-card { background: #F7EFE5; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 10px 25px rgba(30,56,136,.15); margin-bottom: 24px; position: relative; }
+.singles { max-width: 1000px; margin: 0 auto; padding: 0 20px 100px; }`n.singles-form-container { max-width: 480px; margin: 0 auto; }`n.singles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.single-card { background: #F7EFE5; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 10px 25px rgba(30,56,136,.15); margin-bottom: 0; position: relative; }
 .single-card__img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
 .single-card__body { padding: 16px 18px 18px; }
-.single-card__name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--color-talavera); margin: 0 0 6px; }
+.single-card__name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--color-talavera); margin: 0 0 6px; }
 .single-card__row { margin: 4px 0; color: var(--color-charcoal-light); font-size: .95rem; }
-.single-card__fact { font-family: 'Caveat', cursive; font-size: 1.35rem; color: var(--color-charcoal); margin: 10px 0; }
+.single-card__fact { font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--color-charcoal); margin: 10px 0; }
 .single-card__footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-divider); padding-top: 12px; margin-top: 12px; font-size: .85rem; color: var(--color-charcoal-light); }
 .single-card__table { background: var(--color-talavera); color: #fff; padding: 6px 14px; border-radius: 999px; font-weight: 600; }
 .single-card__delete { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); color: #B5533C; border: 1px solid rgba(181,83,60,.3); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
+

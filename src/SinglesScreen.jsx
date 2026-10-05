@@ -83,11 +83,11 @@ export default function SinglesScreen({ eventCode, isHost }) {
   return (
     <div className="singles">
       {!showForm ? (
-        <button type="button" className="btn btn--primary btn--full" style={{ marginBottom: '1.5rem' }} onClick={() => setShowForm(true)}>
+        <div className="singles-form-container"><button type="button" className="btn btn--primary btn--full" style={{ marginBottom: '1.5rem' }} onClick={() => setShowForm(true)}>
           💘 Anotarme como soltero(a)
         </button>
       ) : (
-        <div className="upload" style={{ marginBottom: '2rem' }}>
+        <div className="upload singles-form-container" style={{ marginBottom: '2rem' }}>
           <form className="upload__form" onSubmit={submit} noValidate>
             <div className="form-group">
               <label className="form-label">Tu foto</label>
@@ -143,7 +143,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
       {profiles.length === 0 && (
         <p style={{ textAlign: 'center', opacity: 0.6 }}>Nadie se ha anotado todavía… ¡sé el primero!</p>
       )}
-      {profiles.map((p) => (
+      <div className="singles-grid">{profiles.map((p) => (
         <article key={p.id} className="single-card">
           {isHost && (
             <button type="button" className="single-card__delete" onClick={() => remove(p.id)} aria-label="Borrar perfil">
@@ -162,6 +162,9 @@ export default function SinglesScreen({ eventCode, isHost }) {
           </div>
         </article>
       ))}
+      </div>
     </div>
   );
 }
+
+
