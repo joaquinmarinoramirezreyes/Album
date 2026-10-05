@@ -267,8 +267,19 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script type="module" src="app.js"></script>
   <script type="module" src="/src/main.jsx"></script>
+  <!-- Script Anti-Curiosos -->
+  <script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+      if (e.keyCode == 123) { return false; } // F12
+      if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { return false; } // Ctrl+Shift+I
+      if (e.ctrlKey && e.shiftKey && e.keyCode == 74) { return false; } // Ctrl+Shift+J
+      if (e.ctrlKey && e.keyCode == 85) { return false; } // Ctrl+U
+    };
+  </script>
 </body>
 </html>
+
 
 
 
