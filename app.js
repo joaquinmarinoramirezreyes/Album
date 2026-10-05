@@ -104,15 +104,22 @@ const $toastContainer = document.getElementById('toast-container');
 
 // Admin DOM Refs
 const $btnAdminModal = document.getElementById('btn-admin-modal');
+const $btnHostModal  = document.getElementById('btn-host-modal');
 const $modalAdminAuth = document.getElementById('modal-admin-auth');
+const $modalHostAuth = document.getElementById('modal-host-auth');
 const $formAdminAuth = document.getElementById('form-admin-auth');
+const $formHostAuth  = document.getElementById('form-host-auth');
 const $inputAdminPass = document.getElementById('input-admin-pass');
+const $inputHostCode = document.getElementById('input-host-code');
+const $inputHostPin  = document.getElementById('input-host-pin');
 const $adminError    = document.getElementById('admin-error');
+const $hostError     = document.getElementById('host-error');
 
 const $modalAdminPanel = document.getElementById('modal-admin-panel');
 const $formCreateEvent = document.getElementById('form-create-event');
 const $inputNewEvent   = document.getElementById('input-new-event');
 const $inputEventDate  = document.getElementById('input-event-date');
+const $inputEventPin   = document.getElementById('input-event-pin');
 const $adminEventList  = document.getElementById('admin-event-list');
 // ═══════════════════════════════════════════════════════════
 //  TOAST NOTIFICATION SYSTEM
@@ -427,7 +434,8 @@ $formCreateEvent.addEventListener('submit', async (e) => {
   let code = $inputNewEvent.value.toUpperCase().trim().replace(/\s+/g, ''); // Sin espacios
   if (!code) return;
 
-  const eventDate = $inputEventDate.value; // Formato YYYY-MM-DD
+  const eventDate = $inputEventDate.value;
+    const eventPin = $inputEventPin.value.trim();
   const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
   const originalText = btnSubmit.textContent;
   
@@ -440,12 +448,14 @@ $formCreateEvent.addEventListener('submit', async (e) => {
     await setDoc(eventRef, {
       creadoEn: serverTimestamp(),
       fechaEvento: eventDate,
-      activo: true
+        activo: true,
+        adminPin: eventPin || null
     });
 
     showToast(`¡Evento ${code} creado exitosamente!`, 'success', 5000);
     $inputNewEvent.value = '';
     $inputEventDate.value = '';
+      $inputEventPin.value = '';
     
     // Recargar lista y auto-rellenar
     loadAdminEvents();
@@ -730,6 +740,34 @@ function renderPolaroidCard(id, data) {
   const card = document.createElement('article');
   card.className = 'polaroid';
   card.dataset.id = id;
+
+  const isHost = localStorage.getItem('host_' + currentEventCode) === 'true';
+  if (isHost) {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-delete-photo';
+    delBtn.innerHTML = '🗑️';
+    delBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);';
+    delBtn.title = 'Borrar foto';
+    
+    delBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (confirm('¿Seguro que quieres borrar permanentemente esta foto?')) {
+        try {
+          delBtn.disabled = true;
+          delBtn.style.opacity = '0.5';
+          await deleteDoc(doc(db, 'events', currentEventCode, 'guest_entries', id));
+          showToast('Foto eliminada exitosamente', 'success');
+          card.remove();
+        } catch(err) {
+          console.error(err);
+          showToast('Error al eliminar la foto', 'error');
+          delBtn.disabled = false;
+          delBtn.style.opacity = '1';
+        }
+      }
+    });
+    card.appendChild(delBtn);
+  }
 
   const likesCount = data.likes || 0;
   // Checking local storage for likes (anonymous "auth")
