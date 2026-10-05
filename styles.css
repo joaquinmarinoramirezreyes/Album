@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    NUESTRO ÁLBUM DE BARRO — Design System & Styles
    Mobile-First · Talavera Blue Theme
    ═══════════════════════════════════════════════════════════ */
@@ -123,7 +123,7 @@ img {
   min-height: 100dvh;
   background:
     linear-gradient(rgba(234, 240, 246, .88), rgba(234, 240, 246, .88)),
-    url('assets/talavera-pattern.jpg') center / 400px repeat;
+    url('assets/shots-pattern.jpg') center / 400px repeat;
 }
 
 .login {
@@ -326,7 +326,7 @@ img {
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
     linear-gradient(rgba(234, 240, 246, .92), rgba(234, 240, 246, .92)),
-    url('assets/talavera-pattern.jpg') center / 400px repeat;
+    url('assets/shots-pattern.jpg') center / 400px repeat;
 }
 
 .hero__title {
@@ -675,7 +675,7 @@ img {
   margin-top: var(--sp-6);
   background:
     linear-gradient(rgba(234, 240, 246, .90), rgba(234, 240, 246, .90)),
-    url('assets/talavera-pattern.jpg') center / 400px repeat;
+    url('assets/shots-pattern.jpg') center / 400px repeat;
 }
 
 
@@ -1151,5 +1151,6 @@ body.show-singles #fab-camera { display: none !important; }
 .single-card__footer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-divider); padding-top: 12px; margin-top: 12px; font-size: .85rem; color: var(--color-charcoal-light); }
 .single-card__table { display: inline-flex; align-items: center; white-space: nowrap; background: var(--color-talavera); color: #fff; padding: 4px 12px; border-radius: 999px; font-weight: 600; }
 .single-card__delete { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); color: #B5533C; border: 1px solid rgba(181,83,60,.3); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
+
 
 

@@ -1,6 +1,6 @@
 ﻿{
-  "name": "Marli Cerámica",
-  "short_name": "Marli",
+  "name": "Cerámica Shots",
+  "short_name": "Shots",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#FDF8F5",
@@ -14,4 +14,5 @@
     }
   ]
 }
+
 
