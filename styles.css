@@ -7,6 +7,8 @@
 :root {
   /* Palette */
   --color-bg:           #FAFAFA;
+  --overlay-rgb:        234, 240, 246;
+  --color-accent:       #1E3888;
   --bg-pattern:         url('/assets/talavera-pattern.jpg');
   --color-bg-warm:      #EAF0F6;
   --color-talavera:     #1E3888;
@@ -123,7 +125,7 @@ img {
   justify-content: center;
   min-height: 100dvh;
   background:
-    linear-gradient(rgba(234, 240, 246, .88), rgba(234, 240, 246, .88)),
+    linear-gradient(rgba(var(--overlay-rgb), .88), rgba(var(--overlay-rgb), .88)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -326,7 +328,7 @@ img {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
-    linear-gradient(rgba(234, 240, 246, .92), rgba(234, 240, 246, .92)),
+    linear-gradient(rgba(var(--overlay-rgb), .92), rgba(var(--overlay-rgb), .92)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -675,7 +677,7 @@ img {
   border-top: 1px solid var(--color-divider);
   margin-top: var(--sp-6);
   background:
-    linear-gradient(rgba(234, 240, 246, .90), rgba(234, 240, 246, .90)),
+    linear-gradient(rgba(var(--overlay-rgb), .90), rgba(var(--overlay-rgb), .90)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -1156,3 +1158,29 @@ body.show-singles #fab-camera { display: none !important; }
 
 
 
+
+/* ---- Panel de Control profesional ---- */
+.modal-card--wide { max-width: 880px !important; width: 94vw; max-height: 90vh; overflow-y: auto; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 28px; margin-top: 12px; text-align: left; }
+.admin-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.admin-col + .admin-col { border-left: 1px solid var(--color-divider); padding-left: 28px; }
+.admin-col__title { font: 600 .8rem var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--color-charcoal-light); margin-bottom: 6px; }
+.admin-label { font: 500 .75rem var(--font-sans); color: var(--color-charcoal-light); margin-top: 6px; }
+.admin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.admin-grid .login__input { text-align: left; padding: 10px 14px; font-size: .9rem; letter-spacing: normal; }
+.theme-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.theme-opt { cursor: pointer; border: 2px solid var(--color-divider); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s, box-shadow .2s; }
+.theme-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.theme-opt__swatch { height: 56px; background-size: 140px; background-position: center; }
+.theme-opt__name { font: 600 .8rem var(--font-sans); padding: 8px; text-align: center; color: var(--color-charcoal); }
+.theme-opt:has(input:checked) { border-color: var(--color-talavera); box-shadow: 0 0 0 3px rgba(30,56,136,.15); }
+.admin-grid .admin-list { max-height: 420px; overflow-y: auto; margin: 0; }
+.admin-ev { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.admin-ev__code { font-weight: 700; font-size: .95rem; }
+.admin-ev__meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: .72rem; }
+.admin-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: var(--color-bg-warm); color: var(--color-charcoal); font-weight: 600; }
+.admin-chip--pin { background: #FFF4D6; color: #7A5600; font-family: ui-monospace, monospace; cursor: pointer; }
+@media (max-width: 720px) {
+  .admin-grid { grid-template-columns: 1fr; }
+  .admin-col + .admin-col { border-left: 0; padding-left: 0; border-top: 1px solid var(--color-divider); padding-top: 18px; }
+}

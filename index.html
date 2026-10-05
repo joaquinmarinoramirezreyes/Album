@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Marli Cerámica — Comparte tus recuerdos de cerámica en nuestra boda.">
-  <title>Marli Cerámica</title>
+  <title>Nuestro Álbum</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1E3888">
@@ -31,7 +31,7 @@
         </svg>
       </div>
 
-      <h1 class="login__title">Marli<br>Cerámica</h1>
+      <h1 class="login__title">Nuestro<br>Álbum</h1>
       <p class="login__subtitle">Ayúdanos a moldear nuestros recuerdos</p>
 
       <form id="login-form" class="login__form" autocomplete="off">
@@ -93,28 +93,38 @@
     </div>
 
     <div id="modal-admin-panel" class="lightbox" hidden>
-      <div class="modal-card">
+      <div class="modal-card modal-card--wide">
         <button type="button" class="modal-close" aria-label="Cerrar">&times;</button>
         <h2 class="modal-title">Panel de Control</h2>
-        
-        <form id="form-create-event" class="mt-4">
-          <p class="modal-subtitle" style="margin-bottom: 8px;">Crear Nuevo Evento</p>
-          <input type="text" id="input-new-event" class="login__input" placeholder="Código (Ej: BODA2026)" maxlength="20" required>
-          <input type="date" id="input-event-date" class="login__input mt-2" required title="Fecha del evento">
-          <select id="input-event-theme" class="login__input mt-2" required>
-            <option value="marli">Marli Cerámica (Azul Talavera)</option>
-            <option value="shots">Cerámica Shots (Naranja Floral)</option>
-          </select>
-          <input type="text" id="input-event-pin" class="login__input mt-2" placeholder="PIN secreto anfitrión (Opcional)" maxlength="10">
-          <button type="submit" class="btn btn--primary btn--full mt-2">Crear Evento</button>
-        </form>
-
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--color-divider);">
-
-        <p class="modal-subtitle" style="margin-bottom: 10px;">Eventos Activos</p>
-        <ul id="admin-event-list" class="admin-list">
-          <li style="text-align:center; font-size: 0.8rem; color:#888;">Cargando...</li>
-        </ul>
+        <div class="admin-grid">
+          <form id="form-create-event" class="admin-col">
+            <p class="admin-col__title">Crear nuevo evento</p>
+            <label class="admin-label" for="input-new-event">Código del evento</label>
+            <input type="text" id="input-new-event" class="login__input" placeholder="Ej: BODA2026" maxlength="20" required>
+            <div class="admin-row">
+              <div>
+                <label class="admin-label" for="input-event-date">Fecha</label>
+                <input type="date" id="input-event-date" class="login__input" required>
+              </div>
+              <div>
+                <label class="admin-label" for="input-event-pin">PIN anfitrión</label>
+                <input type="text" id="input-event-pin" class="login__input" placeholder="Ej: 1234" maxlength="10">
+              </div>
+            </div>
+            <label class="admin-label">Diseño</label>
+            <div class="theme-picker" id="theme-picker">
+              <label class="theme-opt"><input type="radio" name="event-theme" value="marli" checked><span class="theme-opt__swatch" style="background-image:url('/assets/talavera-pattern.jpg')"></span><span class="theme-opt__name">Marli Cerámica</span></label>
+              <label class="theme-opt"><input type="radio" name="event-theme" value="shots"><span class="theme-opt__swatch" style="background-image:url('/assets/shots-pattern.jpg')"></span><span class="theme-opt__name">Cerámica Shots</span></label>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full mt-4">Crear evento</button>
+          </form>
+          <div class="admin-col">
+            <p class="admin-col__title">Eventos activos</p>
+            <ul id="admin-event-list" class="admin-list">
+              <li style="text-align:center; font-size: 0.8rem; color:#888;">Cargando...</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -127,7 +137,7 @@
 
     <!-- — Hero — -->
     <header class="hero">
-      <h1 class="hero__title">Marli Cerámica</h1>
+      <h1 class="hero__title">Nuestro Álbum</h1>
       <p class="hero__subtitle">Sube tu foto con tu pieza de cerámica y déjanos un mensaje</p>
     </header>
 

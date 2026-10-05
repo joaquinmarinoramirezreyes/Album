@@ -1,36 +1,47 @@
 ﻿const THEMES = {
-  'marli': {
+  default: {
+    name: 'Nuestro Álbum',
+    bgImage: '/assets/talavera-pattern.jpg',
+    colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
+    colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
+    colorTerracotta: '#C46D5E', overlay: '234, 240, 246',
+    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
+  },
+  marli: {
     name: 'Marli Cerámica',
     bgImage: '/assets/talavera-pattern.jpg',
-    colorBg: '#FAFAFA',
-    colorBgWarm: '#EAF0F6',
-    colorTalavera: '#1E3888',
-    colorTalaveraDark: '#12245C'
+    colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
+    colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
+    colorTerracotta: '#C46D5E', overlay: '234, 240, 246',
+    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
   },
-  'shots': {
+  shots: {
     name: 'Cerámica Shots',
     bgImage: '/assets/shots-pattern.jpg',
-    colorBg: '#F5EBE1',
-    colorBgWarm: '#F5EBE1',
-    colorTalavera: '#244579',
-    colorTalaveraDark: '#355C9D'
+    colorBg: '#FBF5EE', colorBgWarm: '#F6E7D8',
+    colorTalavera: '#C0582F', colorTalaveraDark: '#9A4322',
+    colorTerracotta: '#2F4F8F', overlay: '251, 241, 230',
+    charcoal: '#3A2418', charcoalLight: '#7A5A48', divider: '#EAD6C3'
   }
 };
 
 function applyTheme(themeKey) {
-  const theme = THEMES[themeKey] || THEMES['marli'];
-  document.documentElement.style.setProperty('--bg-pattern', "url('" + theme.bgImage + " ' )");
-  document.documentElement.style.setProperty('--color-bg', theme.colorBg);
-  document.documentElement.style.setProperty('--color-bg-warm', theme.colorBgWarm);
-  document.documentElement.style.setProperty('--color-talavera', theme.colorTalavera);
-  document.documentElement.style.setProperty('--color-talavera-dark', theme.colorTalaveraDark);
-  
+  const theme = THEMES[themeKey] || THEMES.marli;
+  const r = document.documentElement.style;
+  r.setProperty('--bg-pattern', "url('" + theme.bgImage + "')");
+  r.setProperty('--color-bg', theme.colorBg);
+  r.setProperty('--color-bg-warm', theme.colorBgWarm);
+  r.setProperty('--color-talavera', theme.colorTalavera);
+  r.setProperty('--color-talavera-dark', theme.colorTalaveraDark);
+  r.setProperty('--color-terracotta', theme.colorTerracotta);
+  r.setProperty('--overlay-rgb', theme.overlay);
+  r.setProperty('--color-charcoal', theme.charcoal);
+  r.setProperty('--color-charcoal-light', theme.charcoalLight);
+  r.setProperty('--color-divider', theme.divider);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.colorTalavera);
   document.title = theme.name;
-  const loginTitle = document.querySelector('.login__title');
-  if(loginTitle) loginTitle.innerHTML = theme.name.replace(' ', '<br>');
   const heroTitle = document.querySelector('.hero__title');
-  if(heroTitle) heroTitle.textContent = theme.name;
-  
+  if (heroTitle) heroTitle.textContent = theme.name;
   window.currentEventTheme = theme;
 }
 /* ═══════════════════════════════════════════════════════════
@@ -287,10 +298,7 @@ $loginForm.addEventListener('submit', async (e) => {
       currentEventId = code;
 
       // Aplicar tema dinámico
-      const eventData = eventSnap.data();
-      if (eventData.theme) {
-        applyTheme(eventData.theme);
-      }
+      applyTheme(eventSnap.data().theme || 'marli');
 
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
@@ -408,9 +416,14 @@ async function loadAdminEvents() {
          dateInfoHtml = `<div style="font-size:0.75rem; color:${color}; margin-top:2px;">${data.fechaEvento} • ${daysText}</div>`;
       }
 
+      const themeName = (THEMES[data.theme] || THEMES.marli).name;
+      const pinHtml = data.adminPin
+        ? `<span class="admin-chip admin-chip--pin" title="Clic para copiar" data-copy="${escapeAttr(data.adminPin)}">PIN ${escapeHTML(data.adminPin)}</span>`
+        : '<span class="admin-chip" style="opacity:.6">Sin PIN</span>';
       li.innerHTML = `
-        <div style="display:flex; flex-direction:column; max-width: 60%;">
-          <span>${escapeHTML(code)}</span>
+        <div class="admin-ev">
+          <span class="admin-ev__code">${escapeHTML(code)}</span>
+          <div class="admin-ev__meta"><span class="admin-chip">${escapeHTML(themeName)}</span>${pinHtml}</div>
           ${dateInfoHtml}
         </div>
         <div style="display:flex; gap:8px;">
@@ -479,7 +492,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
 
   const eventDate = $inputEventDate.value;
     const eventPin = $inputEventPin.value.trim();
-  const eventTheme = document.getElementById('input-event-theme').value;
+  const eventTheme = (document.querySelector('input[name="event-theme"]:checked') || {}).value || 'marli';
   const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
   const originalText = btnSubmit.textContent;
   
@@ -616,6 +629,7 @@ window.addEventListener('popstate', () => {
     if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
     currentEventId = null;
     window.dispatchEvent(new CustomEvent('legacy:exit'));
+      applyTheme('default');
     transitionScreens($albumScreen, $loginScreen);
   } else if (history.state && history.state.screen === 'album') {
     history.replaceState(null, '', location.pathname);
@@ -1430,3 +1444,11 @@ if ($fabCamera && $uploadSection) {
 
 
 
+
+// Copiar PIN desde el panel
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('[data-copy]');
+  if (!chip) return;
+  navigator.clipboard?.writeText(chip.dataset.copy);
+  showToast('PIN copiado', 'success', 2000);
+});
