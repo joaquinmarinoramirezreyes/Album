@@ -565,6 +565,10 @@ if (location.hash === '#album') history.replaceState(null, '', location.pathname
 window.addEventListener('popstate', () => {
   const albumActive = $albumScreen.classList.contains('screen--active');
   if (albumActive) {
+    if (location.hash === '#album' || location.hash === '#singles') {
+      window.dispatchEvent(new CustomEvent('legacy:tab', { detail: location.hash.replace('#', '') }));
+      return;
+    }
     document.querySelectorAll('.lightbox:not([hidden])').forEach(el => { el.hidden = true; });
     if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
     currentEventId = null;
@@ -1368,4 +1372,5 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+
 
