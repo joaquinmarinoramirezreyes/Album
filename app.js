@@ -30,10 +30,10 @@
     name: 'Cerámica Odimar',
     slogan: 'IMPERFECTA COMO TODO LO HECHO A MANO, PERFECTA POR ESO.',
     bgImage: '/assets/odimar-pattern.jpg',
-    colorBg: '#F6EFEA', colorBgWarm: '#F0E5DE',
-    colorTalavera: '#8FA3C6', colorTalaveraDark: '#7588AA',
-    colorTerracotta: '#D89E99', overlay: '246, 239, 234',
-    charcoal: '#4A5B66', charcoalLight: '#7A8B99', divider: '#E0D2C8'
+    colorBg: '#FAF3ED', colorBgWarm: '#F0E2D5',
+    colorTalavera: '#4A80B4', colorTalaveraDark: '#2F5D8A',
+    colorTerracotta: '#D66D63', overlay: '250, 243, 237',
+    charcoal: '#263440', charcoalLight: '#5A6B7C', divider: '#E6D3C5'
   }
 };
 
