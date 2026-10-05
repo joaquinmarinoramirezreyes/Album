@@ -5,7 +5,6 @@ import {
   serverTimestamp, deleteDoc, doc,
 } from 'firebase/firestore';
 
-// Reusa la misma conexión que creó app.js
 const getDb = () => getFirestore(getApp());
 
 function compressImage(file, maxWidth = 900, quality = 0.7) {
@@ -83,9 +82,11 @@ export default function SinglesScreen({ eventCode, isHost }) {
   return (
     <div className="singles">
       {!showForm ? (
-        <div className="singles-form-container"><button type="button" className="btn btn--primary btn--full" style={{ marginBottom: '1.5rem' }} onClick={() => setShowForm(true)}>
-          💘 Anotarme como soltero(a)
-        </button>
+        <div className="singles-form-container">
+          <button type="button" className="btn btn--primary btn--full" style={{ marginBottom: '1.5rem' }} onClick={() => setShowForm(true)}>
+            💘 Anotarme como soltero(a)
+          </button>
+        </div>
       ) : (
         <div className="upload singles-form-container" style={{ marginBottom: '2rem' }}>
           <form className="upload__form" onSubmit={submit} noValidate>
@@ -143,28 +144,27 @@ export default function SinglesScreen({ eventCode, isHost }) {
       {profiles.length === 0 && (
         <p style={{ textAlign: 'center', opacity: 0.6 }}>Nadie se ha anotado todavía… ¡sé el primero!</p>
       )}
-      <div className="singles-grid">{profiles.map((p) => (
-        <article key={p.id} className="single-card">
-          {isHost && (
-            <button type="button" className="single-card__delete" onClick={() => remove(p.id)} aria-label="Borrar perfil">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
-            </button>
-          )}
-          <img className="single-card__img" src={p.photoUrl} alt={p.name} loading="lazy" />
-          <div className="single-card__body">
-            <h3 className="single-card__name">{p.name}</h3>
-            <p className="single-card__row">💼 {p.profession}</p>
-            <p className="single-card__fact">“{p.funFact}”</p>
-            <div className="single-card__footer">
-              <span>De parte de {p.side}</span>
-              <span className="single-card__table">🍽️ Mesa {p.table}</span>
+      <div className="singles-grid">
+        {profiles.map((p) => (
+          <article key={p.id} className="single-card">
+            {isHost && (
+              <button type="button" className="single-card__delete" onClick={() => remove(p.id)} aria-label="Borrar perfil">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+              </button>
+            )}
+            <img className="single-card__img" src={p.photoUrl} alt={p.name} loading="lazy" />
+            <div className="single-card__body">
+              <h3 className="single-card__name">{p.name}</h3>
+              <p className="single-card__row">💼 {p.profession}</p>
+              <p className="single-card__fact">“{p.funFact}”</p>
+              <div className="single-card__footer">
+                <span>De parte de {p.side}</span>
+                <span className="single-card__table">🍽️ Mesa {p.table}</span>
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
       </div>
     </div>
   );
 }
-
-
