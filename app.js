@@ -253,6 +253,7 @@ $loginForm.addEventListener('submit', async (e) => {
 
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
+      history.pushState({ screen: 'album' }, '', '#album');
 
       // Arrancar el listener de la galería en tiempo real
       startGalleryListener();
@@ -557,6 +558,21 @@ function transitionScreens($from, $to) {
 // ═══════════════════════════════════════════════════════════
 //  PHOTO PREVIEW
 // ═══════════════════════════════════════════════════════════
+// ── Flechas de navegación del navegador (atrás / adelante) ──
+if (location.hash === '#album') history.replaceState(null, '', location.pathname);
+
+window.addEventListener('popstate', () => {
+  const albumActive = $albumScreen.classList.contains('screen--active');
+  if (albumActive) {
+    document.querySelectorAll('.lightbox:not([hidden])').forEach(el => { el.hidden = true; });
+    if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
+    currentEventId = null;
+    transitionScreens($albumScreen, $loginScreen);
+  } else if (history.state && history.state.screen === 'album') {
+    history.replaceState(null, '', location.pathname);
+  }
+});
+
 $photoBtn.addEventListener('click', () => $photoInput.click());
 
 $photoInput.addEventListener('change', () => {
