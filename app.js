@@ -19,7 +19,7 @@
 
 function applyTheme(themeKey) {
   const theme = THEMES[themeKey] || THEMES['marli'];
-  document.documentElement.style.setProperty('--bg-pattern', url( + theme.bgImage + ));
+  document.documentElement.style.setProperty('--bg-pattern', "url('" + theme.bgImage + " ' )");
   document.documentElement.style.setProperty('--color-bg', theme.colorBg);
   document.documentElement.style.setProperty('--color-bg-warm', theme.colorBgWarm);
   document.documentElement.style.setProperty('--color-talavera', theme.colorTalavera);
@@ -1416,6 +1416,7 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+
 
 
 
