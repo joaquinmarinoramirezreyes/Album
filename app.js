@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 // ─── Firebase SDK Imports (CDN ESM) — Solo Firestore, sin Storage ───
-import { initializeApp }       from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { initializeApp }       from 'firebase/app';
 import {
   getFirestore,
   initializeFirestore,
@@ -23,7 +23,7 @@ import {
   deleteDoc,
   updateDoc,
   increment
-} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+} from 'firebase/firestore';
 
 // ═══════════════════════════════════════════════════════════
 //  FIREBASE CONFIG
@@ -254,6 +254,7 @@ $loginForm.addEventListener('submit', async (e) => {
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album' }, '', '#album');
+      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true' } }));
 
       // Arrancar el listener de la galería en tiempo real
       startGalleryListener();
@@ -567,6 +568,7 @@ window.addEventListener('popstate', () => {
     document.querySelectorAll('.lightbox:not([hidden])').forEach(el => { el.hidden = true; });
     if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
     currentEventId = null;
+    window.dispatchEvent(new CustomEvent('legacy:exit'));
     transitionScreens($albumScreen, $loginScreen);
   } else if (history.state && history.state.screen === 'album') {
     history.replaceState(null, '', location.pathname);
