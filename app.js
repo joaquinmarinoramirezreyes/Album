@@ -31,8 +31,9 @@
     slogan: 'IMPERFECTA COMO TODO LO HECHO A MANO, PERFECTA POR ESO.',
     bgImage: '/assets/odimar-pattern.jpg',
     colorBg: '#FAF3ED', colorBgWarm: '#F0E2D5',
-    colorTalavera: '#4A80B4', colorTalaveraDark: '#2F5D8A',
-    colorTerracotta: '#D66D63', overlay: '250, 243, 237',
+    colorTalavera: '#D66D63', colorTalaveraDark: '#B85850', // Rosa Coral como primario
+    colorTerracotta: '#4A80B4', // Azul como secundario
+    overlay: '250, 243, 237',
     charcoal: '#263440', charcoalLight: '#5A6B7C', divider: '#E6D3C5'
   }
 };
