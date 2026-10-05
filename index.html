@@ -35,15 +35,13 @@
       <p class="login__subtitle">Ayúdanos a moldear nuestros recuerdos</p>
 
       <form id="login-form" class="login__form" autocomplete="off" style="margin-bottom: 2rem;">
-        <label for="access-code" style="display:block; margin-bottom: 1rem; color: var(--color-charcoal); font-size: 0.95rem; line-height: 1.4;">
-          ¡Bienvenido!<br>Escribe la clave secreta de tu evento para entrar a la galería.
-        </label>
+        <label for="access-code" class="sr-only">Clave del evento</label>
         <input
           id="access-code"
           class="login__input login__input--vip"
           type="text"
           maxlength="20"
-          placeholder="Ej: BODA2026"
+          placeholder="CÓDIGO DEL EVENTO"
           aria-describedby="login-hint"
           required
         >

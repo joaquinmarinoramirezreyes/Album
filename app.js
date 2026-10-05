@@ -28,7 +28,7 @@
   },
   odimar: {
     name: 'Cerámica Odimar',
-    slogan: 'IMPERFECTA COMO TODO LO HECHO A MANO, PERFECTA POR ESO.',
+    slogan: 'Imperfecta como todo lo hecho a mano, perfecta por eso.',
     bgImage: '/assets/odimar-pattern.jpg',
     colorBg: '#FAF3ED', colorBgWarm: '#F0E2D5',
     colorTalavera: '#D66D63', colorTalaveraDark: '#B85850', // Rosa Coral como primario
