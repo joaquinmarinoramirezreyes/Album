@@ -44,6 +44,24 @@ function applyTheme(themeKey) {
   if (heroTitle) heroTitle.textContent = theme.name;
   window.currentEventTheme = theme;
 }
+
+// Marca por URL: /marli, /shots  -> login propio
+const BRAND = (() => {
+  const seg = location.pathname.split('/').filter(Boolean)[0]?.toLowerCase();
+  return seg && seg !== 'default' && THEMES[seg] ? seg : null;
+})();
+window.__BRAND = BRAND;
+function applyBrandLogin() {
+  applyTheme(BRAND || 'default');
+  const t = document.querySelector('.login__title');
+  if (t) {
+    const words = (THEMES[BRAND || 'default'].name).split(' ');
+    t.innerHTML = words.length > 1 ? words[0] + '<br>' + words.slice(1).join(' ') : words[0];
+  }
+  if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
+}
+applyBrandLogin();
+const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAND;
 /* ═══════════════════════════════════════════════════════════
    NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + Toasts
    Firebase Firestore (datos + imágenes inline) — 100% gratuito
@@ -293,7 +311,7 @@ $loginForm.addEventListener('submit', async (e) => {
     const eventRef = doc(db, 'eventos_activos', code);
     const eventSnap = await getDoc(eventRef);
 
-    if (eventSnap.exists()) {
+    if (eventSnap.exists() && eventBelongsToBrand(eventSnap.data())) {
       // Establecer el evento activo
       currentEventId = code;
 
@@ -427,7 +445,7 @@ async function loadAdminEvents() {
           ${dateInfoHtml}
         </div>
         <div style="display:flex; gap:8px;">
-          <button type="button" class="qr-btn" aria-label="Código QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
+          <button type="button" class="qr-btn" data-theme="${escapeAttr(data.theme || 'marli')}" aria-label="Código QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
               <path d="M2 2h2v2H2V2Z"/><path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/><path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/><path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/><path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/>
             </svg>
@@ -467,7 +485,8 @@ async function loadAdminEvents() {
       // Event listener para QR
       li.querySelector('.qr-btn').addEventListener('click', (e) => {
         const codeQR = e.currentTarget.getAttribute('data-code');
-        const url = window.location.origin + window.location.pathname + "?code=" + encodeURIComponent(codeQR);
+        const brandQR = e.currentTarget.getAttribute('data-theme') || 'marli';
+        const url = window.location.origin + '/' + brandQR + '?code=' + encodeURIComponent(codeQR);
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(url)}`;
         window.open(qrUrl, '_blank');
       });
@@ -561,7 +580,7 @@ if ($formHostAuth) {
       btnSubmit.textContent = 'Verificando...';
       $hostError.hidden = true;
       const eventSnap = await getDoc(doc(db, 'eventos_activos', codeEvent));
-      if (eventSnap.exists() && eventSnap.data().adminPin && eventSnap.data().adminPin === pin) {
+      if (eventSnap.exists() && eventBelongsToBrand(eventSnap.data()) && eventSnap.data().adminPin && eventSnap.data().adminPin === pin) {
         localStorage.setItem('host_' + codeEvent, 'true');
         $modalHostAuth.hidden = true;
         $inputHostCode.value = '';
@@ -629,7 +648,7 @@ window.addEventListener('popstate', () => {
     if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
     currentEventId = null;
     window.dispatchEvent(new CustomEvent('legacy:exit'));
-      applyTheme('default');
+      applyBrandLogin();
     transitionScreens($albumScreen, $loginScreen);
   } else if (history.state && history.state.screen === 'album') {
     history.replaceState(null, '', location.pathname);
@@ -1390,7 +1409,7 @@ $slideshowClose.addEventListener('click', stopSlideshow);
 // ═══════════════════════════════════════════════════════════
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
+    navigator.serviceWorker.register('/sw.js')
       .then(registration => console.log('PWA ServiceWorker registrado exitosamente con scope: ', registration.scope))
       .catch(err => console.log('Falló el registro del ServiceWorker: ', err));
   });

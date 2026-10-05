@@ -1,5 +1,11 @@
 {
   "framework": "vite",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/:brand((?!assets|sw\\.js|manifest\\.json|icon\\.svg)[^/.]+)",
+      "destination": "/index.html"
+    }
+  ]
 }
