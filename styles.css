@@ -1148,8 +1148,8 @@ body.show-singles #fab-camera { display: none !important; }
 .single-card__name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--color-talavera); margin: 0 0 6px; }
 .single-card__row { margin: 4px 0; color: var(--color-charcoal-light); font-size: .95rem; }
 .single-card__fact { font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--color-charcoal); margin: 10px 0; }
-.single-card__footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-divider); padding-top: 12px; margin-top: 12px; font-size: .85rem; color: var(--color-charcoal-light); }
-.single-card__table { background: var(--color-talavera); color: #fff; padding: 6px 14px; border-radius: 999px; font-weight: 600; }
+.single-card__footer { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; border-top: 1px dashed var(--color-divider); padding-top: 12px; margin-top: 12px; font-size: .85rem; color: var(--color-charcoal-light); }
+.single-card__table { display: inline-flex; align-items: center; white-space: nowrap; background: var(--color-talavera); color: #fff; padding: 4px 12px; border-radius: 999px; font-weight: 600; }
 .single-card__delete { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.92); color: #B5533C; border: 1px solid rgba(181,83,60,.3); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.18); }
 
 
