@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { getApp } from 'firebase/app';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
@@ -28,7 +28,7 @@ function compressImage(file, maxWidth = 900, quality = 0.7) {
   });
 }
 
-const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '', table: '' };
+const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '' };
 
 export default function SinglesScreen({ eventCode, isHost }) {
   const [profiles, setProfiles] = useState([]);
@@ -51,7 +51,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
     setPhoto(await compressImage(file));
   };
 
-  const valid = photo && form.name.trim() && form.age.trim() && form.profession.trim() && form.funFact.trim() && form.table.trim();
+  const valid = photo && form.name.trim() && form.age.trim() && form.profession.trim() && form.funFact.trim();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -103,13 +103,13 @@ export default function SinglesScreen({ eventCode, isHost }) {
           <form className="upload__form" onSubmit={submit} noValidate>
             <div className="form-group">
               <label className="form-label">Tu foto</label>
-              <input ref={fileRef} type="file" accept="image/*" capture="user" className="sr-only" onChange={onPhoto} />
+              <input ref={fileRef} type="file" accept="image/*"  className="sr-only" onChange={onPhoto} />
               {!photo ? (
                 <button type="button" className="upload__photo-btn" onClick={() => fileRef.current?.click()}>
                   <span className="upload__photo-icon" aria-hidden="true">
                     <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                   </span>
-                  <span>Tómate una selfie</span>
+                  <span>Sube una foto</span>
                 </button>
               ) : (
                 <div className="upload__preview">
@@ -145,10 +145,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
               <label className="form-label">Dato curioso</label>
               <input className="form-input" placeholder="Ej. Hago el mejor guacamole" value={form.funFact} onChange={set('funFact')} maxLength={80} />
             </div>
-            <div className="form-group">
-              <label className="form-label">Mesa</label>
-              <input className="form-input" inputMode="numeric" placeholder="Ej. 7" value={form.table} onChange={set('table')} maxLength={5} />
-            </div>
+            
             <button type="submit" className="btn btn--primary btn--full" disabled={!valid || saving}>
               {saving ? 'Guardando…' : 'Publicar mi perfil'}
             </button>
@@ -187,10 +184,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
               <p className="single-card__fact">“{p.funFact}”</p>
               <div className="single-card__footer">
                 <span>De parte de {p.side}</span>
-                <span className="single-card__table">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg> 
-                  Mesa {p.table}
-                </span>
+                
               </div>
             </div>
           </article>
@@ -199,3 +193,5 @@ export default function SinglesScreen({ eventCode, isHost }) {
     </div>
   );
 }
+
+
