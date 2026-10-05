@@ -1141,9 +1141,9 @@ body.show-singles #fab-camera { display: none !important; }
 .tabs__btn--active { background: var(--color-talavera); color: #fff; }
 .singles { max-width: 1000px; margin: 0 auto; padding: 0 20px 100px; }
 .singles-form-container { max-width: 480px; margin: 0 auto; }
-.singles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.singles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
 .single-card { background: #F7EFE5; border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 10px 25px rgba(30,56,136,.15); margin-bottom: 0; position: relative; }
-.single-card__img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+.single-card__img { cursor: pointer; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
 .single-card__body { padding: 16px 18px 18px; }
 .single-card__name { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--color-talavera); margin: 0 0 6px; }
 .single-card__row { margin: 4px 0; color: var(--color-charcoal-light); font-size: .95rem; }

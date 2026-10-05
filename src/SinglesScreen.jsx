@@ -28,7 +28,7 @@ function compressImage(file, maxWidth = 900, quality = 0.7) {
   });
 }
 
-const EMPTY = { name: '', profession: '', side: 'la Novia', funFact: '', table: '' };
+const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '', table: '' };
 
 export default function SinglesScreen({ eventCode, isHost }) {
   const [profiles, setProfiles] = useState([]);
@@ -51,7 +51,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
     setPhoto(await compressImage(file));
   };
 
-  const valid = photo && form.name.trim() && form.profession.trim() && form.funFact.trim() && form.table.trim();
+  const valid = photo && form.name.trim() && form.age.trim() && form.profession.trim() && form.funFact.trim() && form.table.trim();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -77,6 +77,17 @@ export default function SinglesScreen({ eventCode, isHost }) {
     if (!confirm('¿Borrar este perfil?')) return;
     try { await deleteDoc(doc(getDb(), 'events', eventCode, 'singles', id)); }
     catch (err) { console.error(err); }
+  };
+
+  const openLightbox = (url, name, age) => {
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightbox-img');
+    const lbCap = document.getElementById('lightbox-caption');
+    if (lb && lbImg && lbCap) {
+      lbImg.src = url;
+      lbCap.textContent = `${name}, ${age}`;
+      lb.hidden = false;
+    }
   };
 
   return (
@@ -107,10 +118,18 @@ export default function SinglesScreen({ eventCode, isHost }) {
                 </div>
               )}
             </div>
-            <div className="form-group">
-              <label className="form-label">Nombre y edad</label>
-              <input className="form-input" placeholder="Ej. Ana, 27" value={form.name} onChange={set('name')} maxLength={40} />
+            
+            <div style={{display: 'flex', gap: '10px'}}>
+              <div className="form-group" style={{flex: 2}}>
+                <label className="form-label">Nombre</label>
+                <input className="form-input" placeholder="Ej. Ana" value={form.name} onChange={set('name')} maxLength={40} />
+              </div>
+              <div className="form-group" style={{flex: 1}}>
+                <label className="form-label">Edad</label>
+                <input className="form-input" inputMode="numeric" placeholder="27" value={form.age} onChange={set('age')} maxLength={3} />
+              </div>
             </div>
+
             <div className="form-group">
               <label className="form-label">¿A qué te dedicas?</label>
               <input className="form-input" placeholder="Ej. Arquitecta" value={form.profession} onChange={set('profession')} maxLength={50} />
@@ -152,14 +171,26 @@ export default function SinglesScreen({ eventCode, isHost }) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
               </button>
             )}
-            <img className="single-card__img" src={p.photoUrl} alt={p.name} loading="lazy" />
+            <img 
+              className="single-card__img" 
+              src={p.photoUrl} 
+              alt={p.name} 
+              loading="lazy" 
+              onClick={() => openLightbox(p.photoUrl, p.name, p.age || '')}
+            />
             <div className="single-card__body">
-              <h3 className="single-card__name">{p.name}</h3>
-              <p className="single-card__row"><svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg> {p.profession}</p>
+              <h3 className="single-card__name">{p.name}{p.age ? `, ${p.age}` : ''}</h3>
+              <p className="single-card__row">
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                {p.profession}
+              </p>
               <p className="single-card__fact">“{p.funFact}”</p>
               <div className="single-card__footer">
                 <span>De parte de {p.side}</span>
-                <span className="single-card__table"><svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg> Mesa {p.table}</span>
+                <span className="single-card__table">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg> 
+                  Mesa {p.table}
+                </span>
               </div>
             </div>
           </article>
