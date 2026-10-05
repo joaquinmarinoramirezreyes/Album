@@ -204,7 +204,27 @@ img {
   font-size: 0.875rem;
 }
 
-.login__input:focus {
+.login__input--vip {
+    font-size: 1.25rem !important;
+    text-align: center !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px !important;
+    border-radius: 12px;
+    font-weight: bold;
+    color: var(--color-talavera) !important;
+    background-color: var(--color-white) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .login__input--vip::placeholder {
+    font-size: 1rem;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    opacity: 0.4;
+  }
+  
+  .login__input:focus {
   border-color: var(--color-talavera);
   box-shadow: 0 0 0 3px rgba(30, 56, 136, .15);
 }
