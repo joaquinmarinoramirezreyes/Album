@@ -470,6 +470,52 @@ $formCreateEvent.addEventListener('submit', async (e) => {
   }
 });
 
+
+// ── Modo Anfitrión ──
+if ($btnHostModal) {
+  $btnHostModal.addEventListener('click', () => {
+    $modalHostAuth.hidden = false;
+    $inputHostCode.focus();
+  });
+}
+if ($modalHostAuth) {
+  $modalHostAuth.querySelector('.modal-close').addEventListener('click', () => {
+    $modalHostAuth.hidden = true;
+  });
+}
+if ($formHostAuth) {
+  $formHostAuth.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const codeEvent = $inputHostCode.value.toUpperCase().trim().replace(/\s+/g, '');
+    const pin = $inputHostPin.value.trim();
+    const btnSubmit = $formHostAuth.querySelector('button[type="submit"]');
+    try {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Verificando...';
+      $hostError.hidden = true;
+      const eventSnap = await getDoc(doc(db, 'eventos_activos', codeEvent));
+      if (eventSnap.exists() && eventSnap.data().adminPin && eventSnap.data().adminPin === pin) {
+        localStorage.setItem('host_' + codeEvent, 'true');
+        $modalHostAuth.hidden = true;
+        $inputHostCode.value = '';
+        $inputHostPin.value = '';
+        const accessInput = document.getElementById('access-code');
+        accessInput.value = codeEvent;
+        document.getElementById('login-form').requestSubmit();
+        showToast('Modo Moderador activado. Puedes borrar fotos.', 'success', 5000);
+      } else {
+        $hostError.hidden = false;
+      }
+    } catch (err) {
+      console.error(err);
+      $hostError.hidden = false;
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Entrar como Moderador';
+    }
+  });
+}
+
 // Cerrar modales (botones X)
 document.querySelectorAll('.modal-close').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -741,7 +787,7 @@ function renderPolaroidCard(id, data) {
   card.className = 'polaroid';
   card.dataset.id = id;
 
-  const isHost = localStorage.getItem('host_' + currentEventCode) === 'true';
+  const isHost = localStorage.getItem('host_' + currentEventId) === 'true';
   if (isHost) {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete-photo';
@@ -755,7 +801,7 @@ function renderPolaroidCard(id, data) {
         try {
           delBtn.disabled = true;
           delBtn.style.opacity = '0.5';
-          await deleteDoc(doc(db, 'events', currentEventCode, 'guest_entries', id));
+          await deleteDoc(doc(db, 'events', currentEventId, 'guest_entries', id));
           showToast('Foto eliminada exitosamente', 'success');
           card.remove();
         } catch(err) {
@@ -766,7 +812,8 @@ function renderPolaroidCard(id, data) {
         }
       }
     });
-    card.appendChild(delBtn);
+    card.style.position = 'relative';
+    queueMicrotask(() => card.appendChild(delBtn)); // tras innerHTML
   }
 
   const likesCount = data.likes || 0;
