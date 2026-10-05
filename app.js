@@ -1263,7 +1263,7 @@ $downloadPdf.addEventListener('click', async () => {
     //  GUARDAR
     // ══════════════════════════════════
     const slug = (window.currentEventTheme?.name || 'album').toLowerCase().replace(/\s+/g, '-');
-    doc.save(${slug}.pdf);
+    doc.save(`${slug}.pdf`);
 
     dismissToast(pdfToast);
     showToast('¡Álbum descargado! 📄', 'success', 4000);
@@ -1416,6 +1416,7 @@ if ($fabCamera && $uploadSection) {
     }, 400);
   });
 }
+
 
 
 
