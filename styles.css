@@ -1,8 +1,8 @@
-/* 🎨 Design Tokens - Etapa 1: Minimalismo Apple 🎨 */
+﻿/* ðŸŽ¨ Design Tokens - Etapa 1: Minimalismo Apple ðŸŽ¨ */
 :root {
   /* Paleta Neutra (Estilo iOS/macOS) */
   --color-bg:           #F5F5F7; /* Gris claro muy limpio */
-  --color-surface:      #FFFFFF; /* Superficies sólidas para mejor rendimiento */
+  --color-surface:      #FFFFFF; /* Superficies sÃ³lidas para mejor rendimiento */
   --color-text-primary: #1D1D1F; /* Casi negro, alto contraste */
   --color-text-secondary:#86868B; /* Gris para textos secundarios */
   --color-divider:      #E5E5EA;
@@ -11,12 +11,12 @@
   /* Overlay Base para marcas */
   --overlay-rgb:        245, 245, 247;
 
-  /* Colores de Marca (Solo como acento, definidos dinámicamente en app.js) */
+  /* Colores de Marca (Solo como acento, definidos dinÃ¡micamente en app.js) */
   --color-talavera:     #1E3888;
   --color-talavera-dark:#12245C;
   --color-accent:       var(--color-talavera); /* Por defecto */
 
-  /* Tipografía Escalonada (Accesibilidad y Jerarquía) */
+  /* TipografÃ­a Escalonada (Accesibilidad y JerarquÃ­a) */
   --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-serif:   'Playfair Display', Georgia, serif;
   
@@ -28,7 +28,7 @@
   --text-2xl: 1.5rem;   /* 24px */
   --text-3xl: 2rem;     /* 32px */
 
-  /* Radios (16px a 24px según la petición) */
+  /* Radios (16px a 24px segÃºn la peticiÃ³n) */
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -39,12 +39,12 @@
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
 
-  /* Espaciado (Múltiplos de 4/8px) */
+  /* Espaciado (MÃºltiplos de 4/8px) */
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; 
   --sp-5: 24px; --sp-6: 32px; --sp-8: 48px; --sp-10: 64px;
 }
 
-/* Tipografía Base global */
+/* TipografÃ­a Base global */
 body {
   font-family: var(--font-sans);
   color: var(--color-text-primary);
@@ -52,12 +52,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Regla estricta: Áreas táctiles de mínimo 44px para accesibilidad */
+/* Regla estricta: Ãreas tÃ¡ctiles de mÃ­nimo 44px para accesibilidad */
 .btn, .login__input, .upload__input, .admin-input { min-height: 44px; }
 
 
 
-/* ─── Reset & Base ─── */
+/* â”€â”€â”€ Reset & Base â”€â”€â”€ */
 *,
 *::before,
 *::after {
@@ -81,7 +81,7 @@ img {
 }
 
 
-/* ─── Utility: Screen Reader Only ─── */
+/* â”€â”€â”€ Utility: Screen Reader Only â”€â”€â”€ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -95,9 +95,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SCREEN MANAGEMENT (fade transitions)
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .screen {
   display: none;
   opacity: 0;
@@ -115,37 +115,12 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   PANTALLA A — LOGIN
-   ═══════════════════════════════════════════════════════════ */
-.screen#screen-login {
-  align-items: center;
-  justify-content: center;
-  min-height: 100dvh;
-  background:
-    linear-gradient(rgba(var(--overlay-rgb), 0.82), rgba(var(--overlay-rgb), 0.82)),
-    var(--bg-pattern) center / 400px repeat;
-}
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PANTALLA A â€” LOGIN
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.screen
 
-.login {
 
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-  border-radius: 32px;
-
-  width: 100%;
-  max-width: 400px;
-  padding: var(--sp-6) var(--sp-5);
-  text-align: center;
-  background: rgba(255, 255, 255, .92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-}
 
 /* Ornaments */
 
@@ -155,21 +130,9 @@ img {
 
 
 /* Title */
-.login__title {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-charcoal);
-  margin-bottom: var(--sp-3);
-}
 
-.login__subtitle {
-  font-size: 1rem;
-  color: var(--color-charcoal-light);
-  font-weight: 300;
-  margin-bottom: var(--sp-7);
-}
+
+
 
 /* Form */
 .login__form {
@@ -178,35 +141,11 @@ img {
   gap: var(--sp-4);
 }
 
-.login__input {
-  width: 100%;
-  padding: var(--sp-4);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  color: var(--color-charcoal);
-  background: var(--color-white);
-  border: 1.5px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  text-align: center;
-  letter-spacing: 0.15em;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
-  outline: none;
-}
 
-.login__input::placeholder { color: var(--color-text-secondary); opacity: 1; }
 
-.login__input--vip {
-    font-size: 1.25rem !important;
-    text-align: center !important;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 14px !important;
-    border-radius: 12px;
-    font-weight: bold;
-    color: var(--color-talavera) !important;
-    background-color: var(--color-white) !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
+
+
+
   .login__input--vip::placeholder {
     font-size: 1rem;
     font-weight: normal;
@@ -215,25 +154,13 @@ img {
     opacity: 0.4;
   }
   
-  .login__input:focus {
-  border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .15);
-}
+  
 
-.login__input--error {
-  border-color: var(--color-error);
-  animation: shake 0.4s ease;
-}
 
-.login__hint {
-  font-size: 0.8125rem;
-  color: var(--color-error);
-  min-height: 1.2em;
-}
 
-.login__btn {
-  margin-top: var(--sp-2);
-}
+
+
+
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -244,9 +171,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BUTTONS
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -330,11 +257,11 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   PANTALLA B — ALBUM
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PANTALLA B â€” ALBUM
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* — Hero — */
+/* â€” Hero â€” */
 .hero {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
@@ -360,7 +287,7 @@ img {
 }
 
 
-/* — Upload Section — */
+/* â€” Upload Section â€” */
 .upload {
 
   background: rgba(255, 255, 255, 0.7);
@@ -507,9 +434,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GALLERY
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .gallery {
   padding: var(--sp-6) var(--sp-5) var(--sp-5);
   max-width: 1080px;
@@ -537,7 +464,7 @@ img {
   border-radius: 2px;
 }
 
-/* Grid — Default to 2 columns for mobile, so it feels like scattered polaroids */
+/* Grid â€” Default to 2 columns for mobile, so it feels like scattered polaroids */
 .gallery__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -546,13 +473,13 @@ img {
 }
 
 
-/* — Polaroid Card — */
+/* â€” Polaroid Card â€” */
 .polaroid {
-  background: #F7EFE5; /* Tono "Barro/Papel Antiguo" más marcado */
+  background: #F7EFE5; /* Tono "Barro/Papel Antiguo" mÃ¡s marcado */
   border: 1px solid rgba(0,0,0,0.04);
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(30, 56, 136, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mucho más pronunciada */
+  box-shadow: 0 10px 25px rgba(30, 56, 136, 0.15), 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mucho mÃ¡s pronunciada */
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, z-index 0.3s;
   animation: cardIn 0.4s var(--ease-out) both;
   transform-origin: center center;
@@ -677,9 +604,9 @@ img {
 
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DOWNLOAD SECTION
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .download {
   padding: var(--sp-5);
   max-width: 520px;
@@ -688,9 +615,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FOOTER
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .footer {
   text-align: center;
   padding: var(--sp-6) var(--sp-5) var(--sp-8);
@@ -704,13 +631,11 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — Tablet (≥600px)
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESPONSIVE â€” Tablet (â‰¥600px)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (min-width: 600px) {
-  .login__title {
-    font-size: 2.5rem;
-  }
+  
 
   .hero__title {
     font-size: 2.5rem;
@@ -727,13 +652,11 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — Desktop (≥900px)
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESPONSIVE â€” Desktop (â‰¥900px)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (min-width: 900px) {
-  .login__title {
-    font-size: 2.75rem;
-  }
+  
 
   .hero {
     padding-top: var(--sp-10);
@@ -754,9 +677,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOAST NOTIFICATIONS
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .toast-container {
   position: fixed;
   bottom: var(--sp-5);
@@ -891,9 +814,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LIGHTBOX
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -965,7 +888,7 @@ img {
   background: rgba(255, 255, 255, .3);
 }
 
-/* Cursor pointer en las fotos de la galería */
+/* Cursor pointer en las fotos de la galerÃ­a */
 .polaroid__img {
   cursor: pointer;
 }
@@ -1072,9 +995,9 @@ img {
 .mt-4 { margin-top: var(--sp-4); }
 
 
-/* ═══════════════════════════════════════════════════════════
-   FLOATING ACTION BUTTON (FAB) — Cámara flotante
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FLOATING ACTION BUTTON (FAB) â€” CÃ¡mara flotante
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .fab-camera {
   position: fixed;
   bottom: calc(24px + env(safe-area-inset-bottom));
@@ -1118,9 +1041,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   EMPTY STATE — Galería vacía
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   EMPTY STATE â€” GalerÃ­a vacÃ­a
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .gallery__empty-state {
   grid-column: 1 / -1;
   display: flex;
@@ -1151,9 +1074,9 @@ img {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    REDUCED MOTION
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1164,7 +1087,7 @@ img {
 }
 
 
-/* ── Pestañas Álbum / Solteros (React) ── */
+/* â”€â”€ PestaÃ±as Ãlbum / Solteros (React) â”€â”€ */
 #react-singles { display: none; }
 body.show-singles #react-singles { display: block; }
 body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles) { display: none !important; }
@@ -1197,7 +1120,7 @@ body.show-singles #fab-camera { display: none !important; }
 .admin-col__title { font: 600 .8rem var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--color-charcoal-light); margin-bottom: 6px; }
 .admin-label { font: 500 .75rem var(--font-sans); color: var(--color-charcoal-light); margin-top: 6px; }
 .admin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.admin-grid .login__input { text-align: left; padding: 10px 14px; font-size: .9rem; letter-spacing: normal; }
+.admin-grid 
 .theme-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .theme-opt { cursor: pointer; border: 2px solid var(--color-divider); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s, box-shadow .2s; }
 .theme-opt input { position: absolute; opacity: 0; pointer-events: none; }
@@ -1226,16 +1149,8 @@ body.show-singles #fab-camera { display: none !important; }
   transform: scale(1.02);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
-.login__input {
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.5) !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.3s ease;
-}
-.login__input:focus {
-  background: rgba(255, 255, 255, 0.9) !important;
-  box-shadow: 0 0 0 4px rgba(var(--overlay-rgb), 0.5) !important;
-}
+
+
 
 
 .photo-card {
@@ -1263,67 +1178,19 @@ body.show-singles #fab-camera { display: none !important; }
 /* -------------------------------------------
    ETAPA 2: LOGIN (Minimalismo Apple)
    ------------------------------------------- */
-.login {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: var(--sp-6) var(--sp-5); margin-bottom: 0;
-  width: 90%;
-  max-width: 420px;
-  text-align: center;
-  position: relative;
-  z-index: 10;
-  border: 1px solid rgba(0,0,0,0.04);
-}
 
-.login__title {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: var(--text-3xl);
-  letter-spacing: -0.02em;
-  color: var(--color-text-primary);
-  margin-bottom: var(--sp-1);
-}
 
-.login__subtitle {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: var(--text-lg);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--sp-6);
-}
 
-.login__input {
-  width: 100%;
-  padding: 16px 20px;
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  color: var(--color-text-primary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
-}
 
-.login__input::placeholder {
-  color: var(--color-text-secondary);
-  opacity: 0.7;
-}
 
-.login__input:focus {
-  background-color: var(--color-surface);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent); border-color: var(--color-accent);
-}
 
-.login__input--vip {
-  font-size: 18px !important;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-align: center !important;
-  text-transform: uppercase;
-}
+
+
+
+
+
+
+
 
 .btn--primary {
   background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
@@ -1351,7 +1218,7 @@ body.show-singles #fab-camera { display: none !important; }
 
 
 /* =========================================================
-   ETAPA 2.5: REDISEÑO DE LOGIN (SPLIT DESKTOP / SHEET MOBILE)
+   ETAPA 2.5: REDISEÃ‘O DE LOGIN (SPLIT DESKTOP / SHEET MOBILE)
    ========================================================= */
 
 body {
@@ -1361,7 +1228,44 @@ body {
   padding: 0;
 }
 
-#screen-login {
+
+
+/* Ocultar si tiene el hidden del sistema de tabs */
+
+
+#screen-login 
+
+/* Centrar el contenido dentro de la hoja blanca */
+
+
+/* TipografÃ­a de tÃ­tulos */
+
+
+
+
+/* Botones y campos */
+
+
+
+
+.btn--primary {
+  border-radius: 9999px !important; /* Pastilla */
+  background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
+}
+
+/* Escritorio (â‰¥900px) */
+
+
+
+/* =========================================================
+   ETAPA 2.5: REDISEÃ‘O DE LOGIN (SPLIT DESKTOP / SHEET MOBILE)
+   ========================================================= */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+section#screen-login.screen {
   display: flex !important;
   flex-direction: column;
   height: 100vh;
@@ -1369,23 +1273,22 @@ body {
   width: 100vw;
   margin: 0;
   padding: 0;
-  overflow: hidden !important; /* No scroll */
-  /* Patrón nítido sin overlay */
+  overflow: hidden !important; 
   background: var(--bg-pattern) center / cover no-repeat !important;
+  background-color: var(--color-bg) !important; /* Fallback */
   box-sizing: border-box;
 }
 
-/* Ocultar si tiene el hidden del sistema de tabs */
-#screen-login[hidden] {
+section#screen-login.screen[hidden] {
   display: none !important;
 }
 
-#screen-login .login {
+section#screen-login.screen > .login {
   background: var(--color-surface) !important;
   width: 100% !important;
   max-width: none !important;
-  flex: 1; /* Ocupa el resto de la pantalla */
-  margin-top: 40vh !important; /* 40% superior para el patrón */
+  flex: 1 !important; 
+  margin-top: 40vh !important; 
   border-radius: 28px 28px 0 0 !important;
   padding: var(--sp-6) var(--sp-5) !important;
   box-shadow: 0 -10px 40px rgba(0,0,0,0.1) !important;
@@ -1396,61 +1299,80 @@ body {
   border: none !important;
   position: relative;
   z-index: 10;
+  box-sizing: border-box;
 }
 
-/* Centrar el contenido dentro de la hoja blanca */
-#screen-login .login > * {
+section#screen-login.screen > .login > * {
   width: 100%;
   max-width: 400px;
 }
 
-/* Tipografía de títulos */
-.login__title {
+section#screen-login.screen .login__title {
   font-family: var(--font-serif) !important;
   font-size: 2.5rem !important;
   font-weight: 700 !important;
   margin-bottom: 0.5rem !important;
 }
 
-.login__subtitle {
+section#screen-login.screen .login__subtitle {
   font-family: var(--font-sans) !important;
-  font-style: normal !important; /* Sin cursiva */
+  font-style: normal !important; 
   font-weight: 400 !important;
   color: var(--color-text-secondary) !important;
   font-size: 1rem !important;
   margin-bottom: 2rem !important;
 }
 
-/* Botones y campos */
-.login__input {
+section#screen-login.screen .login__input {
   border-radius: 12px !important;
   background-color: var(--color-bg) !important;
   font-family: var(--font-sans) !important;
   font-size: 16px !important;
+  border: 1px solid var(--color-divider) !important;
+  padding: 16px 20px !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  margin-bottom: 1rem !important;
 }
 
-.login__input--vip {
+section#screen-login.screen .login__input:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+  outline: none !important;
+}
+
+section#screen-login.screen .login__input--vip {
   font-size: 18px !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
 }
 
-.btn--primary {
-  border-radius: 9999px !important; /* Pastilla */
+section#screen-login.screen .btn--primary {
+  border-radius: 9999px !important; 
   background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
+  color: #FFF !important;
+  padding: 16px 24px !important;
+  border: none !important;
+  width: 100% !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
 }
 
-/* Escritorio (≥900px) */
+/* Escritorio (â‰¥900px) */
 @media (min-width: 900px) {
-  #screen-login {
-    flex-direction: row;
-    justify-content: flex-end; /* Enviar la hoja blanca a la derecha */
+  section#screen-login.screen {
+    flex-direction: row !important;
+    justify-content: flex-end !important; 
   }
 
-  #screen-login .login {
-    width: 50vw !important; /* Mitad de la pantalla */
+  section#screen-login.screen > .login {
+    width: 50vw !important; 
     margin-top: 0 !important;
     height: 100vh !important;
     height: 100dvh !important;
-    border-radius: 0 !important; /* Sin bordes curvos en escritorio */
+    border-radius: 0 !important; 
     box-shadow: -10px 0 40px rgba(0,0,0,0.1) !important;
   }
 }
+
