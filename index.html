@@ -163,7 +163,7 @@
             accept="image/*"
             capture="environment"
           >
-          <button type="button" id="photo-btn" class="upload__photo-btn" aria-controls="photo-input">
+          <label id="photo-btn" for="photo-input" class="upload__photo-btn" aria-controls="photo-input" role="button" tabindex="0">
             <span class="upload__photo-icon" aria-hidden="true">
               <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             </span>
@@ -226,12 +226,12 @@
   </section>
 
   <!-- Floating Camera Button (FAB) -->
-  <button type="button" id="fab-camera" class="fab-camera" aria-label="Tomar foto">
+  <label id="fab-camera" for="photo-input" class="fab-camera" aria-label="Tomar foto" role="button" tabindex="0">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
       <circle cx="12" cy="13" r="4"></circle>
     </svg>
-  </button>
+  </label>
 
   <!-- Toast Notifications -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
