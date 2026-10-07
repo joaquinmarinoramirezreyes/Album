@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -244,11 +244,13 @@
   </div>
 
   <!-- Slideshow Modal -->
-  <div id="slideshow" class="lightbox" hidden style="background: black;">
-    <button class="lightbox__close" id="slideshow-close" aria-label="Cerrar" style="z-index: 1000;">&times;</button>
+  <div id="slideshow" class="lightbox" hidden style="background: #000000; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <button class="lightbox__close" id="slideshow-close" aria-label="Cerrar" style="z-index: 1000; background: rgba(255,255,255,0.15); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
     <div id="slideshow-content" style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%;">
-      <img id="slideshow-img" src="" alt="Slideshow" style="max-height:75vh; max-width:90vw; border-radius:8px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: lightboxZoom 0.5s ease;">
-      <p id="slideshow-caption" style="color: white; font-family: var(--font-serif); font-size: 1.5rem; margin-top: 20px; max-width: 80vw;"></p>
+      <img id="slideshow-img" src="" alt="Slideshow" style="max-height:80vh; max-width:90vw; border-radius:12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: lightboxZoom 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);">
+      <p id="slideshow-caption" style="color: #FFFFFF; font-family: var(--font-sans); font-size: 1.1rem; font-weight: 400; margin-top: 24px; max-width: 80vw; line-height: 1.5; opacity: 0.9;"></p>
     </div>
   </div>
 
