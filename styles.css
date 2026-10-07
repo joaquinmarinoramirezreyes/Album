@@ -1723,26 +1723,52 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
 
 
 
+
 /* =========================================================
    ETAPA 7: APPLE VISION PRO ELEGANCE (ROBUST ANIMATIONS)
    ========================================================= */
 
-@keyframes screenFadeIn {
-  0% { opacity: 0; filter: blur(10px); transform: scale(0.96); }
-  100% { opacity: 1; filter: blur(0px); transform: scale(1); }
-}
-@keyframes screenFadeOut {
-  0% { opacity: 1; filter: blur(0px); transform: scale(1); }
-  100% { opacity: 0; filter: blur(10px); transform: scale(1.02); }
+/* 1. Transiciones Base de Pantalla */
+.screen {
+  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+              filter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
+@keyframes screenFadeIn {
+  0% { opacity: 0; filter: blur(12px); transform: scale(0.96); }
+  100% { opacity: 1; filter: blur(0px); transform: scale(1); }
+}
+
+/* Fade IN: Usa keyframes porque cambia de display:none a flex */
 .screen--active {
   animation: screenFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
 }
+
+/* Fade OUT: Debe usar CSS Transitions para disparar el evento transitionend del JS */
 .screen--fading {
-  animation: screenFadeOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+  animation: none !important;
+  opacity: 0 !important;
+  filter: blur(10px) !important;
+  transform: scale(1.02) !important;
 }
 
+/* 2. Transiciones de Pestañas (Galería <-> Solteros) */
+@keyframes tabFadeIn {
+  0% { opacity: 0; transform: translateY(15px); filter: blur(8px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+body.show-singles #react-singles {
+  animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+body:not(.show-singles) #screen-album > .upload,
+body:not(.show-singles) #screen-album > .photo-grid {
+  animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 3. Glassmorphism Refinado */
 .login, .upload, .singles-form-container {
   transform-style: preserve-3d;
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
@@ -1756,6 +1782,7 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   box-shadow: 0 20px 40px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.9);
 }
 
+/* Inputs */
 .login__input {
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.04), 0 1px 0 rgba(255,255,255,0.8);
   transition: all 0.3s ease;
@@ -1766,6 +1793,7 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   border-color: rgba(30, 56, 136, 0.4);
 }
 
+/* Botones con Shimmer */
 .btn {
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
@@ -1792,6 +1820,7 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   box-shadow: inset 0 4px 8px rgba(0,0,0,0.15);
 }
 
+/* Hero: Depth elegante */
 .hero__title {
   text-shadow: 0 8px 16px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.05) !important;
   transition: transform 0.5s ease, text-shadow 0.5s ease;
@@ -1801,6 +1830,7 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   text-shadow: 0 12px 24px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.05) !important;
 }
 
+/* Cartas y Polaroids */
 .polaroid, .single-card {
   transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
   position: relative;
@@ -1823,9 +1853,8 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   opacity: 1;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
-}
+/* OPTIMIZACIÓN 3D PARA MÓVILES */
+* { -webkit-tap-highlight-color: transparent; }
 .polaroid:active, .single-card:active {
   transform: translateY(2px) scale(0.98) !important;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1), inset 0 2px 4px rgba(0,0,0,0.05) !important;
