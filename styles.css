@@ -1,4 +1,4 @@
-﻿/* ðŸŽ¨ Design Tokens - Etapa 1: Minimalismo Apple ðŸŽ¨ */
+/* ðŸŽ¨ Design Tokens - Etapa 1: Minimalismo Apple ðŸŽ¨ */
 :root {
   /* Paleta Neutra (Estilo iOS/macOS) */
   --color-bg:           #F5F5F7; /* Gris claro muy limpio */
@@ -1657,18 +1657,69 @@ section#screen-login.screen > .login {
   animation: epic3DChildren 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both !important;
 }
 
-/* --- 7. BOTÓN FLOTANTE (FAB) LATIDO ESPACIAL --- */
-@keyframes spatialFloat {
-  0%, 100% { transform: translateY(0) translateZ(0); }
-  50% { transform: translateY(-8px) translateZ(20px); box-shadow: 0 16px 32px rgba(0,0,0,0.25), 0 8px 16px rgba(0,0,0,0.15); }
+/* --- 7. BOTÓN FLOTANTE (FAB) LATIDO ESPACIAL Y GLASSMORPHISM --- */
+/* Base del botón con Glassmorphism 3D */
+.fab-camera {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: var(--color-accent) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.4s ease !important;
+  /* Por defecto oculto, se maneja con el sibling selector */
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
-.fab-camera.visible {
+/* El ícono de la cámara flota dentro del botón */
+.fab-camera svg {
+  transform: translateZ(10px);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.fab-camera:hover svg {
+  transform: translateZ(24px) scale(1.15);
+}
+
+/* Animación de levitación espacial */
+@keyframes spatialFloat {
+  0%, 100% { 
+    transform: translateY(0) translateZ(0) rotateX(10deg); 
+    box-shadow: 0 16px 32px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05), inset 0 2px 2px rgba(255,255,255,1);
+  }
+  50% { 
+    transform: translateY(-10px) translateZ(40px) rotateX(0deg); 
+    box-shadow: 0 24px 48px rgba(0,0,0,0.2), 0 12px 24px rgba(0,0,0,0.1), inset 0 2px 2px rgba(255,255,255,1);
+  }
+}
+
+/* VISIBILIDAD INTELIGENTE SIN JS */
+/* Siempre visible si la galería está activa */
+#screen-album.screen--active ~ .fab-camera {
+  opacity: 1 !important;
+  pointer-events: auto !important;
   animation: spatialFloat 4s ease-in-out infinite;
 }
 
+/* Ocultar en la pestaña Solteros */
+body.show-singles #screen-album.screen--active ~ .fab-camera {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+
+/* Ocultar en el Login explícitamente */
+#screen-login.screen--active ~ .fab-camera {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+
+/* Hover detiene la levitación y aplica el pop 3D máximo */
 .fab-camera:hover {
-  animation: none; /* Detiene el latido al hacer hover para la interacción manual */
-  transform: translateY(-12px) translateZ(40px) scale(1.1) !important;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.3) !important;
+  animation: none !important;
+  transform: translateY(-12px) translateZ(50px) rotateX(0deg) scale(1.1) !important;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25), inset 0 2px 2px rgba(255,255,255,1) !important;
 }
