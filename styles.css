@@ -1366,8 +1366,7 @@ section#screen-login.screen .btn--primary {
     justify-content: flex-end !important; 
   }
 
-  section#screen-login.screen > .login {
-    width: 50vw !important; 
+  section#screen-login.screen > .login { flex: none !important; width: 50vw !important; 
     margin-top: 0 !important;
     height: 100vh !important;
     height: 100dvh !important;
@@ -1375,4 +1374,5 @@ section#screen-login.screen .btn--primary {
     box-shadow: -10px 0 40px rgba(0,0,0,0.1) !important;
   }
 }
+
 
