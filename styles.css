@@ -125,11 +125,19 @@ img {
   justify-content: center;
   min-height: 100dvh;
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .88), rgba(var(--overlay-rgb), .88)),
+    linear-gradient(rgba(var(--overlay-rgb), .45), rgba(var(--overlay-rgb), .45)),
     var(--bg-pattern) center / 400px repeat;
 }
 
 .login {
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+
   width: 100%;
   max-width: 400px;
   padding: var(--sp-6) var(--sp-5);
@@ -348,7 +356,7 @@ img {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .92), rgba(var(--overlay-rgb), .92)),
+    linear-gradient(rgba(var(--overlay-rgb), .55), rgba(var(--overlay-rgb), .55)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -371,6 +379,17 @@ img {
 
 /* — Upload Section — */
 .upload {
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+
+  margin: 16px;
+  padding: 24px;
+  border-radius: 24px;
   padding: var(--sp-5);
   max-width: 520px;
   margin: 0 auto;
@@ -697,7 +716,7 @@ img {
   border-top: 1px solid var(--color-divider);
   margin-top: var(--sp-6);
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .90), rgba(var(--overlay-rgb), .90)),
+    linear-gradient(rgba(var(--overlay-rgb), .55), rgba(var(--overlay-rgb), .55)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -970,6 +989,14 @@ img {
 
 /* Modal Cards (dentro de lightbox) */
 .modal-card {
+
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+
   background: var(--color-white);
   padding: var(--sp-6) var(--sp-5);
   border-radius: var(--radius-lg);
@@ -1205,4 +1232,43 @@ body.show-singles #fab-camera { display: none !important; }
   .theme-opt:last-child { grid-column: 1 / -1; }
   .admin-grid { grid-template-columns: 1fr; }
   .admin-col + .admin-col { border-left: 0; padding-left: 0; border-top: 1px solid var(--color-divider); padding-top: 18px; }
+}
+
+
+.photo-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  animation: cardDrop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+.photo-card:hover {
+  transform: translateY(-8px) scale(1.03) rotate(-1deg);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+@keyframes cardDrop {
+  from { opacity: 0; transform: translateY(40px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.btn--primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: skewX(-20deg);
+  transition: 0s;
+}
+.btn--primary:hover::after {
+  left: 200%;
+  transition: 0.7s ease-in-out;
 }
