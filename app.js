@@ -1,3 +1,14 @@
+import '@fontsource-variable/inter';
+import { createIcons, Settings, Shield } from 'lucide';
+
+// Initialize icons immediately
+createIcons({
+  icons: {
+    Settings,
+    Shield
+  }
+});
+
 ﻿const THEMES = {
   default: {
     name: 'Central de Eventos',

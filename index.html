@@ -13,7 +13,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -49,7 +49,7 @@
         <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galería</button>
       </form>
 
-      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;">
+      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;" aria-label="Acceso anfitrión para moderar evento">
     <i data-lucide="shield" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
     Acceso Anfitrión
   </button>
@@ -61,7 +61,7 @@
       </div>
 
       <!-- Admin link -->
-      <button type="button" id="btn-admin-modal" class="btn--text" style="margin-top: 1.5rem; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;">
+      <button type="button" id="btn-admin-modal" class="btn--text" style="margin-top: 1.5rem; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Abrir panel central para crear nuevo evento">
     <i data-lucide="settings" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
     Panel Central
   </button>
@@ -278,10 +278,9 @@
       if (e.ctrlKey && e.keyCode == 85) { return false; } // Ctrl+U
     };
   </script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>lucide.createIcons();</script>
-</body>
+  </body>
 </html>
+
 
 
 
