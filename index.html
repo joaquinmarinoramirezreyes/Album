@@ -245,16 +245,16 @@
           <img id="lightbox-img" class="lightbox__img" src="" alt="Foto en grande">
           <div id="lightbox-caption" class="lightbox__caption"></div>
           <button id="lightbox-btn-flip" class="lightbox__btn-flip" aria-label="Ver dedicatoria">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M21 13a9 9 0 1 1-3-7.7L21 8"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
           </button>
         </div>
-        <div class="lightbox__flip-back">
+        <div class="lightbox__flip-back" aria-hidden="true" inert>
           <div class="lightbox__back-content">
             <h3 id="lightbox-back-name"></h3>
             <p id="lightbox-back-message"></p>
           </div>
           <button id="lightbox-btn-flip-back" class="lightbox__btn-flip" aria-label="Volver a la foto">
-             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22v-6h6"></path><path d="M3 11a9 9 0 1 1 3 7.7L3 16"></path></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           </button>
         </div>
       </div>
@@ -288,6 +288,15 @@
     };
   </script>
     <script type="module" src="./effects-3d.js"></script>
+  <!-- 3D Coverflow Modal (Etapa 4) -->
+  <div id="coverflow" class="lightbox" hidden style="background: #000; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <button class="lightbox__close" id="coverflow-close" aria-label="Cerrar Presentación" style="z-index: 1000; background: rgba(255,255,255,0.15); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div id="coverflow-container" class="coverflow-container">
+      <!-- Tarjetas virtuales aquí -->
+    </div>
+  </div>
 </body>
 </html>
 

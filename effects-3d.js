@@ -33,33 +33,35 @@ document.addEventListener('DOMContentLoaded', () => {
     card.style.setProperty('--mouse-y', y + 'px');
   });
 
-  let initialRenderComplete = false;
+    let initialRenderComplete = false;
+  window.addEventListener('gallery-update', (e) => {
+    if (!e.detail.fromCache) {
+      initialRenderComplete = true; // Servidor sincronizado
+    }
+  });
 
   const observer = new MutationObserver((mutations) => {
     let newPhotosCount = 0;
-
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === 1 && node.classList.contains('polaroid')) {
-            if (!initialRenderComplete) return;
+            if (!initialRenderComplete) return; // Ignorar hasta sincronizar servidor
 
             newPhotosCount++;
-            
             if (newPhotosCount <= 5) {
               node.classList.add('new-photo-entrance');
               node.addEventListener('animationend', () => {
                 node.classList.remove('new-photo-entrance');
               }, { once: true });
             }
+            
+            // Notify coverflow if active
+            window.dispatchEvent(new CustomEvent('coverflow-new-photo', { detail: { node } }));
           }
         });
       }
     });
-
-    if (!initialRenderComplete) {
-      initialRenderComplete = true;
-    }
   });
 
   observer.observe(galleryGrid, { childList: true, subtree: false });
@@ -90,7 +92,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const flipBtn = e.target.closest('.lightbox__btn-flip');
     if (flipBtn) {
       const flipInner = document.getElementById('lightbox-flip-inner');
-      if (flipInner) flipInner.classList.toggle('is-flipped');
+      if (flipInner) {
+        const isFlipped = flipInner.classList.toggle('is-flipped');
+        const front = flipInner.querySelector('.lightbox__flip-front');
+        const back = flipInner.querySelector('.lightbox__flip-back');
+        if (front) {
+           front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
+           if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
+        }
+        if (back) {
+           back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
+           if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
+        }
+      }
     }
   });
 
@@ -100,6 +114,140 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lightbox && !lightbox.hidden && (e.key === 'f' || e.key === 'F' || e.key === ' ')) {
        e.preventDefault();
        const flipInner = document.getElementById('lightbox-flip-inner');
-       if (flipInner) flipInner.classList.toggle('is-flipped');
+       if (flipInner) {
+        const isFlipped = flipInner.classList.toggle('is-flipped');
+        const front = flipInner.querySelector('.lightbox__flip-front');
+        const back = flipInner.querySelector('.lightbox__flip-back');
+        if (front) {
+           front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
+           if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
+        }
+        if (back) {
+           back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
+           if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
+        }
+      }
     }
+  });
+
+  // =========================================================
+  // ETAPA 4: COVERFLOW (SLIDESHOW 3D)
+  // =========================================================
+  const coverflowModal = document.getElementById('coverflow');
+  const coverflowContainer = document.getElementById('coverflow-container');
+  const coverflowClose = document.getElementById('coverflow-close');
+  
+  let coverflowActive = false;
+  let coverflowCards = []; // Datos de las tarjetas
+  let coverflowIndex = 0;
+  let coverflowInterval;
+  let wakeLock = null;
+
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+      } catch (err) {}
+    }
+  }
+  function releaseWakeLock() {
+    if (wakeLock !== null) {
+      wakeLock.release().then(() => wakeLock = null);
+    }
+  }
+
+  window.addEventListener('open-coverflow', async () => {
+    // 1. Fullscreen y WakeLock
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (e) {}
+    requestWakeLock();
+
+    // 2. Extraer datos actuales de la cuadrícula
+    const domCards = document.querySelectorAll('.polaroid');
+    coverflowCards = Array.from(domCards).map(card => {
+      return {
+        src: card.querySelector('.polaroid__img').src,
+        name: card.querySelector('.polaroid__name').textContent,
+        msg: card.querySelector('.polaroid__message')?.textContent || ''
+      };
+    });
+
+    if (coverflowCards.length === 0) return;
+
+    coverflowIndex = 0;
+    coverflowActive = true;
+    coverflowModal.hidden = false;
+    
+    renderCoverflow();
+    startCoverflowTimer();
+  });
+
+  if (coverflowClose) {
+    coverflowClose.addEventListener('click', () => {
+      coverflowActive = false;
+      coverflowModal.hidden = true;
+      clearInterval(coverflowInterval);
+      releaseWakeLock();
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(()=>{});
+      }
+    });
+  }
+
+  function renderCoverflow(overrideIndex = null) {
+    if (!coverflowActive || coverflowCards.length === 0) return;
+    
+    if (overrideIndex !== null) {
+      coverflowIndex = overrideIndex;
+    } else {
+      coverflowIndex = (coverflowIndex + 1) % coverflowCards.length;
+    }
+
+    // Virtualización: Renderizamos solo 5 elementos
+    coverflowContainer.innerHTML = '';
+    
+    for (let offset = -2; offset <= 2; offset++) {
+      let idx = (coverflowIndex + offset) % coverflowCards.length;
+      if (idx < 0) idx += coverflowCards.length;
+
+      const data = coverflowCards[idx];
+      const cardEl = document.createElement('div');
+      cardEl.className = 'coverflow-card';
+      
+      if (offset === 0) cardEl.classList.add('center');
+      else if (offset === -1) cardEl.classList.add('left-1');
+      else if (offset === 1) cardEl.classList.add('right-1');
+      else if (offset === -2) cardEl.classList.add('left-2');
+      else if (offset === 2) cardEl.classList.add('right-2');
+      else cardEl.classList.add('hidden');
+
+      cardEl.innerHTML = '<img src="' + data.src + '" alt="Foto"><div class="coverflow-caption"><strong>' + data.name + '</strong><br><span>' + data.msg + '</span></div>';
+
+      coverflowContainer.appendChild(cardEl);
+    }
+  }
+
+  function startCoverflowTimer() {
+    clearInterval(coverflowInterval);
+    coverflowInterval = setInterval(() => {
+      renderCoverflow();
+    }, 4500);
+  }
+
+  window.addEventListener('coverflow-new-photo', (e) => {
+    if (!coverflowActive) return;
+    
+    const node = e.detail.node;
+    const newData = {
+      src: node.querySelector('.polaroid__img').src,
+      name: node.querySelector('.polaroid__name').textContent,
+      msg: node.querySelector('.polaroid__message')?.textContent || ''
+    };
+    
+    coverflowCards.push(newData);
+    renderCoverflow(coverflowCards.length - 1);
+    startCoverflowTimer();
   });

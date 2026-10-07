@@ -1386,6 +1386,11 @@ let slideshowInterval;
 let currentSlideIndex = 0;
 
 $btnSlideshow.addEventListener('click', async () => {
+    const useCoverflow = true;
+    if (useCoverflow) {
+      window.dispatchEvent(new CustomEvent('open-coverflow'));
+      return;
+    }
   const cards = document.querySelectorAll('.polaroid');
   if (cards.length === 0) {
     showToast('La galería está vacía.', 'info');
