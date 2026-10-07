@@ -1549,3 +1549,126 @@ body.show-singles #fab-camera { display: none !important; }
 .singles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 @media (min-width: 600px) { .singles-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
 @media (min-width: 900px) { .singles-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; } }
+
+
+/* =========================================================
+   ETAPA 5: APPLE SPATIAL DESIGN (EFECTOS 3D ÉPICOS)
+   ========================================================= */
+
+/* --- 1. CONTENEDORES 3D --- */
+.gallery__grid, .singles-grid {
+  perspective: 1200px;
+}
+
+/* --- 2. TARJETAS FLOTANTES 3D (VISION OS STYLE) --- */
+.polaroid, .single-card {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease;
+  will-change: transform;
+}
+
+.polaroid:hover, .single-card:hover {
+  /* Elevación en el eje Z y ligero Tilt */
+  transform: translateY(-8px) translateZ(40px) rotateX(2deg) rotateY(-1deg);
+  box-shadow: 
+    0 30px 60px rgba(0,0,0,0.12), 
+    0 12px 24px rgba(0,0,0,0.08), 
+    inset 0 1px 1px rgba(255,255,255,0.8);
+}
+
+/* --- 3. PARALLAX INTERNO EN LAS TARJETAS --- */
+.polaroid__img-wrapper, .single-card__img {
+  transform: translateZ(1px); /* Base z-index for 3D */
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.polaroid:hover .polaroid__img-wrapper, .single-card:hover .single-card__img {
+  /* La imagen sale de la tarjeta hacia el usuario */
+  transform: translateZ(30px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.polaroid__caption, .single-card__body {
+  transform: translateZ(20px);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.polaroid:hover .polaroid__caption, .single-card:hover .single-card__body {
+  /* El texto flota por encima de la tarjeta */
+  transform: translateZ(50px);
+}
+
+/* --- 4. ENTRADA ÉPICA DEL LOGIN --- */
+@keyframes epic3DEntrance {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) translateY(80px) translateZ(-150px) rotateX(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) translateY(0) translateZ(0) rotateX(0);
+  }
+}
+
+section#screen-login.screen > .login {
+  animation: epic3DEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-style: preserve-3d;
+}
+
+.login > * {
+  /* Cascada de aparición en Z */
+  animation: epic3DChildren 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.login > *:nth-child(1) { animation-delay: 0.1s; }
+.login > *:nth-child(2) { animation-delay: 0.2s; }
+.login > *:nth-child(3) { animation-delay: 0.3s; }
+.login > *:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes epic3DChildren {
+  0% { opacity: 0; transform: translateZ(-30px) translateY(20px); }
+  100% { opacity: 1; transform: translateZ(0) translateY(0); }
+}
+
+/* --- 5. ENTRADA DE MODALES (PANEL CENTRAL) --- */
+@keyframes lightboxZoom3D {
+  from { 
+    transform: perspective(1200px) translateZ(-300px) translateY(50px) rotateX(15deg); 
+    opacity: 0; 
+  }
+  to { 
+    transform: perspective(1200px) translateZ(0) translateY(0) rotateX(0); 
+    opacity: 1; 
+  }
+}
+
+.modal-card {
+  animation: lightboxZoom3D 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  transform-style: preserve-3d;
+}
+
+/* --- 6. PRESENTACIÓN EN VIVO (SLIDESHOW) --- */
+#slideshow-img {
+  animation: lightboxZoom3D 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+#slideshow-caption {
+  animation: epic3DChildren 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both !important;
+}
+
+/* --- 7. BOTÓN FLOTANTE (FAB) LATIDO ESPACIAL --- */
+@keyframes spatialFloat {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(-8px) translateZ(20px); box-shadow: 0 16px 32px rgba(0,0,0,0.25), 0 8px 16px rgba(0,0,0,0.15); }
+}
+
+.fab-camera.visible {
+  animation: spatialFloat 4s ease-in-out infinite;
+}
+
+.fab-camera:hover {
+  animation: none; /* Detiene el latido al hacer hover para la interacción manual */
+  transform: translateY(-12px) translateZ(40px) scale(1.1) !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3) !important;
+}
