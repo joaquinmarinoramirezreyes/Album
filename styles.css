@@ -7,15 +7,15 @@
 :root {
   /* Palette */
   --color-bg:           #FAFAFA;
-  --overlay-rgb: 5, 10, 20;
+  --overlay-rgb:        234, 240, 246;
   --color-accent:       #1E3888;
   --bg-pattern:         url('/assets/talavera-pattern.jpg');
-  --color-bg-warm: #0a1128;
+  --color-bg-warm:      #EAF0F6;
   --color-talavera:     #1E3888;
   --color-talavera-dark: #12245C;
-  --color-charcoal: #E5F0FF;
-  --color-charcoal-light: #8BA4D4;
-  --color-white: #020617;
+  --color-charcoal:     #1C2331;
+  --color-charcoal-light: #525E75;
+  --color-white:        #FFFFFF;
   --color-divider:      #DFE4EC;
   --color-error:        #D32F2F;
 
@@ -125,18 +125,18 @@ img {
   justify-content: center;
   min-height: 100dvh;
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .85), rgba(var(--overlay-rgb), .85)),
+    linear-gradient(rgba(var(--overlay-rgb), .35), rgba(var(--overlay-rgb), .35)),
     var(--bg-pattern) center / 400px repeat;
 }
 
 .login {
 
-  background: rgba(10, 15, 30, 0.65); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(100, 200, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  border-radius: 32px;
 
   width: 100%;
   max-width: 400px;
@@ -356,7 +356,7 @@ img {
   text-align: center;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .90), rgba(var(--overlay-rgb), .90)),
+    linear-gradient(rgba(var(--overlay-rgb), .45), rgba(var(--overlay-rgb), .45)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -380,12 +380,12 @@ img {
 /* — Upload Section — */
 .upload {
 
-  background: rgba(10, 15, 30, 0.65); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(100, 200, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  border-radius: 32px;
 
   margin: 16px;
   padding: 24px;
@@ -716,7 +716,7 @@ img {
   border-top: 1px solid var(--color-divider);
   margin-top: var(--sp-6);
   background:
-    linear-gradient(rgba(var(--overlay-rgb), .90), rgba(var(--overlay-rgb), .90)),
+    linear-gradient(rgba(var(--overlay-rgb), .45), rgba(var(--overlay-rgb), .45)),
     var(--bg-pattern) center / 400px repeat;
 }
 
@@ -990,12 +990,12 @@ img {
 /* Modal Cards (dentro de lightbox) */
 .modal-card {
 
-  background: rgba(10, 15, 30, 0.65); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(100, 200, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  border-radius: 32px;
 
   background: var(--color-white);
   padding: var(--sp-6) var(--sp-5);
@@ -1235,112 +1235,43 @@ body.show-singles #fab-camera { display: none !important; }
 }
 
 
-.photo-card {
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-  animation: cardDrop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+.btn {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 99px !important;
 }
-.photo-card:hover {
-  transform: translateY(-8px) scale(1.03) rotate(-1deg);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  z-index: 10;
-}
-@keyframes cardDrop {
-  from { opacity: 0; transform: translateY(40px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-
-.btn--primary {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-.btn--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-.btn--primary::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transform: skewX(-20deg);
-  transition: 0s;
-}
-.btn--primary:hover::after {
-  left: 200%;
-  transition: 0.7s ease-in-out;
-}
-
-
-.photo-card {
-  background: rgba(10, 15, 30, 0.8) !important;
-  border: 1px solid rgba(100, 200, 255, 0.4) !important;
-  color: #fff !important;
-  box-shadow: 0 0 15px rgba(0, 150, 255, 0.1) !important;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.3s ease;
-}
-.photo-card:hover {
-  border-color: rgba(0, 255, 255, 0.8) !important;
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), inset 0 0 15px rgba(0, 255, 255, 0.2) !important;
-}
-.photo-card__author {
-  color: #00e5ff !important;
-  text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
-  font-family: ui-monospace, monospace;
-}
-
-
-.btn--primary {
-  background: transparent !important;
-  border: 1px solid var(--color-talavera) !important;
-  color: #fff !important;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  box-shadow: 0 0 10px var(--color-talavera), inset 0 0 10px var(--color-talavera) !important;
-}
-.btn--primary:hover {
-  background: var(--color-talavera) !important;
-  box-shadow: 0 0 30px var(--color-talavera), inset 0 0 20px rgba(255,255,255,0.5) !important;
-  text-shadow: 0 0 10px #fff;
+.btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 .login__input {
-  background: rgba(0,0,0,0.5) !important;
-  border: 1px solid rgba(100, 200, 255, 0.2) !important;
-  color: #00e5ff !important;
-  font-family: ui-monospace, monospace !important;
-  text-transform: uppercase;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
 }
 .login__input:focus {
-  border-color: #00e5ff !important;
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.5) !important;
-}
-.login__title {
-  color: #fff !important;
-  text-shadow: 0 0 10px rgba(255,255,255,0.5);
-  letter-spacing: 3px;
-}
-.login__subtitle {
-  color: #00e5ff !important;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 0 4px rgba(var(--overlay-rgb), 0.5) !important;
 }
 
 
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.03) 51%, transparent 51%);
-  background-size: 100% 4px;
-  z-index: 9999;
-  animation: hudScan 10s linear infinite;
-  opacity: 0.6;
+.photo-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+  animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-@keyframes hudScan {
-  0% { transform: translateY(-100vh); }
-  100% { transform: translateY(100vh); }
+.photo-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+.photo-card__img-container {
+  border-radius: 12px 12px 0 0 !important;
+  overflow: hidden;
+}
+@keyframes smoothFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
