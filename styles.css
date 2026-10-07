@@ -433,11 +433,7 @@ img {
 
 
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+  
 
 
 
@@ -461,9 +457,7 @@ img {
 
 /* Heartbeat animation when liking */
 
-  50%  { transform: scale(1.15); }
-  100% { transform: scale(1); }
-}
+  
 
 
 
@@ -620,18 +614,7 @@ img {
 }
 
 /* Animations */
-@keyframes toastIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes toastOut {
+@keyframes toastIn { from { opacity: 0; transform: translateY(16px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } } @keyframes toastOut {
   from {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1026,7 +1009,7 @@ body {
   padding: 0;
 }
 
-section#screen-login.screen {
+section#screen-login.screen.screen--active {
   display: flex !important;
   flex-direction: column;
   height: 100vh;
@@ -1122,7 +1105,7 @@ section#screen-login.screen .btn--primary {
 
 /* Escritorio (â‰¥900px) */
 @media (min-width: 900px) {
-  section#screen-login.screen {
+  section#screen-login.screen.screen--active {
     flex-direction: row !important;
     justify-content: flex-end !important; 
   }
@@ -1406,7 +1389,7 @@ section#screen-login.screen .btn--primary {
 }
 
 /* --- FLOATING ACTION BUTTON (FAB) --- */
-.fab-camera {
+.fab-camera { opacity: 0; pointer-events: none;
   position: fixed;
   bottom: 32px;
   right: 32px;
@@ -1425,7 +1408,7 @@ section#screen-login.screen .btn--primary {
   border: none;
 }
 
-.fab-camera:hover {
+.fab-camera.visible { opacity: 1; pointer-events: auto; } .fab-camera:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 12px 32px rgba(0,0,0,0.2), 0 6px 12px rgba(0,0,0,0.1);
 }
@@ -1538,3 +1521,4 @@ section#screen-login.screen .btn--primary {
 /* Fix React toggles */
 body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles) { display: none !important; }
 body.show-singles #fab-camera { display: none !important; }
+
