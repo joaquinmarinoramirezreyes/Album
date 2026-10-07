@@ -31,8 +31,10 @@ if (!prefersReducedMotion && isPointerFine && galleryGrid) {
   });
 
   // 2. Detección de Fotos Nuevas en Tiempo Real (Etapa 2)
+  let globalGalleryDocs = [];
   let initialRenderComplete = false;
   window.addEventListener('gallery-update', (e) => {
+    globalGalleryDocs = e.detail.docs;
     if (!e.detail.fromCache) {
       initialRenderComplete = true; // Servidor sincronizado
     }
@@ -54,8 +56,7 @@ if (!prefersReducedMotion && isPointerFine && galleryGrid) {
               }, { once: true });
             }
             
-            // Notify coverflow if active
-            window.dispatchEvent(new CustomEvent('coverflow-new-photo', { detail: { node } }));
+            
           }
         });
       }
@@ -94,8 +95,20 @@ if (galleryGrid) {
 
 function handleLightboxFlip() {
   const flipInner = document.getElementById('lightbox-flip-inner');
+  const flipBtn = document.getElementById('lightbox-btn-flip');
   if (flipInner) {
     const isFlipped = flipInner.classList.toggle('is-flipped');
+    
+    if (flipBtn) {
+        if (isFlipped) {
+            flipBtn.setAttribute('aria-label', 'Volver a la foto');
+            flipBtn.classList.add('is-flipped-state');
+        } else {
+            flipBtn.setAttribute('aria-label', 'Ver dedicatoria');
+            flipBtn.classList.remove('is-flipped-state');
+        }
+    }
+
     const front = flipInner.querySelector('.lightbox__flip-front');
     const back = flipInner.querySelector('.lightbox__flip-back');
     if (front) {
@@ -270,15 +283,15 @@ function processCoverflowQueue() {
   }, 3500); // Se muestra por 3.5 segundos en el centro
 }
 
-window.addEventListener('coverflow-new-photo', (e) => {
-  if (!coverflowActive) return;
+window.addEventListener('coverflow-realtime-add', (e) => {
+  if (!coverflowActive || !initialRenderComplete) return;
   
-  const node = e.detail.node;
-  const newData = {
-    src: node.querySelector('.polaroid__img').src,
-    name: node.querySelector('.polaroid__name').textContent,
-    msg: node.querySelector('.polaroid__message')?.textContent || ''
-  };
+  const newData = e.detail;
+  
+  if (coverflowQueue.length >= 5) {
+    coverflowCards.push(newData);
+    return;
+  }
   
   coverflowQueue.push(newData);
   if (!isProcessingQueue) {

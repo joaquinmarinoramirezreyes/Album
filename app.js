@@ -896,6 +896,7 @@ function startGalleryListener() {
         if (emptyState) emptyState.remove();
 
         renderPolaroidCard(id, data);
+          window.dispatchEvent(new CustomEvent('coverflow-realtime-add', { detail: { src: data.imageUrl, name: data.nombre, msg: data.dedicatoria || '' } }));
       }
 
       if (change.type === 'modified') {

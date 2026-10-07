@@ -334,7 +334,7 @@
 @media (max-width: 500px) {
   .lightbox__flip-container {
     width: 95vw;
-    height: 90vh; /* Dar espacio superior/inferior */
+    height: 90dvh; /* Dar espacio superior/inferior */
   }
   .lightbox__flip-front .lightbox__img {
     max-width: 95vw;
@@ -371,3 +371,6 @@
     z-index: 50;
   }
 }
+  .lightbox__btn-flip.is-flipped-state::after {
+    content: "Volver a la foto";
+  }
