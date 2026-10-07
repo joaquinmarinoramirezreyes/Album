@@ -237,10 +237,28 @@
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Lightbox Modal -->
-  <div id="lightbox" class="lightbox" hidden>
+    <div id="lightbox" class="lightbox" hidden>
     <button class="lightbox__close" id="lightbox-close" aria-label="Cerrar">&times;</button>
-    <img id="lightbox-img" class="lightbox__img" src="" alt="Foto en grande">
-    <div id="lightbox-caption" class="lightbox__caption"></div>
+    <div class="lightbox__flip-container">
+      <div class="lightbox__flip-inner" id="lightbox-flip-inner">
+        <div class="lightbox__flip-front">
+          <img id="lightbox-img" class="lightbox__img" src="" alt="Foto en grande">
+          <div id="lightbox-caption" class="lightbox__caption"></div>
+          <button id="lightbox-btn-flip" class="lightbox__btn-flip" aria-label="Ver dedicatoria">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M21 13a9 9 0 1 1-3-7.7L21 8"></path></svg>
+          </button>
+        </div>
+        <div class="lightbox__flip-back">
+          <div class="lightbox__back-content">
+            <h3 id="lightbox-back-name"></h3>
+            <p id="lightbox-back-message"></p>
+          </div>
+          <button id="lightbox-btn-flip-back" class="lightbox__btn-flip" aria-label="Volver a la foto">
+             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22v-6h6"></path><path d="M3 11a9 9 0 1 1 3 7.7L3 16"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Slideshow Modal -->

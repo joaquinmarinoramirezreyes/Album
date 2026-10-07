@@ -64,3 +64,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   observer.observe(galleryGrid, { childList: true, subtree: false });
 });
+  // 3. Etapa 3: Volteo 3D en el Lightbox
+  if (galleryGrid) {
+    galleryGrid.addEventListener('click', (e) => {
+      const img = e.target.closest('.polaroid__img');
+      if (!img) return; // Si clickean like o borrar, se ignora aquí y en app.js
+      
+      const card = img.closest('.polaroid');
+      const nameEl = card?.querySelector('.polaroid__name');
+      const msgEl  = card?.querySelector('.polaroid__message');
+
+      const backName = document.getElementById('lightbox-back-name');
+      const backMsg = document.getElementById('lightbox-back-message');
+      
+      if (backName) backName.textContent = nameEl ? nameEl.textContent : '';
+      if (backMsg) backMsg.textContent = msgEl ? msgEl.textContent : 'Sin dedicatoria';
+
+      const flipInner = document.getElementById('lightbox-flip-inner');
+      if (flipInner) flipInner.classList.remove('is-flipped');
+    });
+  }
+
+  // Activar volteo con botón
+  document.addEventListener('click', (e) => {
+    const flipBtn = e.target.closest('.lightbox__btn-flip');
+    if (flipBtn) {
+      const flipInner = document.getElementById('lightbox-flip-inner');
+      if (flipInner) flipInner.classList.toggle('is-flipped');
+    }
+  });
+
+  // Activar volteo con tecla (Espacio o 'F')
+  document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox && !lightbox.hidden && (e.key === 'f' || e.key === 'F' || e.key === ' ')) {
+       e.preventDefault();
+       const flipInner = document.getElementById('lightbox-flip-inner');
+       if (flipInner) flipInner.classList.toggle('is-flipped');
+    }
+  });
