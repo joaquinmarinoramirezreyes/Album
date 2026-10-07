@@ -1725,127 +1725,110 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
 }
 
 
+
 /* =========================================================
-   ETAPA 6: MAXIMUM SPATIAL 3D (EVERYWHERE)
+   ETAPA 7: APPLE VISION PRO ELEGANCE (EXPENSIVE, SUBTLE 3D)
    ========================================================= */
 
-/* --- FORMULARIOS Y PANELES (LOGIN, UPLOAD, SINGLES FORM) --- */
+.screen {
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+              filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.screen:not(.screen--active) {
+  filter: blur(8px);
+  transform: scale(0.98);
+}
+
 .login, .upload, .singles-form-container {
   transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.7);
 }
 
 .login:hover, .upload:hover, .singles-form-container:hover {
-  transform: perspective(1200px) translateY(-5px) translateZ(40px) rotateX(2deg) rotateY(-1deg) !important;
-  box-shadow: 
-    0 40px 80px rgba(0,0,0,0.15), 
-    0 15px 30px rgba(0,0,0,0.1), 
-    inset 0 2px 2px rgba(255,255,255,1) !important;
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.9);
 }
 
-/* Elementos internos salen en Z al hacer hover en el contenedor */
-.login__title, .login__form {
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.login:hover .login__title, .login:hover .login__form {
-  transform: translateZ(40px);
-}
-
-/* --- INPUTS: PROFUNDIDAD TIPO HUECO (NEUMORPHISM) --- */
 .login__input {
-  transform-style: preserve-3d;
-  box-shadow: inset 0 4px 8px rgba(0,0,0,0.06), inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8) !important;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.04), 0 1px 0 rgba(255,255,255,0.8);
+  transition: all 0.3s ease;
 }
 .login__input:focus {
-  /* Al seleccionarlo, sale del hueco hacia el usuario */
-  transform: translateZ(20px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05), inset 0 2px 2px rgba(255,255,255,1) !important;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05), inset 0 1px 2px rgba(255,255,255,1);
+  border-color: rgba(30, 56, 136, 0.4);
 }
 
-/* --- BOTONES: POP OUT Y PRESS 3D --- */
 .btn {
-  transform-style: preserve-3d;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease !important;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg);
+  transition: none;
 }
 .btn:hover {
-  transform: translateY(-4px) translateZ(30px) scale(1.03) !important;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.1), inset 0 2px 2px rgba(255,255,255,0.4) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.4);
+}
+.btn:hover::after {
+  left: 200%;
+  transition: left 0.7s ease-in-out;
 }
 .btn:active {
-  /* Al presionarlo se hunde físicamente */
-  transform: translateY(2px) translateZ(-15px) scale(0.96) !important;
-  box-shadow: inset 0 8px 16px rgba(0,0,0,0.25) !important;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.15);
 }
 
-/* --- TABS: ESPACIALES --- */
-.tabs {
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  box-shadow: inset 0 4px 8px rgba(0,0,0,0.05); /* Pista hundida */
-  padding: 6px !important;
-  background: rgba(0,0,0,0.03);
-}
-.tab {
-  transform-style: preserve-3d;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, background 0.4s ease !important;
-}
-.tab.active {
-  /* Tab activo flota sobre la pista */
-  transform: translateZ(25px) scale(1.05);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.9) !important;
-}
-.tab:not(.active):hover {
-  transform: translateZ(10px);
-}
-
-/* --- HERO: TEXTO FLOTANTE --- */
-.hero {
-  transform-style: preserve-3d;
-  perspective: 1000px;
-}
 .hero__title {
-  transform: translateZ(30px);
-  text-shadow: 0 15px 30px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.1) !important;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-shadow: 0 8px 16px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.05) !important;
+  transition: transform 0.5s ease, text-shadow 0.5s ease;
 }
 .hero:hover .hero__title {
-  transform: translateZ(60px) scale(1.05);
-  text-shadow: 0 25px 50px rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.1) !important;
-}
-.hero__subtitle {
-  transform: translateZ(15px);
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.hero:hover .hero__subtitle {
-  transform: translateZ(30px);
+  transform: translateZ(10px) scale(1.02);
+  text-shadow: 0 12px 24px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.05) !important;
 }
 
-/* --- POLAROIDS Y CARTAS: INCREMENTAR MAGNITUD --- */
+.polaroid, .single-card {
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  position: relative;
+}
+.polaroid::before, .single-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 10;
+  pointer-events: none;
+}
 .polaroid:hover, .single-card:hover {
-  /* Aún más agresivo el popup 3D */
-  transform: translateY(-12px) translateZ(80px) rotateX(4deg) rotateY(-2deg) !important;
-  box-shadow: 0 50px 100px rgba(0,0,0,0.25), 0 20px 40px rgba(0,0,0,0.15), inset 0 2px 3px rgba(255,255,255,1) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.12), 0 5px 15px rgba(0,0,0,0.08), inset 0 1px 2px rgba(255,255,255,0.8) !important;
+}
+.polaroid:hover::before, .single-card:hover::before {
+  opacity: 1;
 }
 
-
-/* --- 9. OPTIMIZACIÓN 3D PARA MÓVILES (TACTILE FEEDBACK) --- */
 * {
   -webkit-tap-highlight-color: transparent;
 }
-
-/* Cartas hundiéndose al tocarlas en celular */
 .polaroid:active, .single-card:active {
-  transform: translateY(4px) translateZ(-20px) rotateX(0deg) scale(0.96) !important;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15), inset 0 4px 8px rgba(0,0,0,0.1) !important;
-  transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.1s ease !important;
-}
-
-/* Formularios y contenedores al tocarlos */
-.upload:active, .singles-form-container:active {
-  transform: translateY(2px) translateZ(-10px) scale(0.98) !important;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 2px 5px rgba(0,0,0,0.05) !important;
+  transform: translateY(2px) scale(0.98) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1), inset 0 2px 4px rgba(0,0,0,0.05) !important;
   transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+}
+.upload:active, .singles-form-container:active {
+  transform: scale(0.99) !important;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.08) !important;
 }
