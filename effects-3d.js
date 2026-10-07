@@ -3,17 +3,14 @@
  * Lógica aislada para efectos 3D avanzados
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+// Como esto se carga como <script type="module">, el DOM ya está listo (defer).
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  if (prefersReducedMotion || !isPointerFine) {
-    return;
-  }
+const galleryGrid = document.getElementById('gallery-grid');
 
-  const galleryGrid = document.getElementById('gallery-grid');
-  if (!galleryGrid) return;
-
+if (!prefersReducedMotion && isPointerFine && galleryGrid) {
+  // 1. Brillo Radial (Radial Glow Tracker)
   galleryGrid.addEventListener('mousemove', (e) => {
     const card = e.target.closest('.polaroid, .single-card');
     if (!card) return;
@@ -33,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     card.style.setProperty('--mouse-y', y + 'px');
   });
 
-    let initialRenderComplete = false;
+  // 2. Detección de Fotos Nuevas en Tiempo Real (Etapa 2)
+  let initialRenderComplete = false;
   window.addEventListener('gallery-update', (e) => {
     if (!e.detail.fromCache) {
       initialRenderComplete = true; // Servidor sincronizado
@@ -65,98 +63,110 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   observer.observe(galleryGrid, { childList: true, subtree: false });
+}
+
+// 3. Etapa 3: Volteo 3D en el Lightbox
+if (galleryGrid) {
+  galleryGrid.addEventListener('click', (e) => {
+    const img = e.target.closest('.polaroid__img');
+    if (!img) return; // Si clickean like o borrar, se ignora aquí y en app.js
+    
+    const card = img.closest('.polaroid');
+    const nameEl = card?.querySelector('.polaroid__name');
+    const msgEl  = card?.querySelector('.polaroid__message');
+
+    const backName = document.getElementById('lightbox-back-name');
+    const backMsg = document.getElementById('lightbox-back-message');
+    
+    if (backName) backName.textContent = nameEl ? nameEl.textContent : '';
+    if (backMsg) backMsg.textContent = msgEl ? msgEl.textContent : 'Sin dedicatoria';
+
+    const flipInner = document.getElementById('lightbox-flip-inner');
+    if (flipInner) {
+      flipInner.classList.remove('is-flipped');
+      const front = flipInner.querySelector('.lightbox__flip-front');
+      const back = flipInner.querySelector('.lightbox__flip-back');
+      if (front) { front.setAttribute('aria-hidden', 'false'); front.removeAttribute('inert'); }
+      if (back) { back.setAttribute('aria-hidden', 'true'); back.setAttribute('inert', ''); }
+    }
+  });
+}
+
+function handleLightboxFlip() {
+  const flipInner = document.getElementById('lightbox-flip-inner');
+  if (flipInner) {
+    const isFlipped = flipInner.classList.toggle('is-flipped');
+    const front = flipInner.querySelector('.lightbox__flip-front');
+    const back = flipInner.querySelector('.lightbox__flip-back');
+    if (front) {
+        front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
+        if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
+    }
+    if (back) {
+        back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
+        if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
+    }
+  }
+}
+
+// Activar volteo con botón
+document.addEventListener('click', (e) => {
+  const flipBtn = e.target.closest('.lightbox__btn-flip');
+  if (flipBtn) {
+    handleLightboxFlip();
+  }
 });
-  // 3. Etapa 3: Volteo 3D en el Lightbox
-  if (galleryGrid) {
-    galleryGrid.addEventListener('click', (e) => {
-      const img = e.target.closest('.polaroid__img');
-      if (!img) return; // Si clickean like o borrar, se ignora aquí y en app.js
-      
-      const card = img.closest('.polaroid');
-      const nameEl = card?.querySelector('.polaroid__name');
-      const msgEl  = card?.querySelector('.polaroid__message');
 
-      const backName = document.getElementById('lightbox-back-name');
-      const backMsg = document.getElementById('lightbox-back-message');
-      
-      if (backName) backName.textContent = nameEl ? nameEl.textContent : '';
-      if (backMsg) backMsg.textContent = msgEl ? msgEl.textContent : 'Sin dedicatoria';
-
-      const flipInner = document.getElementById('lightbox-flip-inner');
-      if (flipInner) flipInner.classList.remove('is-flipped');
-    });
+// Activar volteo con tecla (Espacio o 'F')
+document.addEventListener('keydown', (e) => {
+  const lightbox = document.getElementById('lightbox');
+  if (lightbox && !lightbox.hidden && (e.key === 'f' || e.key === 'F' || e.key === ' ')) {
+      e.preventDefault();
+      handleLightboxFlip();
   }
+});
 
-  // Activar volteo con botón
-  document.addEventListener('click', (e) => {
-    const flipBtn = e.target.closest('.lightbox__btn-flip');
-    if (flipBtn) {
-      const flipInner = document.getElementById('lightbox-flip-inner');
-      if (flipInner) {
-        const isFlipped = flipInner.classList.toggle('is-flipped');
-        const front = flipInner.querySelector('.lightbox__flip-front');
-        const back = flipInner.querySelector('.lightbox__flip-back');
-        if (front) {
-           front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
-           if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
-        }
-        if (back) {
-           back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
-           if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
-        }
-      }
-    }
-  });
+// =========================================================
+// ETAPA 4: COVERFLOW (SLIDESHOW 3D)
+// =========================================================
+const coverflowModal = document.getElementById('coverflow');
+const coverflowContainer = document.getElementById('coverflow-container');
+const coverflowClose = document.getElementById('coverflow-close');
 
-  // Activar volteo con tecla (Espacio o 'F')
-  document.addEventListener('keydown', (e) => {
-    const lightbox = document.getElementById('lightbox');
-    if (lightbox && !lightbox.hidden && (e.key === 'f' || e.key === 'F' || e.key === ' ')) {
-       e.preventDefault();
-       const flipInner = document.getElementById('lightbox-flip-inner');
-       if (flipInner) {
-        const isFlipped = flipInner.classList.toggle('is-flipped');
-        const front = flipInner.querySelector('.lightbox__flip-front');
-        const back = flipInner.querySelector('.lightbox__flip-back');
-        if (front) {
-           front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
-           if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
-        }
-        if (back) {
-           back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
-           if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
-        }
-      }
-    }
-  });
+let coverflowActive = false;
+let coverflowCards = []; // Datos de las tarjetas
+let coverflowIndex = 0;
+let coverflowInterval = null;
+let wakeLock = null;
 
-  // =========================================================
-  // ETAPA 4: COVERFLOW (SLIDESHOW 3D)
-  // =========================================================
-  const coverflowModal = document.getElementById('coverflow');
-  const coverflowContainer = document.getElementById('coverflow-container');
-  const coverflowClose = document.getElementById('coverflow-close');
-  
-  let coverflowActive = false;
-  let coverflowCards = []; // Datos de las tarjetas
-  let coverflowIndex = 0;
-  let coverflowInterval;
-  let wakeLock = null;
+// Real-time queue
+let coverflowQueue = [];
+let isProcessingQueue = false;
 
-  async function requestWakeLock() {
-    if ('wakeLock' in navigator) {
-      try {
-        wakeLock = await navigator.wakeLock.request('screen');
-      } catch (err) {}
-    }
+async function requestWakeLock() {
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+    } catch (err) {}
   }
-  function releaseWakeLock() {
-    if (wakeLock !== null) {
-      wakeLock.release().then(() => wakeLock = null);
-    }
+}
+function releaseWakeLock() {
+  if (wakeLock !== null) {
+    wakeLock.release().then(() => wakeLock = null).catch(()=>{});
   }
+}
 
-  window.addEventListener('open-coverflow', async () => {
+document.addEventListener('visibilitychange', () => {
+  if (coverflowActive && document.visibilityState === 'visible') {
+    requestWakeLock();
+  }
+});
+
+window.addEventListener('open-coverflow', async () => {
+  try {
+    const domCards = document.querySelectorAll('.polaroid');
+    if (domCards.length === 0) throw new Error("No cards");
+
     // 1. Fullscreen y WakeLock
     try {
       if (document.documentElement.requestFullscreen) {
@@ -166,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     requestWakeLock();
 
     // 2. Extraer datos actuales de la cuadrícula
-    const domCards = document.querySelectorAll('.polaroid');
     coverflowCards = Array.from(domCards).map(card => {
       return {
         src: card.querySelector('.polaroid__img').src,
@@ -175,79 +184,104 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    if (coverflowCards.length === 0) return;
-
     coverflowIndex = 0;
     coverflowActive = true;
+    coverflowQueue = [];
+    isProcessingQueue = false;
     coverflowModal.hidden = false;
     
     renderCoverflow();
     startCoverflowTimer();
-  });
-
-  if (coverflowClose) {
-    coverflowClose.addEventListener('click', () => {
-      coverflowActive = false;
-      coverflowModal.hidden = true;
-      clearInterval(coverflowInterval);
-      releaseWakeLock();
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(()=>{});
-      }
-    });
-  }
-
-  function renderCoverflow(overrideIndex = null) {
-    if (!coverflowActive || coverflowCards.length === 0) return;
     
-    if (overrideIndex !== null) {
-      coverflowIndex = overrideIndex;
-    } else {
-      coverflowIndex = (coverflowIndex + 1) % coverflowCards.length;
-    }
-
-    // Virtualización: Renderizamos solo 5 elementos
-    coverflowContainer.innerHTML = '';
-    
-    for (let offset = -2; offset <= 2; offset++) {
-      let idx = (coverflowIndex + offset) % coverflowCards.length;
-      if (idx < 0) idx += coverflowCards.length;
-
-      const data = coverflowCards[idx];
-      const cardEl = document.createElement('div');
-      cardEl.className = 'coverflow-card';
-      
-      if (offset === 0) cardEl.classList.add('center');
-      else if (offset === -1) cardEl.classList.add('left-1');
-      else if (offset === 1) cardEl.classList.add('right-1');
-      else if (offset === -2) cardEl.classList.add('left-2');
-      else if (offset === 2) cardEl.classList.add('right-2');
-      else cardEl.classList.add('hidden');
-
-      cardEl.innerHTML = '<img src="' + data.src + '" alt="Foto"><div class="coverflow-caption"><strong>' + data.name + '</strong><br><span>' + data.msg + '</span></div>';
-
-      coverflowContainer.appendChild(cardEl);
-    }
+    window.dispatchEvent(new CustomEvent('coverflow-success'));
+  } catch(e) {
+    window.dispatchEvent(new CustomEvent('coverflow-failed'));
   }
+});
 
-  function startCoverflowTimer() {
+if (coverflowClose) {
+  coverflowClose.addEventListener('click', () => {
+    coverflowActive = false;
+    coverflowModal.hidden = true;
     clearInterval(coverflowInterval);
-    coverflowInterval = setInterval(() => {
-      renderCoverflow();
-    }, 4500);
+    releaseWakeLock();
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(()=>{});
+    }
+  });
+}
+
+function renderCoverflow(overrideIndex = null) {
+  if (!coverflowActive || coverflowCards.length === 0) return;
+  
+  if (overrideIndex !== null) {
+    coverflowIndex = overrideIndex;
+  } else {
+    coverflowIndex = (coverflowIndex + 1) % coverflowCards.length;
   }
 
-  window.addEventListener('coverflow-new-photo', (e) => {
-    if (!coverflowActive) return;
+  // Virtualización: Renderizamos solo 5 elementos
+  coverflowContainer.innerHTML = '';
+  
+  for (let offset = -2; offset <= 2; offset++) {
+    let idx = (coverflowIndex + offset) % coverflowCards.length;
+    if (idx < 0) idx += coverflowCards.length;
+
+    const data = coverflowCards[idx];
+    const cardEl = document.createElement('div');
+    cardEl.className = 'coverflow-card';
     
-    const node = e.detail.node;
-    const newData = {
-      src: node.querySelector('.polaroid__img').src,
-      name: node.querySelector('.polaroid__name').textContent,
-      msg: node.querySelector('.polaroid__message')?.textContent || ''
-    };
-    
-    coverflowCards.push(newData);
-    renderCoverflow(coverflowCards.length - 1);
+    if (offset === 0) cardEl.classList.add('center');
+    else if (offset === -1) cardEl.classList.add('left-1');
+    else if (offset === 1) cardEl.classList.add('right-1');
+    else if (offset === -2) cardEl.classList.add('left-2');
+    else if (offset === 2) cardEl.classList.add('right-2');
+    else cardEl.classList.add('hidden');
+
+    cardEl.innerHTML = '<img src="' + data.src + '" alt="Foto"><div class="coverflow-caption"><strong>' + data.name + '</strong><br><span>' + data.msg + '</span></div>';
+
+    coverflowContainer.appendChild(cardEl);
+  }
+}
+
+function startCoverflowTimer() {
+  clearInterval(coverflowInterval);
+  coverflowInterval = setInterval(() => {
+    if (!isProcessingQueue) {
+      renderCoverflow();
+    }
+  }, 4500);
+}
+
+function processCoverflowQueue() {
+  if (coverflowQueue.length === 0) {
+    isProcessingQueue = false;
     startCoverflowTimer();
-  });
+    return;
+  }
+  
+  isProcessingQueue = true;
+  const newData = coverflowQueue.shift();
+  coverflowCards.push(newData);
+  renderCoverflow(coverflowCards.length - 1);
+  
+  setTimeout(() => {
+    processCoverflowQueue();
+  }, 3500); // Se muestra por 3.5 segundos en el centro
+}
+
+window.addEventListener('coverflow-new-photo', (e) => {
+  if (!coverflowActive) return;
+  
+  const node = e.detail.node;
+  const newData = {
+    src: node.querySelector('.polaroid__img').src,
+    name: node.querySelector('.polaroid__name').textContent,
+    msg: node.querySelector('.polaroid__message')?.textContent || ''
+  };
+  
+  coverflowQueue.push(newData);
+  if (!isProcessingQueue) {
+    processCoverflowQueue();
+  }
+});

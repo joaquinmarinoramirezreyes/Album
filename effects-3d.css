@@ -328,3 +328,46 @@
     pointer-events: none;
   }
 }
+/* =========================================================
+   ETAPA 3: VISOR MÓVIL (393x852 y similares)
+   ========================================================= */
+@media (max-width: 500px) {
+  .lightbox__flip-container {
+    width: 95vw;
+    height: 90vh; /* Dar espacio superior/inferior */
+  }
+  .lightbox__flip-front .lightbox__img {
+    max-width: 95vw;
+    max-height: 80vh; /* Un poco menos para dar cabida al botón si está dentro */
+  }
+  .lightbox__btn-flip {
+    width: auto;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 9999px; /* Botón tipo pastilla */
+    bottom: 24px;
+    right: 50%;
+    transform: translateX(50%); /* Centrado abajo */
+  }
+  /* Agregar texto "Ver dedicatoria" al botón de volteo */
+  .lightbox__btn-flip::after {
+    content: "Ver dedicatoria";
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  #lightbox-btn-flip-back::after {
+    content: "Volver a la foto";
+  }
+  
+  /* Ajuste botón de cerrar */
+  .lightbox__close {
+    width: 44px;
+    height: 44px;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+  }
+}
