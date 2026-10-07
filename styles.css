@@ -101,7 +101,7 @@ img {
 .screen {
   display: none;
   opacity: 0;
-  transition: opacity 0.6s var(--ease-out);
+  transition: opacity 0.6s ease-out;
 }
 
 .screen--active {
@@ -363,7 +363,7 @@ img {
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  animation: fadeIn 0.3s var(--ease-out);
+  animation: fadeIn 0.3s ease-out;
 }
 
 .upload__preview-img {
@@ -536,13 +536,13 @@ img {
   font-size: 0.875rem;
   color: var(--color-charcoal);
   line-height: 1.5;
-  animation: toastIn 0.35s var(--ease-out) forwards;
+  animation: toastIn 0.35s ease-out forwards;
   position: relative;
   overflow: hidden;
 }
 
 .toast--leaving {
-  animation: toastOut 0.3s var(--ease-out) forwards;
+  animation: toastOut 0.3s ease-out forwards;
 }
 
 /* Variants */
@@ -1522,3 +1522,23 @@ section#screen-login.screen .btn--primary {
 body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles) { display: none !important; }
 body.show-singles #fab-camera { display: none !important; }
 
+
+.modal-card {
+  background: var(--color-surface);
+  padding: 32px 24px;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  animation: lightboxZoom 0.3s ease-out;
+  margin: auto;
+  box-sizing: border-box;
+}
+.modal-card--wide { 
+  max-width: 880px !important; 
+  width: 94vw; 
+  max-height: 90vh; 
+  overflow-y: auto; 
+}
