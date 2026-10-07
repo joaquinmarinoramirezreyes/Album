@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Marli Cerámica — Comparte tus recuerdos de cerámica en nuestra boda.">
-  <title>Nuestro Álbum</title>
+  <meta name="description" content="Marli CerÃ¡mica â€” Comparte tus recuerdos de cerÃ¡mica en nuestra boda.">
+  <title>Nuestro Ãlbum</title>
   
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#1E3888">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏺</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>ðŸº</text></svg>">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,15 +19,15 @@
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════════
-       PANTALLA A — ACCESO (Login estático)
-       ═══════════════════════════════════════════════ -->
-  <section id="screen-login" class="screen screen--active" aria-label="Acceso al álbum">
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PANTALLA A â€” ACCESO (Login estÃ¡tico)
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <section id="screen-login" class="screen screen--active" aria-label="Acceso al Ã¡lbum">
     <div class="login">
       
 
-      <h1 class="login__title">Nuestro<br>Álbum</h1>
-      <p class="login__subtitle">Ayúdanos a moldear nuestros recuerdos</p>
+      <h1 class="login__title">Nuestro<br>Ãlbum</h1>
+      <p class="login__subtitle">AyÃºdanos a moldear nuestros recuerdos</p>
 
       <form id="login-form" class="login__form" autocomplete="off" style="margin-bottom: 2rem;">
         <label for="access-code" class="sr-only">Clave del evento</label>
@@ -36,17 +36,17 @@
           class="login__input login__input--vip"
           type="text"
           maxlength="20"
-          placeholder="CÓDIGO DEL EVENTO"
+          placeholder="CÃ“DIGO DEL EVENTO"
           aria-describedby="login-hint"
           required
         >
         <small id="login-hint" class="login__hint" hidden>Clave incorrecta, intenta de nuevo.</small>
-        <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galería</button>
+        <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galerÃ­a</button>
       </form>
 
-      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;" aria-label="Acceso anfitrión para moderar evento">
+      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;" aria-label="Acceso anfitriÃ³n para moderar evento">
     <i data-lucide="shield" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
-    Acceso Anfitrión
+    Acceso AnfitriÃ³n
   </button>
 
       <!-- Admin link -->
@@ -62,8 +62,8 @@
         <button type="button" class="modal-close" aria-label="Cerrar">&times;</button>
         <h2 class="modal-title">Acceso de Administrador</h2>
         <form id="form-admin-auth">
-          <input type="password" id="input-admin-pass" class="login__input" placeholder="Contraseña de admin" required>
-          <small id="admin-error" class="login__hint mt-2" hidden>Contraseña incorrecta.</small>
+          <input type="password" id="input-admin-pass" class="login__input" placeholder="ContraseÃ±a de admin" required>
+          <small id="admin-error" class="login__hint mt-2" hidden>ContraseÃ±a incorrecta.</small>
           <button type="submit" class="btn btn--primary btn--full mt-4">Validar</button>
         </form>
       </div>
@@ -72,11 +72,11 @@
     <div id="modal-host-auth" class="lightbox" hidden>
       <div class="modal-card">
         <button type="button" class="modal-close" aria-label="Cerrar">&times;</button>
-        <h2 class="modal-title">Modo Anfitrión</h2>
+        <h2 class="modal-title">Modo AnfitriÃ³n</h2>
         <form id="form-host-auth">
-          <input type="text" id="input-host-code" class="login__input" placeholder="Código del evento (ej. BODA2026)" maxlength="20" required style="margin-bottom: 0.5rem; text-transform: uppercase;">
+          <input type="text" id="input-host-code" class="login__input" placeholder="CÃ³digo del evento (ej. BODA2026)" maxlength="20" required style="margin-bottom: 0.5rem; text-transform: uppercase;">
           <input type="password" id="input-host-pin" class="login__input" placeholder="PIN secreto (ej. 1234)" required>
-          <small id="host-error" class="login__hint mt-2" hidden>Código o PIN incorrectos.</small>
+          <small id="host-error" class="login__hint mt-2" hidden>CÃ³digo o PIN incorrectos.</small>
           <button type="submit" class="btn btn--primary btn--full mt-4">Entrar como Moderador</button>
         </form>
       </div>
@@ -89,7 +89,7 @@
         <div class="admin-grid">
           <form id="form-create-event" class="admin-col">
             <p class="admin-col__title">Crear nuevo evento</p>
-            <label class="admin-label" for="input-new-event">Código del evento</label>
+            <label class="admin-label" for="input-new-event">CÃ³digo del evento</label>
             <input type="text" id="input-new-event" class="login__input" placeholder="Ej: BODA2026" maxlength="20" required>
             <div class="admin-row">
               <div>
@@ -97,15 +97,15 @@
                 <input type="date" id="input-event-date" class="login__input" required>
               </div>
               <div>
-                <label class="admin-label" for="input-event-pin">PIN anfitrión</label>
+                <label class="admin-label" for="input-event-pin">PIN anfitriÃ³n</label>
                 <input type="text" id="input-event-pin" class="login__input" placeholder="Ej: 1234" maxlength="10">
               </div>
             </div>
-            <label class="admin-label">Diseño</label>
+            <label class="admin-label">DiseÃ±o</label>
             <div class="theme-picker" id="theme-picker">
-              <label class="theme-opt"><input type="radio" name="event-theme" value="marli" checked><span class="theme-opt__swatch" style="background-image:url('/assets/talavera-pattern.jpg')"></span><span class="theme-opt__name">Marli Cerámica</span></label>
-              <label class="theme-opt"><input type="radio" name="event-theme" value="shots"><span class="theme-opt__swatch" style="background-image:url('/assets/shots-pattern.jpg')"></span><span class="theme-opt__name">Cerámica Shots</span></label>
-              <label class="theme-opt"><input type="radio" name="event-theme" value="odimar"><span class="theme-opt__swatch" style="background-image:url('/assets/odimar-pattern.jpg')"></span><span class="theme-opt__name">Cerámica Odimar</span></label>
+              <label class="theme-opt"><input type="radio" name="event-theme" value="marli" checked><span class="theme-opt__swatch" style="background-image:url('/assets/talavera-pattern.jpg')"></span><span class="theme-opt__name">Marli CerÃ¡mica</span></label>
+              <label class="theme-opt"><input type="radio" name="event-theme" value="shots"><span class="theme-opt__swatch" style="background-image:url('/assets/shots-pattern.jpg')"></span><span class="theme-opt__name">CerÃ¡mica Shots</span></label>
+              <label class="theme-opt"><input type="radio" name="event-theme" value="odimar"><span class="theme-opt__swatch" style="background-image:url('/assets/odimar-pattern.jpg')"></span><span class="theme-opt__name">CerÃ¡mica Odimar</span></label>
             </div>
             <button type="submit" class="btn btn--primary btn--full mt-4">Crear evento</button>
           </form>
@@ -121,23 +121,23 @@
   </section>
 
 
-  <!-- ═══════════════════════════════════════════════
-       PANTALLA B — ESPACIO DEL ÁLBUM
-       ═══════════════════════════════════════════════ -->
-  <section id="screen-album" class="screen" aria-label="Álbum de la boda">
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PANTALLA B â€” ESPACIO DEL ÃLBUM
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <section id="screen-album" class="screen" aria-label="Ãlbum de la boda">
 
-    <!-- — Hero — -->
+    <!-- â€” Hero â€” -->
     <header class="hero">
-      <h1 class="hero__title">Nuestro Álbum</h1>
-      <p class="hero__subtitle">Sube tu foto con tu pieza de cerámica y déjanos un mensaje</p>
+      <h1 class="hero__title">Nuestro Ãlbum</h1>
+      <p class="hero__subtitle">Sube tu foto con tu pieza de cerÃ¡mica y dÃ©janos un mensaje</p>
     </header>
 
-    <!-- React: pestañas Álbum / Solteros -->
+    <!-- React: pestaÃ±as Ãlbum / Solteros -->
     <div id="react-tabs"></div>
     <div id="react-singles"></div>
 
 
-    <!-- — Formulario de Subida — -->
+    <!-- â€” Formulario de Subida â€” -->
     <div class="upload" id="upload-section">
       <form id="upload-form" class="upload__form" novalidate>
         <!-- Nombre -->
@@ -163,16 +163,16 @@
             accept="image/*"
             capture="environment"
           >
-          <button type="button" id="photo-btn" class="upload__photo-btn" aria-controls="photo-input">
+          <label id="photo-btn" for="photo-input" class="upload__photo-btn" aria-controls="photo-input" role="button" tabindex="0">
             <span class="upload__photo-icon" aria-hidden="true">
               <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             </span>
             <span>Tocar para tomar foto</span>
-          </button>
+          </label>
           <!-- Preview de la imagen seleccionada -->
           <div id="photo-preview" class="upload__preview" hidden>
             <img id="preview-img" class="upload__preview-img" src="" alt="Vista previa de tu foto">
-            <button type="button" id="preview-remove" class="upload__preview-remove" aria-label="Quitar foto">✕</button>
+            <button type="button" id="preview-remove" class="upload__preview-remove" aria-label="Quitar foto">âœ•</button>
           </div>
         </div>
 
@@ -182,7 +182,7 @@
           <textarea
             id="guest-message"
             class="form-input form-input--textarea"
-            placeholder="Escribe tu mensaje para los novios…"
+            placeholder="Escribe tu mensaje para los noviosâ€¦"
             maxlength="280"
             rows="3"
           ></textarea>
@@ -198,40 +198,40 @@
       </form>
     </div>
 
-    <!-- — Galería en Vivo — -->
+    <!-- â€” GalerÃ­a en Vivo â€” -->
     <div class="gallery" id="gallery-section">
-      <h2 class="gallery__heading">Galería</h2>
+      <h2 class="gallery__heading">GalerÃ­a</h2>
       <div id="gallery-grid" class="gallery__grid">
-        <!-- Las tarjetas Polaroid se insertan aquí dinámicamente desde Firestore -->
+        <!-- Las tarjetas Polaroid se insertan aquÃ­ dinÃ¡micamente desde Firestore -->
 
       </div>
     </div>
 
-    <!-- — Descarga PDF y Footer — -->
+    <!-- â€” Descarga PDF y Footer â€” -->
     <div class="download" id="download-section">
       <button id="btn-slideshow" class="btn btn--secondary btn--full" style="margin-bottom: 15px;">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom; margin-right:4px;"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-        Presentación en vivo
+        PresentaciÃ³n en vivo
       </button>
       <button id="download-pdf" class="btn btn--secondary btn--full">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Descargar álbum completo (PDF)
+        Descargar Ã¡lbum completo (PDF)
       </button>
     </div>
 
     <footer class="footer">
-      <p>&copy; 2026 — Hecho con amor</p>
+      <p>&copy; 2026 â€” Hecho con amor</p>
     </footer>
 
   </section>
 
   <!-- Floating Camera Button (FAB) -->
-  <button type="button" id="fab-camera" class="fab-camera" aria-label="Tomar foto">
+  <label id="fab-camera" for="photo-input" class="fab-camera" aria-label="Tomar foto" role="button" tabindex="0">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
       <circle cx="12" cy="13" r="4"></circle>
     </svg>
-  </button>
+  </label>
 
   <!-- Toast Notifications -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
@@ -271,6 +271,10 @@
   </script>
   </body>
 </html>
+
+
+
+
 
 
 

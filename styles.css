@@ -1829,3 +1829,23 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   transform: translateY(-12px) translateZ(80px) rotateX(4deg) rotateY(-2deg) !important;
   box-shadow: 0 50px 100px rgba(0,0,0,0.25), 0 20px 40px rgba(0,0,0,0.15), inset 0 2px 3px rgba(255,255,255,1) !important;
 }
+
+
+/* --- 9. OPTIMIZACIÓN 3D PARA MÓVILES (TACTILE FEEDBACK) --- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Cartas hundiéndose al tocarlas en celular */
+.polaroid:active, .single-card:active {
+  transform: translateY(4px) translateZ(-20px) rotateX(0deg) scale(0.96) !important;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15), inset 0 4px 8px rgba(0,0,0,0.1) !important;
+  transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.1s ease !important;
+}
+
+/* Formularios y contenedores al tocarlos */
+.upload:active, .singles-form-container:active {
+  transform: translateY(2px) translateZ(-10px) scale(0.98) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 0 2px 5px rgba(0,0,0,0.05) !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+}
