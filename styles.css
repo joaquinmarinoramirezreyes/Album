@@ -1274,7 +1274,7 @@ section#screen-login.screen {
   margin: 0;
   padding: 0;
   overflow: hidden !important; 
-  background: var(--bg-pattern) center / cover no-repeat !important;
+  background: var(--bg-pattern) center / 350px repeat !important;
   background-color: var(--color-bg) !important; /* Fallback */
   box-sizing: border-box;
 }
@@ -1374,5 +1374,6 @@ section#screen-login.screen .btn--primary {
     box-shadow: -10px 0 40px rgba(0,0,0,0.1) !important;
   }
 }
+
 
 
