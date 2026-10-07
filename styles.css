@@ -643,8 +643,8 @@ img {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, .85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   padding: var(--sp-5);
   animation: lightboxIn 0.25s ease;
 }
@@ -1165,8 +1165,8 @@ section#screen-login.screen .btn--primary {
   box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 2px rgba(0,0,0,0.04);
   position: relative;
   z-index: 50;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(0,0,0,0.05);
 }
 
@@ -1374,8 +1374,8 @@ section#screen-login.screen .btn--primary {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   transition: transform 0.2s, opacity 0.2s;
   opacity: 0; /* Show on hover for desktop */
 }
@@ -1603,7 +1603,7 @@ body.show-singles #fab-camera { display: none !important; }
 @keyframes epic3DEntrance {
   0% {
     opacity: 0;
-    transform: perspective(1000px) translateY(80px) translateZ(-150px) rotateX(-10deg);
+    transform: perspective(1000px) translateY(80px) translateZ(-60px) rotateX(-5deg);
   }
   100% {
     opacity: 1;
@@ -1634,7 +1634,7 @@ section#screen-login.screen > .login {
 /* --- 5. ENTRADA DE MODALES (PANEL CENTRAL) --- */
 @keyframes lightboxZoom3D {
   from { 
-    transform: perspective(1200px) translateZ(-300px) translateY(50px) rotateX(15deg); 
+    transform: perspective(1200px) translateZ(-60px) translateY(50px) rotateX(5deg); 
     opacity: 0; 
   }
   to { 
@@ -1690,14 +1690,14 @@ section#screen-login.screen > .login {
     box-shadow: 0 16px 32px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05), inset 0 2px 2px rgba(255,255,255,1);
   }
   50% { 
-    transform: translateY(-10px) translateZ(40px) rotateX(0deg); 
-    box-shadow: 0 24px 48px rgba(0,0,0,0.2), 0 12px 24px rgba(0,0,0,0.1), inset 0 2px 2px rgba(255,255,255,1);
+    transform: translateY(-5px) translateZ(10px) rotateX(0deg);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.08), inset 0 2px 2px rgba(255,255,255,1);
   }
 }
 
 /* VISIBILIDAD INTELIGENTE SIN JS */
 /* Siempre visible si la galerÃ­a estÃ¡ activa */
-#screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out infinite; }
+#screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out forwards; }
 
 /* Ocultar en la pestaÃ±a Solteros */
 body.show-singles #screen-album.screen--active ~ .fab-camera {
@@ -1732,12 +1732,12 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
 .screen {
   transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
               transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-              filter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+              0.8, 0.2, 1) !important;
 }
 
 @keyframes screenFadeIn {
-  0% { opacity: 0; filter: blur(12px); transform: scale(0.96); }
-  100% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  0% { opacity: 0;  transform: scale(0.96); }
+  100% { opacity: 1;  transform: scale(1); }
 }
 
 /* Fade IN: Usa keyframes porque cambia de display:none a flex */
@@ -1749,14 +1749,14 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
 .screen--fading {
   animation: none !important;
   opacity: 0 !important;
-  filter: blur(10px) !important;
+  
   transform: scale(1.02) !important;
 }
 
 /* 2. Transiciones de Pestañas (Galería <-> Solteros) */
 @keyframes tabFadeIn {
-  0% { opacity: 0; transform: translateY(15px); filter: blur(8px); }
-  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  0% { opacity: 0; transform: translateY(15px);  }
+  100% { opacity: 1; transform: translateY(0);  }
 }
 
 body.show-singles #react-singles {
@@ -1772,7 +1772,7 @@ body:not(.show-singles) #screen-album > .photo-grid {
 .login, .upload, .singles-form-container {
   transform-style: preserve-3d;
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
-  backdrop-filter: blur(25px);
+  backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 10px 30px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.7);
 }
@@ -1802,9 +1802,8 @@ body:not(.show-singles) #screen-album > .photo-grid {
 .btn::after {
   content: '';
   position: absolute;
-  top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-  transform: skewX(-20deg);
+  top: 0; left: 0; width: 50%; height: 100%;
+  transform: translateX(-200%) skewX(-20deg);
   transition: none;
 }
 .btn:hover {
@@ -1812,8 +1811,8 @@ body:not(.show-singles) #screen-album > .photo-grid {
   box-shadow: 0 8px 20px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.4);
 }
 .btn:hover::after {
-  left: 200%;
-  transition: left 0.7s ease-in-out;
+  transform: translateX(300%) skewX(-20deg);
+  transition: transform 0.7s ease-in-out;
 }
 .btn:active {
   transform: translateY(1px) scale(0.98);
