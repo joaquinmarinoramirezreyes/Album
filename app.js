@@ -1,4 +1,4 @@
-import '@fontsource-variable/inter';
+﻿import '@fontsource-variable/inter';
 import { createIcons, Settings, Shield } from 'lucide';
 
 // Initialize icons immediately
@@ -657,7 +657,10 @@ document.querySelectorAll('.modal-close').forEach(btn => {
 function transitionScreens($from, $to) {
   $from.classList.add('screen--fading');
 
-  $from.addEventListener('transitionend', () => {
+  let resolved = false;
+  const finishTransition = () => {
+    if (resolved) return;
+    resolved = true;
     $from.classList.remove('screen--active', 'screen--fading');
 
     $to.classList.add('screen--active');
@@ -666,7 +669,9 @@ function transitionScreens($from, $to) {
     $to.style.opacity = '1';
 
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, { once: true });
+  };
+  $from.addEventListener('transitionend', finishTransition, { once: true });
+  setTimeout(finishTransition, 600);
 }
 
 

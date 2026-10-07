@@ -13,7 +13,7 @@
   /* 2. Tarjetas que se elevan con translateZ al tocar/hover */
   /* Reutilizamos .polaroid y .single-card */
   .polaroid, .single-card {
-    transform-style: preserve-3d;
+    /* transform-style: preserve-3d eliminado para rendimiento/borrosidad */
     /* La transición base ya está en styles.css, pero la reforzamos para transform */
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.5s ease !important;
   }
@@ -54,5 +54,26 @@
   .polaroid:hover .glow-overlay,
   .single-card:hover .glow-overlay {
     opacity: 1;
+  }
+}
+
+/* =========================================================
+   EFECTOS 3D ADITIVOS (ETAPA 2: LLEGADA EN TIEMPO REAL)
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes photoArrive {
+    0% {
+      opacity: 0;
+      transform: scale(0.6) translateZ(-400px) translateY(100px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateZ(0) translateY(0);
+    }
+  }
+
+  .new-photo-entrance {
+    animation: photoArrive 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    will-change: transform, opacity;
   }
 }
