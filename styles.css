@@ -1697,11 +1697,7 @@ section#screen-login.screen > .login {
 
 /* VISIBILIDAD INTELIGENTE SIN JS */
 /* Siempre visible si la galerÃ­a estÃ¡ activa */
-#screen-album.screen--active ~ .fab-camera {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  animation: spatialFloat 4s ease-in-out infinite;
-}
+#screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out infinite; }
 
 /* Ocultar en la pestaÃ±a Solteros */
 body.show-singles #screen-album.screen--active ~ .fab-camera {
@@ -1726,18 +1722,25 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
 
 
 
+
 /* =========================================================
-   ETAPA 7: APPLE VISION PRO ELEGANCE (EXPENSIVE, SUBTLE 3D)
+   ETAPA 7: APPLE VISION PRO ELEGANCE (ROBUST ANIMATIONS)
    ========================================================= */
 
-.screen {
-  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
-              filter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+@keyframes screenFadeIn {
+  0% { opacity: 0; filter: blur(10px); transform: scale(0.96); }
+  100% { opacity: 1; filter: blur(0px); transform: scale(1); }
 }
-.screen:not(.screen--active) {
-  filter: blur(8px);
-  transform: scale(0.98);
+@keyframes screenFadeOut {
+  0% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  100% { opacity: 0; filter: blur(10px); transform: scale(1.02); }
+}
+
+.screen--active {
+  animation: screenFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+}
+.screen--fading {
+  animation: screenFadeOut 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
 }
 
 .login, .upload, .singles-form-container {
