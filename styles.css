@@ -1348,3 +1348,109 @@ body.show-singles #fab-camera { display: none !important; }
 
 /* Esconder ornamentos para mantener estilo minimalista */
 
+
+
+/* =========================================================
+   ETAPA 2.5: REDISEÑO DE LOGIN (SPLIT DESKTOP / SHEET MOBILE)
+   ========================================================= */
+
+body {
+  /* Restore the body background to use repeat so the gallery tile works,
+     but the login screen will cover this anyway */
+  margin: 0;
+  padding: 0;
+}
+
+#screen-login {
+  display: flex !important;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden !important; /* No scroll */
+  /* Patrón nítido sin overlay */
+  background: var(--bg-pattern) center / cover no-repeat !important;
+  box-sizing: border-box;
+}
+
+/* Ocultar si tiene el hidden del sistema de tabs */
+#screen-login[hidden] {
+  display: none !important;
+}
+
+#screen-login .login {
+  background: var(--color-surface) !important;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1; /* Ocupa el resto de la pantalla */
+  margin-top: 40vh !important; /* 40% superior para el patrón */
+  border-radius: 28px 28px 0 0 !important;
+  padding: var(--sp-6) var(--sp-5) !important;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.1) !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: none !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Centrar el contenido dentro de la hoja blanca */
+#screen-login .login > * {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Tipografía de títulos */
+.login__title {
+  font-family: var(--font-serif) !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.login__subtitle {
+  font-family: var(--font-sans) !important;
+  font-style: normal !important; /* Sin cursiva */
+  font-weight: 400 !important;
+  color: var(--color-text-secondary) !important;
+  font-size: 1rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Botones y campos */
+.login__input {
+  border-radius: 12px !important;
+  background-color: var(--color-bg) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 16px !important;
+}
+
+.login__input--vip {
+  font-size: 18px !important;
+}
+
+.btn--primary {
+  border-radius: 9999px !important; /* Pastilla */
+  background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
+}
+
+/* Escritorio (≥900px) */
+@media (min-width: 900px) {
+  #screen-login {
+    flex-direction: row;
+    justify-content: flex-end; /* Enviar la hoja blanca a la derecha */
+  }
+
+  #screen-login .login {
+    width: 50vw !important; /* Mitad de la pantalla */
+    margin-top: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important; /* Sin bordes curvos en escritorio */
+    box-shadow: -10px 0 40px rgba(0,0,0,0.1) !important;
+  }
+}
