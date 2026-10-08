@@ -885,6 +885,19 @@ function startGalleryListener() {
   );
 
   unsubscribeGallery = onSnapshot(q, (snapshot) => {
+    // Evento para el entorno 3D (coverflow y deteccion de primera carga)
+    const allDocs = snapshot.docs.map(d => {
+      const data = d.data();
+      return {
+        src: data.imageUrl,
+        name: data.nombre,
+        msg: data.dedicatoria || ''
+      };
+    });
+    window.dispatchEvent(new CustomEvent('gallery-update', { 
+      detail: { docs: allDocs, fromCache: snapshot.metadata.fromCache } 
+    }));
+
     // Use docChanges() for incremental updates (preserves animations)
     snapshot.docChanges().forEach((change) => {
       const id = change.doc.id;

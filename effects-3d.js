@@ -178,8 +178,7 @@ document.addEventListener('visibilitychange', () => {
 
 window.addEventListener('open-coverflow', async () => {
   try {
-    const domCards = document.querySelectorAll('.polaroid');
-    if (domCards.length === 0) throw new Error("No cards");
+    if (globalGalleryDocs.length === 0) throw new Error("No cards");
 
     // 1. Fullscreen y WakeLock
     try {
@@ -190,13 +189,7 @@ window.addEventListener('open-coverflow', async () => {
     requestWakeLock();
 
     // 2. Extraer datos actuales de la cuadrícula
-    coverflowCards = Array.from(domCards).map(card => {
-      return {
-        src: card.querySelector('.polaroid__img').src,
-        name: card.querySelector('.polaroid__name').textContent,
-        msg: card.querySelector('.polaroid__message')?.textContent || ''
-      };
-    });
+    coverflowCards = [...globalGalleryDocs];
 
     coverflowIndex = 0;
     coverflowActive = true;
