@@ -832,10 +832,10 @@ img {
 
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ PestaÃƒÂ±as ÃƒÂlbum / Solteros (React) Ã¢â€â‚¬Ã¢â€â‚¬ */
-#react-singles { display: none; }
-body.show-singles #react-singles { display: block; }
-body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles) { display: none !important; }
-body.show-singles #fab-camera { display: none !important; }
+#react-singles, #react-itinerary { display: none; }
+body.show-singles #react-singles, body.show-itinerary #react-itinerary { display: block; }
+body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary) { display: none !important; }
+body.show-singles #fab-camera, body.show-itinerary #fab-camera { display: none !important; }
 
 
 
@@ -1519,8 +1519,8 @@ section#screen-login.screen .btn--primary {
 }
 
 /* Fix React toggles */
-body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles) { display: none !important; }
-body.show-singles #fab-camera { display: none !important; }
+body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary) { display: none !important; }
+body.show-singles #fab-camera, body.show-itinerary #fab-camera { display: none !important; }
 
 
 .modal-card {
@@ -1700,7 +1700,7 @@ section#screen-login.screen > .login {
 #screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out forwards; }
 
 /* Ocultar en la pestaÃ±a Solteros */
-body.show-singles #screen-album.screen--active ~ .fab-camera {
+body.show-singles #screen-album.screen--active ~ .fab-camera, body.show-itinerary #screen-album.screen--active ~ .fab-camera {
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
@@ -1759,12 +1759,12 @@ body.show-singles #screen-album.screen--active ~ .fab-camera {
   100% { opacity: 1; transform: translateY(0);  }
 }
 
-body.show-singles #react-singles {
+body.show-singles #react-singles, body.show-itinerary #react-itinerary {
   animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-body:not(.show-singles) #screen-album > .upload,
-body:not(.show-singles) #screen-album > .photo-grid {
+body:not(.show-singles):not(.show-itinerary) #screen-album > .upload,
+body:not(.show-singles):not(.show-itinerary) #screen-album > .photo-grid {
   animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
@@ -1862,4 +1862,51 @@ body:not(.show-singles) #screen-album > .photo-grid {
 .upload:active, .singles-form-container:active {
   transform: scale(0.99) !important;
   box-shadow: 0 5px 10px rgba(0,0,0,0.08) !important;
+}
+.itinerary-container {
+  padding: 2rem 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.itinerary-timeline {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 2px solid var(--color-primary);
+  margin-top: 2rem;
+}
+.itinerary-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+.itinerary-item::before {
+  content: '';
+  position: absolute;
+  left: -2.4rem;
+  top: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--color-bg);
+}
+.itinerary-time {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
+  display: block;
+}
+.itinerary-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+.itinerary-desc {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  opacity: 0.8;
 }
