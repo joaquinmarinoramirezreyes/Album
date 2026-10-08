@@ -29,16 +29,7 @@ if (!prefersReducedMotion && isPointerFine && galleryGrid) {
     card.style.setProperty('--mouse-x', x + 'px');
     card.style.setProperty('--mouse-y', y + 'px');
   });
-
-  // 2. Detección de Fotos Nuevas en Tiempo Real (Etapa 2)
-  let globalGalleryDocs = [];
-  let initialRenderComplete = false;
-  window.addEventListener('gallery-update', (e) => {
-    globalGalleryDocs = e.detail.docs;
-    if (!e.detail.fromCache) {
-      initialRenderComplete = true; // Servidor sincronizado
-    }
-  });
+  // 2. Animaciones de entrada DOM (Etapa 2)
 
   const observer = new MutationObserver((mutations) => {
     let newPhotosCount = 0;
