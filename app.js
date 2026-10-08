@@ -85,7 +85,7 @@ function applyBrandLogin() {
   document.querySelectorAll('.hero__subtitle, .login__subtitle').forEach(el => {
     el.textContent = THEMES[BRAND || 'default'].slogan;
   });
-  if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
+  // removed admin hiding
 }
 applyBrandLogin();
 const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAND;
