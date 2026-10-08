@@ -1901,8 +1901,8 @@ body:not(.show-singles):not(.show-itinerary) #screen-album > .photo-grid {
 
 .itinerary-icon {
   position: absolute;
-  left: -2.9rem;
-  top: -0.1rem;
+  left: -3.7rem; /* adjusted for elegant card */
+  top: 1.2rem; /* center align with card content better */
   width: 2rem;
   height: 2rem;
   background: var(--color-bg);

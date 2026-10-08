@@ -92,12 +92,12 @@ export default function ItineraryScreen({ eventCode, isHost }) {
             <div className="form-group">
               <label className="form-label">Icono / Categoría</label>
               <select className="form-input" value={form.type} onChange={set('type')}>
-                <option value="general">🕛 General / Horario</option>
-                <option value="ceremony">💍 Ceremonia / Votos</option>
-                <option value="food">🍽️ Comida / Banquete</option>
-                <option value="toast">🥂 Brindis / Cocteles</option>
-                <option value="party">🎵 Fiesta / Baile</option>
-                <option value="photo">📷 Sesión de fotos</option>
+                <option value="general">General / Horario</option>
+                <option value="ceremony">Ceremonia / Votos</option>
+                <option value="food">Comida / Banquete</option>
+                <option value="toast">Brindis / Cocteles</option>
+                <option value="party">Fiesta / Baile</option>
+                <option value="photo">Sesión de fotos</option>
               </select>
             </div>
 
