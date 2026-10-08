@@ -1186,7 +1186,9 @@ $downloadPdf.addEventListener('click', async () => {
 
     // Helper: dibuja patrón de fondo con overlay
     updateToast(pdfToast, 'Preparando diseño...');
-    const patternUrl = new URL('assets/talavera-pattern.jpg', document.baseURI).href;
+    const theme = window.currentEventTheme || {};
+      const bgImgStr = theme.bgImage || '/assets/talavera-pattern.jpg';
+      const patternUrl = new URL(bgImgStr.replace(/^\//, ''), document.baseURI).href;
     const patternB64 = await loadImageAsBase64(patternUrl);
 
     function drawBackground(r, g, b, opacity) {
@@ -1214,7 +1216,12 @@ $downloadPdf.addEventListener('click', async () => {
     // ══════════════════════════════════
     //  PORTADA
     // ══════════════════════════════════
-    drawBackground(30, 56, 136, 0.88); // Azul fuerte difuminado
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#1E3888');
+      return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 30, g: 56, b: 136 };
+    };
+    const pColor = hexToRgb(theme.colorTalavera || '#1E3888');
+    drawBackground(pColor.r, pColor.g, pColor.b, 0.88); // Azul fuerte difuminado
 
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
@@ -1280,10 +1287,11 @@ $downloadPdf.addEventListener('click', async () => {
       doc.addPage();
       
       // Fondo de la página de contenido
-      drawBackground(234, 240, 246, 0.92); // Blanco-azulado difuminado
+      const oColors = (theme.overlay || '234, 240, 246').split(',').map(n => parseInt(n.trim()));
+        drawBackground(oColors[0], oColors[1], oColors[2], 0.92); // Blanco-azulado difuminado
 
       // Encabezado sutil de la página
-      doc.setFillColor(30, 56, 136);
+      doc.setFillColor(pColor.r, pColor.g, pColor.b);
       doc.rect(0, 0, W, 6, 'F');
 
       for (let row = 0; row < ROWS_PER_PAGE && cardIndex < entries.length; row++) {
