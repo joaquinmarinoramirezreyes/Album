@@ -11,7 +11,7 @@
   /* Overlay Base para marcas */
   --overlay-rgb:        245, 245, 247;
 
-  /* Colores de Marca (Solo como acento, definidos dinÃƒÂ¡micamente en app.js) */
+  /* Colores de Marca (Solo como acento, definidos dinÃƒ¡micamente en app.js) */
   --color-talavera:     #1E3888;
   --color-talavera-dark:#12245C;
   --color-accent:       var(--color-talavera); /* Por defecto */
@@ -52,7 +52,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Regla estricta: ÃƒÂreas tÃƒÂ¡ctiles de mÃƒÂ­nimo 44px para accesibilidad */
+/* Regla estricta: ÃƒÂreas tÃƒ¡ctiles de mÃƒÂ­nimo 44px para accesibilidad */
 .btn, .login__input, .upload__input, .admin-input { min-height: 44px; }
 
 
@@ -793,7 +793,7 @@ img {
 
 
 /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-   FLOATING ACTION BUTTON (FAB) Ã¢â‚¬â€ CÃƒÂ¡mara flotante
+   FLOATING ACTION BUTTON (FAB) Ã¢â‚¬â€ CÃƒ¡mara flotante
    Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 
@@ -1128,7 +1128,7 @@ section#screen-login.screen .btn--primary {
 
 
 /* =========================================================
-   ETAPA 3: REDISEÃ‘O DE GALERÃA (APPLE MINIMALIST)
+   ETAPA 3: REDISEÑO DE GALERÃA (APPLE MINIMALIST)
    ========================================================= */
 
 /* --- HERO --- */
@@ -1572,7 +1572,7 @@ body.show-singles #fab-camera, body.show-itinerary #fab-camera { display: none !
 }
 
 .polaroid:hover, .single-card:hover {
-  /* ElevaciÃ³n en el eje Z y ligero Tilt */
+  /* Elevación en el eje Z y ligero Tilt */
   transform: translateY(-8px) translateZ(40px) rotateX(2deg) rotateY(-1deg);
   box-shadow: 
     0 30px 60px rgba(0,0,0,0.12), 
@@ -1621,7 +1621,7 @@ section#screen-login.screen > .login {
 }
 
 .login > * {
-  /* Cascada de apariciÃ³n en Z */
+  /* Cascada de aparición en Z */
   animation: epic3DChildren 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -1662,7 +1662,7 @@ section#screen-login.screen > .login {
 }
 
 /* --- 7. BOTÃ“N FLOTANTE (FAB) LATIDO ESPACIAL Y GLASSMORPHISM --- */
-/* Base del botÃ³n con Glassmorphism 3D */
+/* Base del botón con Glassmorphism 3D */
 .fab-camera {
   background: rgba(255, 255, 255, 0.85) !important;
   color: var(--color-accent) !important;
@@ -1676,7 +1676,7 @@ section#screen-login.screen > .login {
   pointer-events: none !important;
 }
 
-/* El Ã­cono de la cÃ¡mara flota dentro del botÃ³n */
+/* El ícono de la cámara flota dentro del botón */
 .fab-camera svg {
   transform: translateZ(10px);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -1687,7 +1687,7 @@ section#screen-login.screen > .login {
   transform: translateZ(24px) scale(1.15);
 }
 
-/* AnimaciÃ³n de levitaciÃ³n espacial */
+/* Animación de levitación espacial */
 @keyframes spatialFloat {
   0%, 100% { 
     transform: translateY(0) translateZ(0) rotateX(10deg); 
@@ -1700,24 +1700,24 @@ section#screen-login.screen > .login {
 }
 
 /* VISIBILIDAD INTELIGENTE SIN JS */
-/* Siempre visible si la galerÃ­a estÃ¡ activa */
+/* Siempre visible si la galería está activa */
 #screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out forwards; }
 
-/* Ocultar en la pestaÃ±a Solteros */
+/* Ocultar en la pestaña Solteros */
 body.show-singles #screen-album.screen--active ~ .fab-camera, body.show-itinerary #screen-album.screen--active ~ .fab-camera {
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
 }
 
-/* Ocultar en el Login explÃ­citamente */
+/* Ocultar en el Login explícitamente */
 #screen-login.screen--active ~ .fab-camera {
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
 }
 
-/* Hover detiene la levitaciÃ³n y aplica el pop 3D mÃ¡ximo */
+/* Hover detiene la levitación y aplica el pop 3D máximo */
 .fab-camera:hover {
   animation: none !important;
   transform: translateY(-12px) translateZ(50px) rotateX(0deg) scale(1.1) !important;
