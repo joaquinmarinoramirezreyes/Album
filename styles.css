@@ -1040,8 +1040,10 @@ section#screen-login.screen > .login {
   box-shadow: 0 -10px 40px rgba(0,0,0,0.1) !important;
   display: flex !important;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start !important;
   align-items: center;
+  overflow-y: auto !important;
+  padding-top: 2rem !important;
   border: none !important;
   position: relative;
   z-index: 10;
