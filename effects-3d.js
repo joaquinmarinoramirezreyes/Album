@@ -306,3 +306,17 @@ window.addEventListener('coverflow-realtime-add', (e) => {
     processCoverflowQueue();
   }
 });
+
+// --- ETAPA 5: PARALLAX LOGIN ---
+const loginScreen = document.getElementById('screen-login');
+if (loginScreen && !prefersReducedMotion && isPointerFine) {
+  loginScreen.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * -40;
+    const y = (e.clientY / window.innerHeight - 0.5) * -40;
+    document.body.style.setProperty('background-position', `calc(50% + ${x}px) calc(50% + ${y}px)`, 'important');
+  });
+  
+  loginScreen.addEventListener('mouseleave', () => {
+    document.body.style.setProperty('background-position', 'center', 'important');
+  });
+}
