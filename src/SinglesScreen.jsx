@@ -95,13 +95,15 @@ export default function SinglesScreen({ eventCode, isHost }) {
       const ageStr = p.age ? `, ${p.age}` : '';
       if (lbCap) lbCap.textContent = `${p.name}${ageStr}`;
       
-      if (backName) backName.textContent = `${p.name}${ageStr}`;
+      if (backName) {
+        backName.innerHTML = `<span style="font-size:1.4rem; display:block; margin-bottom:0.5rem"><strong>Nombre:</strong> ${p.name}</span><span style="font-size:1.4rem; display:block"><strong>Edad:</strong> ${p.age ? p.age + ' años' : 'N/A'}</span>`;
+      }
       if (backMsg) {
-        let msg = '';
-        if (p.profession) msg += `${p.profession}\n`;
-        if (p.funFact) msg += `\n"${p.funFact}"\n`;
-        if (p.side) msg += `\nInvitado/a de: ${p.side}`;
-        backMsg.innerText = msg.trim();
+        let html = '';
+        if (p.profession) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Ocupación:</strong> ${p.profession}</div>`;
+        if (p.side) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Invitado/a de:</strong> ${p.side}</div>`;
+        if (p.funFact) html += `<div style="margin-top:1.5rem; font-style:italic; font-size:1.2rem; background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 8px;">"${p.funFact}"</div>`;
+        backMsg.innerHTML = html;
       }
 
       // Reset flip state before opening
@@ -210,7 +212,10 @@ export default function SinglesScreen({ eventCode, isHost }) {
               onClick={() => openLightbox(p)}
             />
             <div className="single-card__body">
-              <h3 className="single-card__name">{p.name}{p.age ? `, ${p.age}` : ''}</h3>
+              <h3 className="single-card__name">
+                <div style={{fontSize: '1.1rem', marginBottom: '2px'}}><strong>Nombre:</strong> {p.name}</div>
+                {p.age && <div style={{fontSize: '1rem', fontWeight: 'normal'}}><strong>Edad:</strong> {p.age} años</div>}
+              </h3>
               <p className="single-card__row">
                 <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"middle", marginRight: "4px"}}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                 {p.profession}
