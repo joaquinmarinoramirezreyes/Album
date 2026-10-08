@@ -1393,16 +1393,14 @@ $btnSlideshow.addEventListener('click', async () => {
       const fallbackHandler = () => {
         clearTimeout(fallbackTimer);
         window.removeEventListener('coverflow-failed', fallbackHandler);
-        window.removeEventListener('coverflow-success', successHandler);
         startOldSlideshow();
       };
-      const successHandler = () => {
-        clearTimeout(fallbackTimer);
-        window.removeEventListener('coverflow-failed', fallbackHandler);
-        window.removeEventListener('coverflow-success', successHandler);
+      const receivedHandler = () => {
+        clearTimeout(fallbackTimer); // Confirmación inmediata de recepción, cancela el timer
       };
-      window.addEventListener('coverflow-failed', fallbackHandler);
-      window.addEventListener('coverflow-success', successHandler);
+      window.addEventListener('coverflow-failed', fallbackHandler); // Permanece activo durante la presentación
+      window.addEventListener('coverflow-received', receivedHandler, { once: true });
+      
       fallbackTimer = setTimeout(fallbackHandler, 500);
       window.dispatchEvent(new CustomEvent('open-coverflow'));
       return;

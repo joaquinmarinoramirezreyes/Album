@@ -15,19 +15,19 @@
   .polaroid, .single-card {
     /* transform-style: preserve-3d eliminado para rendimiento/borrosidad */
     /* La transición base ya está en styles.css, pero la reforzamos para transform */
-    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.5s ease !important;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.5s ease ;
   }
 
   /* Hover eleva la tarjeta ligeramente en Z */
   .polaroid:hover, .single-card:hover {
-    transform: translateY(-4px) translateZ(20px) scale(1.02) !important;
+    transform: translateY(-4px) translateZ(20px) scale(1.02) ;
   }
 
   /* :active la eleva aùn más al tocar (sustituye el hundimiento anterior en dispositivos finos) */
   @media (hover: hover) and (pointer: fine) {
     .polaroid:active, .single-card:active {
-      transform: translateY(-2px) translateZ(40px) scale(1.04) !important;
-      transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+      transform: translateY(-2px) translateZ(40px) scale(1.04) ;
+      transition: transform 0.1s ease, box-shadow 0.1s ease ;
     }
   }
 
@@ -73,7 +73,7 @@
   }
 
   .new-photo-entrance {
-    animation: photoArrive 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    animation: photoArrive 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards ;
     will-change: transform, opacity;
   }
 }
@@ -154,35 +154,13 @@
   white-space: pre-wrap;
 }
 
-/* Botón flotante para girar */
-.lightbox__btn-flip {
-    width: auto !important;
-    height: 44px !important;
-    min-height: 44px;
-    padding: 0 24px;
-    border-radius: 9999px !important; /* Botón tipo pastilla */
-    bottom: 24px !important;
-    right: 50% !important;
-    transform: translateX(50%) !important; /* Centrado abajo */
-    background: var(--color-accent) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-    color: white !important;
-    z-index: 60 !important;
-  }
 
-.lightbox__btn-flip:hover {
-  background: rgba(0, 0, 0, 0.8);
-  transform: scale(1.1) rotate(10deg);
-}
+
+
 
 /* Responsive constraints */
 @media (max-width: 600px) {
-  .lightbox__btn-flip {
-    width: 48px;
-    height: 48px;
-    bottom: 16px;
-    right: 16px;
-  }
+  
   .lightbox__back-content h3 { font-size: 1.5rem; }
   .lightbox__back-content p { font-size: 1rem; }
 }
@@ -339,29 +317,9 @@
     max-width: 95vw;
     max-height: 80vh; /* Un poco menos para dar cabida al botón si está dentro */
   }
-  .lightbox__btn-flip {
-    width: auto !important;
-    height: 44px !important;
-    min-height: 44px;
-    padding: 0 24px;
-    border-radius: 9999px !important; /* Botón tipo pastilla */
-    bottom: 24px !important;
-    right: 50% !important;
-    transform: translateX(50%) !important; /* Centrado abajo */
-    background: var(--color-accent) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-    color: white !important;
-    z-index: 60 !important;
-  }
+  
   /* Agregar texto "Ver dedicatoria" al botón de volteo */
-  .lightbox__btn-flip::after {
-    content: "Ver dedicatoria";
-    margin-left: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    display: inline-block;
-  }
+  
 
   
   /* Ajuste botón de cerrar */
@@ -373,6 +331,47 @@
     z-index: 50;
   }
 }
-  .lightbox__btn-flip.is-flipped-state::after {
-    content: "Volver a la foto";
-  }
+  
+/* Botón flotante para girar */
+.lightbox__btn-flip {
+  position: absolute;
+  width: auto;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  bottom: 24px;
+  right: 50%;
+  transform: translateX(50%);
+  background: var(--color-accent, rgba(0,0,0,0.6));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 60;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.lightbox__btn-flip:hover, .lightbox__btn-flip:focus-visible {
+  filter: brightness(1.2);
+  transform: translateX(50%) scale(1.05);
+}
+
+.lightbox__btn-flip svg {
+  margin-right: 8px; /* space between icon and text */
+}
+
+/* Agregar texto "Ver dedicatoria" al botón de volteo */
+.lightbox__btn-flip::after {
+  content: "Ver dedicatoria";
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.lightbox__btn-flip.is-flipped-state::after {
+  content: "Volver a la foto";
+}

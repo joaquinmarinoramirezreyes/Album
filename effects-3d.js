@@ -205,11 +205,16 @@ window.addEventListener('open-coverflow', async () => {
     coverflowActive = true;
     coverflowQueue = [];
     isProcessingQueue = false;
-    window.dispatchEvent(new CustomEvent('coverflow-success'));
+    window.dispatchEvent(new CustomEvent('coverflow-received'));
     
     coverflowModal.hidden = false;
-    renderCoverflow();
-    startCoverflowTimer();
+    
+    try {
+      renderCoverflow();
+      startCoverflowTimer();
+    } catch(renderError) {
+      throw renderError;
+    }
   } catch(e) {
     window.dispatchEvent(new CustomEvent('coverflow-failed'));
   }
