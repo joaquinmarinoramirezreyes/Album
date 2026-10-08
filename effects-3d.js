@@ -1,4 +1,4 @@
-﻿/**
+/**
  * effects-3d.js
  * Lógica aislada para efectos 3D avanzados
  */
@@ -87,8 +87,13 @@ if (galleryGrid) {
       flipInner.classList.remove('is-flipped');
       const front = flipInner.querySelector('.lightbox__flip-front');
       const back = flipInner.querySelector('.lightbox__flip-back');
-      if (front) { front.setAttribute('aria-hidden', 'false'); front.removeAttribute('inert'); }
-      if (back) { back.setAttribute('aria-hidden', 'true'); back.setAttribute('inert', ''); }
+      if (front) { front.removeAttribute('inert'); }
+      if (back) { back.setAttribute('inert', ''); }
+    }
+    const flipBtn = document.getElementById('lightbox-btn-flip');
+    if (flipBtn) {
+        flipBtn.setAttribute('aria-label', 'Ver dedicatoria');
+        flipBtn.classList.remove('is-flipped-state');
     }
   });
 }
@@ -107,16 +112,15 @@ function handleLightboxFlip() {
             flipBtn.setAttribute('aria-label', 'Ver dedicatoria');
             flipBtn.classList.remove('is-flipped-state');
         }
+        flipBtn.focus();
     }
 
     const front = flipInner.querySelector('.lightbox__flip-front');
     const back = flipInner.querySelector('.lightbox__flip-back');
     if (front) {
-        front.setAttribute('aria-hidden', isFlipped ? 'true' : 'false');
         if (isFlipped) front.setAttribute('inert', ''); else front.removeAttribute('inert');
     }
     if (back) {
-        back.setAttribute('aria-hidden', isFlipped ? 'false' : 'true');
         if (isFlipped) back.removeAttribute('inert'); else back.setAttribute('inert', '');
     }
   }
@@ -201,12 +205,11 @@ window.addEventListener('open-coverflow', async () => {
     coverflowActive = true;
     coverflowQueue = [];
     isProcessingQueue = false;
-    coverflowModal.hidden = false;
+    window.dispatchEvent(new CustomEvent('coverflow-success'));
     
+    coverflowModal.hidden = false;
     renderCoverflow();
     startCoverflowTimer();
-    
-    window.dispatchEvent(new CustomEvent('coverflow-success'));
   } catch(e) {
     window.dispatchEvent(new CustomEvent('coverflow-failed'));
   }

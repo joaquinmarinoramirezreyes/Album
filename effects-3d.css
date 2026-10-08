@@ -102,6 +102,9 @@
 
 .lightbox__flip-front,
 .lightbox__flip-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
 
 
   border-radius: 12px;
@@ -153,23 +156,19 @@
 
 /* Botón flotante para girar */
 .lightbox__btn-flip {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 20;
-}
+    width: auto !important;
+    height: 44px !important;
+    min-height: 44px;
+    padding: 0 24px;
+    border-radius: 9999px !important; /* Botón tipo pastilla */
+    bottom: 24px !important;
+    right: 50% !important;
+    transform: translateX(50%) !important; /* Centrado abajo */
+    background: var(--color-accent) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    color: white !important;
+    z-index: 60 !important;
+  }
 
 .lightbox__btn-flip:hover {
   background: rgba(0, 0, 0, 0.8);
