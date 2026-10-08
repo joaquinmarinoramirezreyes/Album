@@ -7,7 +7,7 @@
   /* 1. Contenedor con perspective */
   #gallery-grid {
     perspective: 1200px;
-    transform-style: preserve-3d;
+    /* transform-style: preserve-3d eliminado para evitar que el navegador rasterice toda la cuadrícula y se vea borrosa en Windows */
   }
 
   /* 2. Tarjetas que se elevan con translateZ al tocar/hover */
