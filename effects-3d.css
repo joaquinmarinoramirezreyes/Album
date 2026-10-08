@@ -102,8 +102,8 @@
 
 .lightbox__flip-front,
 .lightbox__flip-back {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+
+
   border-radius: 12px;
   background: var(--color-surface);
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
@@ -341,13 +341,18 @@
     max-height: 80vh; /* Un poco menos para dar cabida al botón si está dentro */
   }
   .lightbox__btn-flip {
-    width: auto;
-    height: 48px;
-    padding: 0 20px;
-    border-radius: 9999px; /* Botón tipo pastilla */
-    bottom: 24px;
-    right: 50%;
-    transform: translateX(50%); /* Centrado abajo */
+    width: auto !important;
+    height: 44px !important;
+    min-height: 44px;
+    padding: 0 24px;
+    border-radius: 9999px !important; /* Botón tipo pastilla */
+    bottom: 24px !important;
+    right: 50% !important;
+    transform: translateX(50%) !important; /* Centrado abajo */
+    background: var(--color-accent) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    color: white !important;
+    z-index: 60 !important;
   }
   /* Agregar texto "Ver dedicatoria" al botón de volteo */
   .lightbox__btn-flip::after {
@@ -358,9 +363,7 @@
     white-space: nowrap;
     display: inline-block;
   }
-  #lightbox-btn-flip-back::after {
-    content: "Volver a la foto";
-  }
+
   
   /* Ajuste botón de cerrar */
   .lightbox__close {

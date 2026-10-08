@@ -1389,6 +1389,21 @@ let currentSlideIndex = 0;
 $btnSlideshow.addEventListener('click', async () => {
     const useCoverflow = true;
     if (useCoverflow) {
+      let fallbackTimer;
+      const fallbackHandler = () => {
+        clearTimeout(fallbackTimer);
+        window.removeEventListener('coverflow-failed', fallbackHandler);
+        window.removeEventListener('coverflow-success', successHandler);
+        startOldSlideshow();
+      };
+      const successHandler = () => {
+        clearTimeout(fallbackTimer);
+        window.removeEventListener('coverflow-failed', fallbackHandler);
+        window.removeEventListener('coverflow-success', successHandler);
+      };
+      window.addEventListener('coverflow-failed', fallbackHandler);
+      window.addEventListener('coverflow-success', successHandler);
+      fallbackTimer = setTimeout(fallbackHandler, 500);
       window.dispatchEvent(new CustomEvent('open-coverflow'));
       return;
     }

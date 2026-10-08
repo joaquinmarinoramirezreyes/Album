@@ -3,7 +3,7 @@
 //  Cambia CACHE_VERSION en cada deploy para forzar actualizaciÃ³n
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-const CACHE_VERSION = 'album-ceramico-v5';
+const CACHE_VERSION = 'album-ceramico-v6';
 
 // Al instalarse, toma control inmediatamente (no espera a que cierren la pestaÃ±a)
 self.addEventListener('install', (e) => {
