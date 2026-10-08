@@ -2,7 +2,7 @@
 import { getApp } from 'firebase/app';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
-  serverTimestamp, deleteDoc, doc,
+  serverTimestamp, deleteDoc, doc, updateDoc, increment
 } from 'firebase/firestore';
 
 const getDb = () => getFirestore(getApp());
@@ -31,6 +31,38 @@ function compressImage(file, maxWidth = 900, quality = 0.7) {
 const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '' };
 
 export default function SinglesScreen({ eventCode, isHost }) {
+  const [localLikes, setLocalLikes] = useState([]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('likedSingles') || '[]');
+      setLocalLikes(stored);
+    } catch(e){}
+  }, []);
+
+  const handleLike = async (id, e) => {
+    if (e) e.stopPropagation();
+    const isLiked = localLikes.includes(id);
+    
+    try {
+      const ref = doc(getDb(), 'events', eventCode, 'singles', id);
+      await updateDoc(ref, {
+        likes: increment(isLiked ? -1 : 1)
+      });
+      
+      let newLikes = [];
+      if (isLiked) {
+        newLikes = localLikes.filter(i => i !== id);
+      } else {
+        newLikes = [...localLikes, id];
+      }
+      setLocalLikes(newLikes);
+      localStorage.setItem('likedSingles', JSON.stringify(newLikes));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const [profiles, setProfiles] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -221,9 +253,28 @@ export default function SinglesScreen({ eventCode, isHost }) {
                 {p.profession}
               </p>
               <p className="single-card__fact">“{p.funFact}”</p>
-              <div className="single-card__footer">
+              <div className="single-card__footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>De parte de {p.side}</span>
-                
+                <button 
+                  type="button" 
+                  onClick={(e) => handleLike(p.id, e)}
+                  style={{
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    color: localLikes.includes(p.id) ? '#E91E63' : 'var(--color-text-secondary)',
+                    padding: '4px'
+                  }}
+                  aria-label="Dar like"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill={localLikes.includes(p.id) ? '#E91E63' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                  <span style={{fontWeight: 'bold', fontSize: '1.1rem'}}>{p.likes || 0}</span>
+                </button>
               </div>
             </div>
           </article>
