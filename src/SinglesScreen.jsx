@@ -79,14 +79,46 @@ export default function SinglesScreen({ eventCode, isHost }) {
     catch (err) { console.error(err); }
   };
 
-  const openLightbox = (url, name, age) => {
+  const openLightbox = (p) => {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
     const lbCap = document.getElementById('lightbox-caption');
-    if (lb && lbImg && lbCap) {
-      lbImg.src = url;
-      lbCap.textContent = `${name}, ${age}`;
+    
+    // 3D Flip elements
+    const backName = document.getElementById('lightbox-back-name');
+    const backMsg = document.getElementById('lightbox-back-message');
+    const flipInner = document.getElementById('lightbox-flip-inner');
+    const flipBtn = document.getElementById('lightbox-btn-flip');
+
+    if (lb && lbImg) {
+      lbImg.src = p.photoUrl;
+      const ageStr = p.age ? `, ${p.age}` : '';
+      if (lbCap) lbCap.textContent = `${p.name}${ageStr}`;
+      
+      if (backName) backName.textContent = `${p.name}${ageStr}`;
+      if (backMsg) {
+        let msg = '';
+        if (p.profession) msg += `${p.profession}\n`;
+        if (p.funFact) msg += `\n"${p.funFact}"\n`;
+        if (p.side) msg += `\nInvitado/a de: ${p.side}`;
+        backMsg.innerText = msg.trim();
+      }
+
+      // Reset flip state before opening
+      if (flipInner) {
+        flipInner.classList.remove('is-flipped');
+        const front = flipInner.querySelector('.lightbox__flip-front');
+        const back = flipInner.querySelector('.lightbox__flip-back');
+        if (front) { front.removeAttribute('inert'); }
+        if (back) { back.setAttribute('inert', ''); }
+      }
+      if (flipBtn) {
+        flipBtn.setAttribute('aria-label', 'Ver descripción');
+        flipBtn.classList.remove('is-flipped-state');
+      }
+
       lb.hidden = false;
+      document.body.style.overflow = 'hidden';
     }
   };
 
@@ -173,7 +205,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
               src={p.photoUrl} 
               alt={p.name} 
               loading="lazy" 
-              onClick={() => openLightbox(p.photoUrl, p.name, p.age || '')}
+              onClick={() => openLightbox(p)}
             />
             <div className="single-card__body">
               <h3 className="single-card__name">{p.name}{p.age ? `, ${p.age}` : ''}</h3>
