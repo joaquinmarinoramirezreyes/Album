@@ -974,6 +974,8 @@ body {
 
 
 
+/* Global hidden override */
+[hidden] { display: none !important; }
 /* Ocultar si tiene el hidden del sistema de tabs */
 
 
