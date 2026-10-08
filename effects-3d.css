@@ -365,16 +365,14 @@
 
 /* Agregar texto "Ver dedicatoria" al botón de volteo */
 .lightbox__btn-flip::after {
-  content: "Ver dedicatoria";
+  content: attr(data-text);
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
   font-family: inherit;
 }
 
-.lightbox__btn-flip.is-flipped-state::after {
-  content: "Volver a la foto";
-}
+
 
 
 /* --- ETAPA 5: PARALLAX LOGIN --- */

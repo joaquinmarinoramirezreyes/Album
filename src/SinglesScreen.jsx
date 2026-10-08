@@ -113,7 +113,9 @@ export default function SinglesScreen({ eventCode, isHost }) {
         if (back) { back.setAttribute('inert', ''); }
       }
       if (flipBtn) {
-        flipBtn.setAttribute('aria-label', 'Ver descripción');
+        flipBtn.setAttribute('aria-label', 'Ver perfil');
+        flipBtn.setAttribute('data-text', 'Ver perfil');
+        flipBtn.setAttribute('data-singles', 'true');
         flipBtn.classList.remove('is-flipped-state');
       }
 

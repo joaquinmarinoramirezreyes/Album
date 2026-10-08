@@ -93,7 +93,9 @@ if (galleryGrid) {
     const flipBtn = document.getElementById('lightbox-btn-flip');
     if (flipBtn) {
         flipBtn.setAttribute('aria-label', 'Ver dedicatoria');
-        flipBtn.classList.remove('is-flipped-state');
+          flipBtn.setAttribute('data-text', 'Ver dedicatoria');
+          flipBtn.removeAttribute('data-singles');
+          flipBtn.classList.remove('is-flipped-state');
     }
   });
 }
@@ -107,9 +109,13 @@ function handleLightboxFlip() {
     if (flipBtn) {
         if (isFlipped) {
             flipBtn.setAttribute('aria-label', 'Volver a la foto');
+            flipBtn.setAttribute('data-text', 'Volver a la foto');
             flipBtn.classList.add('is-flipped-state');
         } else {
-            flipBtn.setAttribute('aria-label', 'Ver dedicatoria');
+            const isSingles = flipBtn.hasAttribute('data-singles');
+            const text = isSingles ? 'Ver perfil' : 'Ver dedicatoria';
+            flipBtn.setAttribute('aria-label', text);
+            flipBtn.setAttribute('data-text', text);
             flipBtn.classList.remove('is-flipped-state');
         }
         flipBtn.focus();
