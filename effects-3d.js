@@ -9,6 +9,17 @@ const isPointerFine = window.matchMedia('(hover: hover) and (pointer: fine)').ma
 
 const galleryGrid = document.getElementById('gallery-grid');
 
+// Estado global de sincronización
+let globalGalleryDocs = [];
+let initialRenderComplete = false;
+window.addEventListener('gallery-update', (e) => {
+  globalGalleryDocs = e.detail.docs;
+  if (!e.detail.fromCache) {
+    initialRenderComplete = true; // Servidor sincronizado
+  }
+});
+
+
 if (!prefersReducedMotion && isPointerFine && galleryGrid) {
   // 1. Brillo Radial (Radial Glow Tracker)
   galleryGrid.addEventListener('mousemove', (e) => {
