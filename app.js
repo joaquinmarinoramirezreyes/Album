@@ -1399,6 +1399,29 @@ const $slideshowCaption = document.getElementById('slideshow-caption');
 let slideshowInterval;
 let currentSlideIndex = 0;
 
+async function startOldSlideshow() {
+    const cards = document.querySelectorAll('.polaroid');
+    if (cards.length === 0) {
+      showToast('La galería está vacía.', 'info');
+      return;
+    }
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (err) {
+      console.log("Fullscreen API not supported or denied.");
+    }
+    
+    $slideshowModal.hidden = false;
+    currentSlideIndex = 0;
+    showNextSlide();
+    
+    slideshowInterval = setInterval(() => {
+      showNextSlide();
+    }, 4000);
+}
+
 $btnSlideshow.addEventListener('click', async () => {
     const useCoverflow = true;
     if (useCoverflow) {
@@ -1409,37 +1432,16 @@ $btnSlideshow.addEventListener('click', async () => {
         startOldSlideshow();
       };
       const receivedHandler = () => {
-        clearTimeout(fallbackTimer); // Confirmación inmediata de recepción, cancela el timer
+        clearTimeout(fallbackTimer);
       };
-      window.addEventListener('coverflow-failed', fallbackHandler); // Permanece activo durante la presentación
+      window.addEventListener('coverflow-failed', fallbackHandler);
       window.addEventListener('coverflow-received', receivedHandler, { once: true });
       
       fallbackTimer = setTimeout(fallbackHandler, 500);
       window.dispatchEvent(new CustomEvent('open-coverflow'));
-      return;
+    } else {
+      startOldSlideshow();
     }
-  const cards = document.querySelectorAll('.polaroid');
-  if (cards.length === 0) {
-    showToast('La galería está vacía.', 'info');
-    return;
-  }
-  
-  // Try to go fullscreen
-  try {
-    if (document.documentElement.requestFullscreen) {
-      await document.documentElement.requestFullscreen();
-    }
-  } catch (e) {
-    console.log("Fullscreen API not supported or denied.");
-  }
-  
-  $slideshowModal.hidden = false;
-  currentSlideIndex = 0;
-  showNextSlide();
-  
-  slideshowInterval = setInterval(() => {
-    showNextSlide();
-  }, 4000); // 4 seconds per slide
 });
 
 function showNextSlide() {
