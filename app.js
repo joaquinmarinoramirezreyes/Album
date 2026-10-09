@@ -96,7 +96,7 @@ const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAN
 
 // --- Firebase SDK Imports (CDN ESM) � Solo Firestore, sin Storage ---
 import { initializeApp }       from 'firebase/app';
-import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, setPersistence, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, inMemoryPersistence } from 'firebase/auth';
+import { initializeAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, inMemoryPersistence } from 'firebase/auth';
 import {
   getFirestore,
   initializeFirestore,
@@ -121,6 +121,19 @@ import {
 // -----------------------------------------------------------
 //  FIREBASE CONFIG
 // -----------------------------------------------------------
+const requiredVars = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_APP_ID'
+];
+for (const v of requiredVars) {
+  if (!import.meta.env[v]) {
+    document.body.innerHTML = '<h1 style="color:red;text-align:center;margin-top:20%">Error Crítico: Faltan variables de entorno (' + v + ')</h1>';
+    throw new Error('Falta la variable de entorno: ' + v);
+  }
+}
+
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -137,7 +150,9 @@ const app = initializeApp(firebaseConfig);
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
-export const auth = getAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, inMemoryPersistence]
+});
 
 // Si estamos en localhost, usar emuladores
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -145,7 +160,8 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 }
 
 let isAuthReady = false;
-onAuthStateChanged(auth, user => {
+auth.onAuthStateChanged = onAuthStateChanged;
+onAuthStateChanged(auth, async user => {
   isAuthReady = true;
   if (!user && window.location.pathname.indexOf('admin') === -1) {
     signInAnonymously(auth).catch(err => {
@@ -1544,7 +1560,10 @@ if ('serviceWorker' in navigator) {
     const isSlideshowOpen = document.getElementById('slideshow') && !document.getElementById('slideshow').hidden;
 
     if (isUploading || hasText || isSlideshowOpen) {
-      showToast('Nueva versión disponible. Recarga la página cuando termines.', 'info', 10000);
+      const toast = document.createElement('div');
+      toast.className = 'toast toast--info';
+      toast.innerHTML = '<span class="toast__text">Nueva versión disponible. Guarda tu trabajo y actualiza.</span><button onclick="window.location.reload()" style="margin-left:10px;padding:5px 10px;background:var(--color-talavera);color:#fff;border:none;border-radius:4px;cursor:pointer">Actualizar</button>';
+      document.body.appendChild(toast);
     } else {
       refreshing = true;
       window.location.reload();

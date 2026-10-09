@@ -20,7 +20,13 @@ if (!fs.existsSync(serviceAccountPath) && !CONFIG.DRY_RUN) {
   console.warn(`[WARNING] No se encontró ${serviceAccountPath}. La migración fallará en producción.`);
 } else if (fs.existsSync(serviceAccountPath)) {
   const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-  admin.initializeApp({
+  const projectId = process.env.VITE_FIREBASE_PROJECT_ID || JSON.parse(fs.readFileSync('.firebaserc', 'utf8'))?.projects?.default || 'unknown';
+const isProd = process.argv.includes('--allow-production');
+if (projectId.includes('prod') && !isProd) {
+  console.error("ERROR: Abortando. El proyecto detectado parece ser de producción. Usa --allow-production explícitamente.");
+  process.exit(1);
+}
+admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
 } else {
