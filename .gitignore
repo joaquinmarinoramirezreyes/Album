@@ -1,3 +1,14 @@
 node_modules
 dist
 
+
+.env*
+
+!package.json
+!package-lock.json
+!firebase.json
+!.firebaserc
+
+*-adminsdk-*.json
+serviceAccount*.json
+backup_*.json
