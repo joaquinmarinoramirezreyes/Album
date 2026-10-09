@@ -96,11 +96,13 @@ const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAN
 
 // ─── Firebase SDK Imports (CDN ESM) — Solo Firestore, sin Storage ───
 import { initializeApp }       from 'firebase/app';
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth';
 import {
   getFirestore,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
+  connectFirestoreEmulator,
   collection,
   doc,
   getDoc,
