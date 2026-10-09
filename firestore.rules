@@ -1,0 +1,130 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read, write: if false;
+    }
+
+    function isHostOf(code) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/events/$(code)/hosts/$(request.auth.uid));
+    }
+
+    // 1. Directorio de eventos (metadatos)
+    match /eventos_activos/{code} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+
+      // Secretos del evento (PIN del anfitrión)
+      match /secrets/{secretId} {
+        allow get, list, write: if isAdmin();
+      }
+    }
+
+    // 2. Contenido del evento
+    match /events/{code} {
+      allow get, list: if false;
+
+      // Subcolección de anfitriones validados
+      match /hosts/{hostUid} {
+        allow get: if isSignedIn() && request.auth.uid == hostUid;
+        allow list: if false;
+
+        // Reclamo de Host: permite PIN de >= 4 caracteres (retrocompatibilidad)
+        allow create: if isSignedIn()
+          && request.auth.uid == hostUid
+          && request.resource.data.keys().hasOnly(['pin', 'claimedAt'])
+          && request.resource.data.pin is string
+          && request.resource.data.pin.size() >= 4
+          && request.resource.data.pin.matches('^[a-zA-Z0-9]+$')
+          && request.resource.data.claimedAt == request.time
+          && get(/databases/$(database)/documents/eventos_activos/$(code)/secrets/pin).data.pin == request.resource.data.pin;
+
+        allow update, delete: if isAdmin();
+      }
+
+      // Galería de fotos (guest_entries)
+      match /guest_entries/{entryId} {
+        allow read: if isSignedIn();
+
+        allow create: if isSignedIn()
+          && request.resource.data.keys().hasOnly(['nombre', 'dedicatoria', 'imageUrl', 'timestamp', 'uid', 'likes'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.likes == 0
+          && request.resource.data.timestamp == request.time
+          && request.resource.data.nombre is string
+          && request.resource.data.nombre.size() > 0
+          && request.resource.data.nombre.size() <= 60
+          && request.resource.data.dedicatoria is string
+          && request.resource.data.dedicatoria.size() <= 280
+          && request.resource.data.imageUrl is string
+          && request.resource.data.imageUrl.size() > 0
+          && request.resource.data.imageUrl.size() < 450000;
+
+        allow update: if isSignedIn()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+          && request.resource.data.likes >= 0
+          && (
+            request.resource.data.likes == (resource.data.get('likes', 0) + 1) ||
+            request.resource.data.likes == (resource.data.get('likes', 0) - 1)
+          );
+
+        allow delete: if (isSignedIn() && resource.data.get('uid', '') == request.auth.uid)
+          || isHostOf(code)
+          || isAdmin();
+      }
+
+      // Solteros
+      match /singles/{singleId} {
+        allow read: if isSignedIn();
+
+        allow create: if isSignedIn()
+          && request.resource.data.keys().hasOnly(['name', 'age', 'profession', 'side', 'funFact', 'photoUrl', 'timestamp', 'uid', 'likes'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.likes == 0
+          && request.resource.data.timestamp == request.time
+          && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
+          && request.resource.data.age is string && request.resource.data.age.size() > 0 && request.resource.data.age.size() <= 3
+          && request.resource.data.profession is string && request.resource.data.profession.size() <= 60
+          && request.resource.data.side in ['bride', 'groom', 'both']
+          && request.resource.data.funFact is string && request.resource.data.funFact.size() <= 120
+          && request.resource.data.photoUrl is string && request.resource.data.photoUrl.size() < 450000;
+
+        allow update: if isSignedIn()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+          && request.resource.data.likes >= 0
+          && (
+            request.resource.data.likes == (resource.data.get('likes', 0) + 1) ||
+            request.resource.data.likes == (resource.data.get('likes', 0) - 1)
+          );
+
+        allow delete: if (isSignedIn() && resource.data.get('uid', '') == request.auth.uid)
+          || isHostOf(code)
+          || isAdmin();
+      }
+
+      // Itinerario
+      match /itinerary/{itemId} {
+        allow read: if isSignedIn();
+        allow create, update: if (isHostOf(code) || isAdmin())
+          && request.resource.data.keys().hasOnly(['time', 'title', 'type', 'timestamp'])
+          && request.resource.data.time is string && request.resource.data.time.size() <= 10
+          && request.resource.data.title is string && request.resource.data.title.size() <= 60
+          && request.resource.data.type in ['ceremony', 'party', 'food', 'other']
+          && request.resource.data.timestamp == request.time;
+          
+        allow delete: if isHostOf(code) || isAdmin();
+      }
+    }
+  }
+}
