@@ -1,4 +1,4 @@
-﻿import '@fontsource-variable/inter';
+import '@fontsource-variable/inter';
 import { createIcons, Settings, Shield } from 'lucide';
 
 // Initialize icons immediately
@@ -9,10 +9,10 @@ createIcons({
   }
 });
 
-﻿const THEMES = {
+?const THEMES = {
   default: {
     name: 'Central de Eventos',
-    slogan: 'Plataforma administrativa de galerías cerámicas.',
+    slogan: 'Plataforma administrativa de galer�as cer�micas.',
     bgImage: '/assets/talavera-pattern.jpg',
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
@@ -20,7 +20,7 @@ createIcons({
     charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
   },
   marli: {
-    name: 'Marli Cerámica',
+    name: 'Marli Cer�mica',
     slogan: 'Hecho a mano, no en serie. Hecho con historia.',
     bgImage: '/assets/talavera-pattern.jpg',
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
@@ -29,8 +29,8 @@ createIcons({
     charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
   },
   shots: {
-    name: 'Cerámica Shots',
-    slogan: 'Cerámica lenta en un mundo rápido.',
+    name: 'Cer�mica Shots',
+    slogan: 'Cer�mica lenta en un mundo r�pido.',
     bgImage: '/assets/shots-pattern.jpg',
     colorBg: '#FBF5EE', colorBgWarm: '#F6E7D8',
     colorTalavera: '#C0582F', colorTalaveraDark: '#9A4322',
@@ -38,7 +38,7 @@ createIcons({
     charcoal: '#3A2418', charcoalLight: '#7A5A48', divider: '#EAD6C3'
   },
   odimar: {
-    name: 'Cerámica Odimar',
+    name: 'Cer�mica Odimar',
     slogan: 'Imperfecta como todo lo hecho a mano, perfecta por eso.',
     bgImage: '/assets/odimar-pattern.jpg',
     colorBg: '#FAF3ED', colorBgWarm: '#F0E2D5',
@@ -89,12 +89,12 @@ function applyBrandLogin() {
 }
 applyBrandLogin();
 const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAND;
-/* ═══════════════════════════════════════════════════════════
-   NUESTRO ÁLBUM CERÁMICO — App Logic + Firebase + Toasts
-   Firebase Firestore (datos + imágenes inline) — 100% gratuito
-   ═══════════════════════════════════════════════════════════ */
+/* -----------------------------------------------------------
+   NUESTRO �LBUM CER�MICO � App Logic + Firebase + Toasts
+   Firebase Firestore (datos + im�genes inline) � 100% gratuito
+   ----------------------------------------------------------- */
 
-// ─── Firebase SDK Imports (CDN ESM) — Solo Firestore, sin Storage ───
+// --- Firebase SDK Imports (CDN ESM) � Solo Firestore, sin Storage ---
 import { initializeApp }       from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth';
 import {
@@ -118,53 +118,70 @@ import {
   increment
 } from 'firebase/firestore';
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  FIREBASE CONFIG
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 const firebaseConfig = {
-  apiKey:            'AIzaSyBmVZDxge4Qq4HdkM0xQdPcqh_SKesph2s',
-  authDomain:        'album-fotos-80c88.firebaseapp.com',
-  projectId:         'album-fotos-80c88',
-  storageBucket:     'album-fotos-80c88.firebasestorage.app',
-  messagingSenderId: '888877871276',
-  appId:             '1:888877871276:web:48978e68be84a69d31ef09'
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// ─── Init Firebase (solo Firestore) ───
+// --- Init Firebase (solo Firestore) ---
 const app = initializeApp(firebaseConfig);
 
-// Inicializar base de datos activando la persistencia offline (Caché)
+// Inicializar base de datos activando la persistencia offline (Cach�)
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
+export const auth = getAuth(app);
 
-// ═══════════════════════════════════════════════════════════
-//  ALMACENAMIENTO DE IMÁGENES
-// ═══════════════════════════════════════════════════════════
-// Las imágenes se comprimen a ~13KB y se guardan como Data URL (base64)
+// Si estamos en localhost, usar emuladores
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // connectAuthEmulator(auth, "http://127.0.0.1:9099");
+}
+
+let isAuthReady = false;
+onAuthStateChanged(auth, user => {
+  isAuthReady = true;
+  if (!user && window.location.pathname.indexOf('admin') === -1) {
+    signInAnonymously(auth).catch(err => {
+      console.error(err);
+      showToast('Fallo de red o incógnito. Reintenta recargando.', 'error', 0);
+    });
+  }
+});
+
+// -----------------------------------------------------------
+//  ALMACENAMIENTO DE IM�GENES
+// -----------------------------------------------------------
+// Las im�genes se comprimen a ~13KB y se guardan como Data URL (base64)
 // directamente en Firestore. Cero dependencias externas, cero APIs de terceros.
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  IMAGE COMPRESSION CONFIG
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 const COMPRESSION_OPTIONS = {
-  maxSizeMB: 0.3,              // Máximo 300 KB (muy ligero para celular)
-  maxWidthOrHeight: 800,       // Máximo 800px (suficiente para pantalla y PDF)
+  maxSizeMB: 0.3,              // M�ximo 300 KB (muy ligero para celular)
+  maxWidthOrHeight: 800,       // M�ximo 800px (suficiente para pantalla y PDF)
   useWebWorker: true,
   fileType: 'image/jpeg',
-  initialQuality: 0.7,         // Calidad más baja para ahorrar peso
+  initialQuality: 0.7,         // Calidad m�s baja para ahorrar peso
 };
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  APP STATE
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 
-/** ID del evento actual — se establece al pasar el login */
+/** ID del evento actual � se establece al pasar el login */
 let currentEventId = null;
 
 /**
- * Referencia a la subcolección de entries del evento.
+ * Referencia a la subcolecci�n de entries del evento.
  * Estructura: events/{eventId}/guest_entries
  */
 function getEntriesRef() {
@@ -175,9 +192,9 @@ function getEntriesRef() {
 let unsubscribeGallery = null;
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  DOM REFERENCES
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 const $loginScreen   = document.getElementById('screen-login');
 const $albumScreen   = document.getElementById('screen-album');
 const $loginForm     = document.getElementById('login-form');
@@ -214,16 +231,16 @@ const $inputNewEvent   = document.getElementById('input-new-event');
 const $inputEventDate  = document.getElementById('input-event-date');
 const $inputEventPin   = document.getElementById('input-event-pin');
 const $adminEventList  = document.getElementById('admin-event-list');
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  TOAST NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 
 /**
- * Muestra una notificación toast.
- * @param {string} message   — Texto del mensaje
- * @param {'info'|'success'|'error'} type — Tipo de toast
- * @param {number} duration  — Milisegundos antes de auto-cerrar (0 = manual)
- * @returns {HTMLElement}     — Referencia al elemento toast (para dismiss manual)
+ * Muestra una notificaci�n toast.
+ * @param {string} message   � Texto del mensaje
+ * @param {'info'|'success'|'error'} type � Tipo de toast
+ * @param {number} duration  � Milisegundos antes de auto-cerrar (0 = manual)
+ * @returns {HTMLElement}     � Referencia al elemento toast (para dismiss manual)
  */
 function showToast(message, type = 'info', duration = 4000) {
   const icons = {
@@ -243,7 +260,7 @@ function showToast(message, type = 'info', duration = 4000) {
   toast.innerHTML = `
     <span class="toast__icon" aria-hidden="true" style="display:flex; align-items:center; justify-content:center;">${icons[type]}</span>
     <span class="toast__text">${escapeHTML(message)}</span>
-    <button class="toast__close" aria-label="Cerrar notificación">✕</button>
+    <button class="toast__close" aria-label="Cerrar notificaci�n">?</button>
     ${duration > 0 ? '<div class="toast__progress"></div>' : ''}
   `;
 
@@ -283,7 +300,7 @@ function showToast(message, type = 'info', duration = 4000) {
 }
 
 /**
- * Cierra un toast con animación de salida.
+ * Cierra un toast con animaci�n de salida.
  * @param {HTMLElement} toast
  */
 function dismissToast(toast) {
@@ -296,7 +313,7 @@ function dismissToast(toast) {
 }
 
 /**
- * Actualiza el texto de un toast existente (útil para pasos progresivos).
+ * Actualiza el texto de un toast existente (�til para pasos progresivos).
  * @param {HTMLElement} toast
  * @param {string} message
  */
@@ -307,9 +324,9 @@ function updateToast(toast, message) {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  INIT / LECTURA DE URL (PARA CÓDIGOS QR)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  INIT / LECTURA DE URL (PARA C�DIGOS QR)
+// -----------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const codeParam = params.get('code');
@@ -320,9 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════
-//  PANTALLA A — LOGIN
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  PANTALLA A � LOGIN
+// -----------------------------------------------------------
 $loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -344,19 +361,25 @@ $loginForm.addEventListener('submit', async (e) => {
       // Establecer el evento activo
       currentEventId = code;
 
-      // Aplicar tema dinámico
+      // Aplicar tema din�mico
       applyTheme(eventSnap.data().theme || 'marli');
 
-      // Transición → Pantalla B
+      // Transici�n ? Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album' }, '', '#album');
-      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true' } }));
+      let isHost = false;
+      try {
+        const hostSnap = await getDoc(doc(db, 'events', code, 'hosts', auth.currentUser?.uid || 'none'));
+        isHost = hostSnap.exists();
+      } catch (e) {}
+      window.__hostActive = isHost;
+      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost } }));
 
-      // Arrancar el listener de la galería en tiempo real
+      // Arrancar el listener de la galer�a en tiempo real
       startGalleryListener();
     } else {
-      // Error — shake + hint + toast
-      showToast('Código de evento no válido o inactivo', 'error', 4000);
+      // Error � shake + hint + toast
+      showToast('C�digo de evento no v�lido o inactivo', 'error', 4000);
       triggerLoginError();
     }
   } catch (err) {
@@ -384,12 +407,12 @@ $accessCode.addEventListener('input', () => {
   $accessCode.classList.remove('login__input--error');
 });
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  ADMIN: CREAR NUEVO EVENTO
-// ═══════════════════════════════════════════════════════════
-const ADMIN_PASSWORD = "ceramica"; // Contraseña simple para el modal
+// -----------------------------------------------------------
+const ADMIN_PASSWORD = "ceramica"; // Contrase�a simple para el modal
 
-// Abrir modal de autenticación
+// Abrir modal de autenticaci�n
 $btnAdminModal.addEventListener('click', () => {
   $modalAdminAuth.hidden = false;
   $inputAdminPass.value = '';
@@ -397,16 +420,18 @@ $btnAdminModal.addEventListener('click', () => {
   $inputAdminPass.focus();
 });
 
-// Validar contraseña
+// Validar contrase�a
 $formAdminAuth.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if ($inputAdminPass.value === ADMIN_PASSWORD) {
+  try {
+    const { signInWithEmailAndPassword } = await import('firebase/auth');
+    await signInWithEmailAndPassword(auth, 'admin@nuestroalbum.com', $inputAdminPass.value);
     $modalAdminAuth.hidden = true;
     $modalAdminPanel.hidden = false;
     $inputNewEvent.value = '';
     $inputNewEvent.focus();
     await loadAdminEvents();
-  } else {
+  } catch (err) {
     $adminError.hidden = false;
   }
 });
@@ -439,7 +464,7 @@ async function loadAdminEvents() {
       let dateInfoHtml = '';
       
       if (data.fechaEvento) {
-         // Calcular días usando zona horaria local para evitar saltos de día por UTC
+         // Calcular d�as usando zona horaria local para evitar saltos de d�a por UTC
          const [year, month, day] = data.fechaEvento.split('-');
          const eventDate = new Date(year, month - 1, day);
          const today = new Date();
@@ -452,15 +477,15 @@ async function loadAdminEvents() {
          let daysText = '';
          let color = '#888';
          if (diffDays > 0) {
-            daysText = `Terminó hace ${diffDays} día(s)`;
+            daysText = `Termin� hace ${diffDays} d�a(s)`;
             if (diffDays > 15) color = '#d32f2f'; // Highlight old ones
          } else if (diffDays === 0) {
             daysText = 'Hoy es el evento';
             color = '#2e7d32';
          } else {
-            daysText = `Faltan ${Math.abs(diffDays)} día(s)`;
+            daysText = `Faltan ${Math.abs(diffDays)} d�a(s)`;
          }
-         dateInfoHtml = `<div style="font-size:0.75rem; color:${color}; margin-top:2px;">${data.fechaEvento} • ${daysText}</div>`;
+         dateInfoHtml = `<div style="font-size:0.75rem; color:${color}; margin-top:2px;">${data.fechaEvento} � ${daysText}</div>`;
       }
 
       const themeName = (THEMES[data.theme] || THEMES.marli).name;
@@ -477,7 +502,7 @@ async function loadAdminEvents() {
                     <button type="button" class="link-btn" aria-label="Copiar link" title="Copiar enlace del evento" data-url="${window.location.origin}/${escapeAttr(data.theme || 'marli')}?code=${escapeAttr(code)}" style="color:var(--color-charcoal-light);">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
           </button>
-          <button type="button" class="qr-btn" data-theme="${escapeAttr(data.theme || 'marli')}" aria-label="Código QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
+          <button type="button" class="qr-btn" data-theme="${escapeAttr(data.theme || 'marli')}" aria-label="C�digo QR" title="Descargar QR" data-code="${escapeAttr(code)}" style="color:var(--color-talavera);">
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
               <path d="M2 2h2v2H2V2Z"/><path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/><path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/><path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/><path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/>
             </svg>
@@ -494,7 +519,7 @@ async function loadAdminEvents() {
       li.querySelector('.del-btn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         const codeToDelete = btn.getAttribute('data-code');
-        if (confirm(`¿Estás seguro de ELIMINAR COMPLETAMENTE el evento "${codeToDelete}"?\n\nSi aceptas, se borrará el acceso y TODAS las dedicatorias de la base de datos para liberar espacio en Firestore.`)) {
+        if (confirm(`�Est�s seguro de ELIMINAR COMPLETAMENTE el evento "${codeToDelete}"?\n\nSi aceptas, se borrar� el acceso y TODAS las dedicatorias de la base de datos para liberar espacio en Firestore.`)) {
           try {
             btn.disabled = true;
             // 1. Obtener y borrar todas las fotos de Firestore (liberar espacio)
@@ -537,7 +562,7 @@ async function loadAdminEvents() {
   } catch (error) {
     console.error('Error al cargar eventos:', error);
     if (error.code === 'failed-precondition' || error.message.includes('index')) {
-      $adminEventList.innerHTML = `<li style="text-align:center; font-size: 0.75rem; color:#d32f2f;">Se requiere crear un índice en Firestore para ordenar por 'creadoEn'.</li>`;
+      $adminEventList.innerHTML = `<li style="text-align:center; font-size: 0.75rem; color:#d32f2f;">Se requiere crear un �ndice en Firestore para ordenar por 'creadoEn'.</li>`;
     } else {
       $adminEventList.innerHTML = `<li style="text-align:center; font-size: 0.75rem; color:#d32f2f;">Error de permisos o red.</li>`;
     }
@@ -565,12 +590,15 @@ $formCreateEvent.addEventListener('submit', async (e) => {
     await setDoc(eventRef, {
       creadoEn: serverTimestamp(),
       fechaEvento: eventDate,
-        activo: true,
-        adminPin: eventPin || null,
-        theme: eventTheme
+      activo: true,
+      adminPin: eventPin || null,
+      theme: eventTheme
+    });
+    await setDoc(doc(db, 'eventos_activos', code, 'secrets', 'pin'), {
+      pin: eventPin
     });
 
-    showToast(`¡Evento ${code} creado exitosamente!`, 'success', 5000);
+    showToast(`�Evento ${code} creado exitosamente!`, 'success', 5000);
     $inputNewEvent.value = '';
     $inputEventDate.value = '';
       $inputEventPin.value = '';
@@ -589,7 +617,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
 });
 
 
-// ── Modo Anfitrión ──
+// -- Modo Anfitri�n --
 // __hostLoginGuard: si entran por el login normal, se pierden los permisos de moderador
 document.addEventListener('submit', (e) => {
   if (e.target && e.target.id === 'login-form') {
@@ -620,9 +648,8 @@ if ($formHostAuth) {
       btnSubmit.disabled = true;
       btnSubmit.textContent = 'Verificando...';
       $hostError.hidden = true;
-      const eventSnap = await getDoc(doc(db, 'eventos_activos', codeEvent));
-      if (eventSnap.exists() && eventBelongsToBrand(eventSnap.data()) && eventSnap.data().adminPin && eventSnap.data().adminPin === pin) {
-        localStorage.setItem('host_' + codeEvent, 'true');
+      await setDoc(doc(db, 'events', codeEvent, 'hosts', auth.currentUser.uid), { pin: pin, claimedAt: serverTimestamp() });
+      if (true) {
         $modalHostAuth.hidden = true;
         $inputHostCode.value = '';
         $inputHostPin.value = '';
@@ -653,9 +680,9 @@ document.querySelectorAll('.modal-close').forEach(btn => {
 });
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  SCREEN TRANSITIONS
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 function transitionScreens($from, $to) {
   $from.classList.add('screen--fading');
 
@@ -666,7 +693,7 @@ function transitionScreens($from, $to) {
     $from.classList.remove('screen--active', 'screen--fading');
 
     $to.classList.add('screen--active');
-    // Force reflow → trigger CSS opacity transition
+    // Force reflow ? trigger CSS opacity transition
     void $to.offsetHeight;
     $to.style.opacity = '1';
 
@@ -677,10 +704,10 @@ function transitionScreens($from, $to) {
 }
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  PHOTO PREVIEW
-// ═══════════════════════════════════════════════════════════
-// ── Flechas de navegación del navegador (atrás / adelante) ──
+// -----------------------------------------------------------
+// -- Flechas de navegaci�n del navegador (atr�s / adelante) --
 if (location.hash === '#album') history.replaceState(null, '', location.pathname);
 
 window.addEventListener('popstate', () => {
@@ -731,17 +758,17 @@ $previewRemove.addEventListener('click', () => {
 });
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  IMAGE COMPRESSION
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 
 /**
  * Comprime una imagen en el cliente antes de subirla.
- * @param {File} file — Archivo de imagen original
- * @returns {Promise<File>} — Archivo comprimido
+ * @param {File} file � Archivo de imagen original
+ * @returns {Promise<File>} � Archivo comprimido
  */
 async function compressImage(file) {
-  // Si browser-image-compression no cargó, devolver el original
+  // Si browser-image-compression no carg�, devolver el original
   if (typeof imageCompression === 'undefined') {
     console.warn('browser-image-compression no disponible, subiendo imagen original.');
     return file;
@@ -749,29 +776,29 @@ async function compressImage(file) {
 
   const originalSizeKB = (file.size / 1024).toFixed(0);
 
-  // Aunque la imagen sea pequeña, debemos pasarla por el compresor
-  // para forzar la conversión a JPEG, ya que ImgBB (Error 111) rechaza formatos nativos como WEBP/AVIF
+  // Aunque la imagen sea peque�a, debemos pasarla por el compresor
+  // para forzar la conversi�n a JPEG, ya que ImgBB (Error 111) rechaza formatos nativos como WEBP/AVIF
   console.log(`Procesando imagen (Original: ${originalSizeKB} KB)...`);
 
   const compressedFile = await imageCompression(file, COMPRESSION_OPTIONS);
   const compressedSizeKB = (compressedFile.size / 1024).toFixed(0);
 
-  console.log(`Compresión completada: ${originalSizeKB} KB → ${compressedSizeKB} KB (${((1 - compressedFile.size / file.size) * 100).toFixed(0)}% reducción)`);
+  console.log(`Compresi�n completada: ${originalSizeKB} KB ? ${compressedSizeKB} KB (${((1 - compressedFile.size / file.size) * 100).toFixed(0)}% reducci�n)`);
 
   return compressedFile;
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  IMAGEN → DATA URL (para guardar directo en Firestore)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  IMAGEN ? DATA URL (para guardar directo en Firestore)
+// -----------------------------------------------------------
 
 /**
  * Convierte un File/Blob a Data URL (base64 con prefijo data:image/...).
  * Esto se guarda directamente en Firestore como string en el campo imageUrl.
  * Un <img src="data:image/jpeg;base64,..."> funciona igual que una URL normal.
- * @param {File|Blob} file — Archivo de imagen (ya comprimido a ~13KB)
- * @returns {Promise<string>} — Data URL lista para usar en <img src="">
+ * @param {File|Blob} file � Archivo de imagen (ya comprimido a ~13KB)
+ * @returns {Promise<string>} � Data URL lista para usar en <img src="">
  */
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -783,24 +810,25 @@ function fileToDataUrl(file) {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  UPLOAD FORM — Submit → Compress → Data URL → Firestore
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  UPLOAD FORM � Submit ? Compress ? Data URL ? Firestore
+// -----------------------------------------------------------
 $uploadForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!auth.currentUser) return showToast('Aún conectando o modo incógnito detectado. Reintenta recargando.', 'error', 4000);
 
   const name    = document.getElementById('guest-name').value.trim();
   const message = document.getElementById('guest-message').value.trim();
   const file    = $photoInput.files[0];
 
-  // ── Validación básica ──
+  // -- Validaci�n b�sica --
   if (!name) {
     showToast('Escribe tu nombre para continuar.', 'error', 3000);
     document.getElementById('guest-name').focus();
     return;
   }
   if (!file) {
-    showToast('Selecciona una foto para agregar al álbum.', 'error', 3000);
+    showToast('Selecciona una foto para agregar al �lbum.', 'error', 3000);
     $photoBtn.focus();
     return;
   }
@@ -808,35 +836,37 @@ $uploadForm.addEventListener('submit', async (e) => {
   setSubmitLoading(true);
 
   // Toast de progreso (sin auto-dismiss, lo controlamos manualmente)
-  const progressToast = showToast('Preparando la cámara...', 'info', 0);
+  const progressToast = showToast('Preparando la c�mara...', 'info', 0);
 
   try {
-    // 1️⃣  Comprimir imagen en el cliente (de cualquier tamaño → ~13KB JPEG)
+    // 1??  Comprimir imagen en el cliente (de cualquier tama�o ? ~13KB JPEG)
     const compressedFile = await compressImage(file);
 
-    // 2️⃣  Convertir a Data URL (base64) para guardar directo en Firestore
-    updateToast(progressToast, 'Revelando fotografía...');
+    // 2??  Convertir a Data URL (base64) para guardar directo en Firestore
+    updateToast(progressToast, 'Revelando fotograf�a...');
     const imageUrl = await fileToDataUrl(compressedFile);
 
-    // 3️⃣  Guardar entrada en Firestore (imagen incluida como Data URL)
+    // 3??  Guardar entrada en Firestore (imagen incluida como Data URL)
     updateToast(progressToast, 'Escribiendo dedicatoria a mano...');
     await addDoc(getEntriesRef(), {
       nombre:      name,
       dedicatoria: message,
       imageUrl:    imageUrl,
+      uid:         auth.currentUser.uid,
+      likes:       0,
       timestamp:   serverTimestamp()
     });
 
-    // ✅ Éxito
+    // ? �xito
     dismissToast(progressToast);
-    showToast('¡Tu recuerdo ya está en el álbum!', 'success', 5000);
+    showToast('�Tu recuerdo ya est� en el �lbum!', 'success', 5000);
     resetForm();
 
   } catch (err) {
     console.error('Error al subir la entrada:', err);
     dismissToast(progressToast);
     showToast(
-      `Error al subir tu foto: ${err.message || 'Revisa tu conexión.'}`,
+      `Error al subir tu foto: ${err.message || 'Revisa tu conexi�n.'}`,
       'error',
       7000
     );
@@ -869,9 +899,9 @@ function resetForm() {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  GALLERY — Real-time Firestore Listener (onSnapshot)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  GALLERY � Real-time Firestore Listener (onSnapshot)
+// -----------------------------------------------------------
 
 function startGalleryListener() {
   $galleryGrid.innerHTML = '';
@@ -880,7 +910,7 @@ function startGalleryListener() {
     unsubscribeGallery();
   }
 
-  // Query: ordenar por timestamp descendente (más recientes primero)
+  // Query: ordenar por timestamp descendente (m�s recientes primero)
   const q = query(
     getEntriesRef(),
     orderBy('timestamp', 'desc')
@@ -939,14 +969,14 @@ function startGalleryListener() {
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
             <circle cx="12" cy="13" r="4"></circle>
           </svg>
-          <p class="gallery__empty-title">El álbum está vacío</p>
-          <p class="gallery__empty-text">¡Sé el primero en romper el hielo! Sube la primera foto de la fiesta.</p>
+          <p class="gallery__empty-title">El �lbum est� vac�o</p>
+          <p class="gallery__empty-text">�S� el primero en romper el hielo! Sube la primera foto de la fiesta.</p>
         </div>
       `;
     }
   }, (error) => {
-    console.error('Error en el listener de la galería:', error);
-    showToast('Error al cargar la galería. Recarga la página.', 'error', 6000);
+    console.error('Error en el listener de la galer�a:', error);
+    showToast('Error al cargar la galer�a. Recarga la p�gina.', 'error', 6000);
   });
 }
 
@@ -956,7 +986,7 @@ function renderPolaroidCard(id, data) {
   card.className = 'polaroid';
   card.dataset.id = id;
 
-  const isHost = localStorage.getItem('host_' + currentEventId) === 'true';
+  const isHost = window.__hostActive === true;
   if (isHost) {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete-photo';
@@ -966,7 +996,7 @@ function renderPolaroidCard(id, data) {
     
     delBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (confirm('¿Seguro que quieres borrar permanentemente esta foto?')) {
+      if (confirm('�Seguro que quieres borrar permanentemente esta foto?')) {
         try {
           delBtn.disabled = true;
           delBtn.style.opacity = '0.5';
@@ -1031,7 +1061,7 @@ function renderPolaroidCard(id, data) {
     const inc = likedNow ? 1 : -1;
     btnLike.classList.toggle('liked');
     
-    // Leer el número actual directamente del HTML, no de la variable inicial
+    // Leer el n�mero actual directamente del HTML, no de la variable inicial
     const currentLikes = parseInt(btnLike.querySelector('span').textContent) || 0;
     btnLike.querySelector('span').textContent = Math.max(0, currentLikes + inc);
 
@@ -1083,15 +1113,15 @@ function renderPolaroidCard(id, data) {
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  LIGHTBOX — Click en foto para verla en grande
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  LIGHTBOX � Click en foto para verla en grande
+// -----------------------------------------------------------
 const $lightbox      = document.getElementById('lightbox');
 const $lightboxImg   = document.getElementById('lightbox-img');
 const $lightboxCaption = document.getElementById('lightbox-caption');
 const $lightboxClose = document.getElementById('lightbox-close');
 
-// Delegación de eventos: click en cualquier imagen de la galería
+// Delegaci�n de eventos: click en cualquier imagen de la galer�a
 $galleryGrid.addEventListener('click', (e) => {
   const img = e.target.closest('.polaroid__img');
   if (!img) return;
@@ -1125,9 +1155,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-// ═══════════════════════════════════════════════════════════
-//  PDF DOWNLOAD — jsPDF directo (sin html2canvas)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  PDF DOWNLOAD � jsPDF directo (sin html2canvas)
+// -----------------------------------------------------------
 
 /**
  * Carga una imagen y devuelve su base64 via canvas.
@@ -1168,17 +1198,17 @@ function loadImageAsBase64(url, makeSquare = false) {
 
 $downloadPdf.addEventListener('click', async () => {
   if (typeof window.jspdf === 'undefined') {
-    showToast('La librería de PDF no se pudo cargar. Revisa tu conexión.', 'error');
+    showToast('La librer�a de PDF no se pudo cargar. Revisa tu conexi�n.', 'error');
     return;
   }
 
   const cards = $galleryGrid.querySelectorAll('.polaroid');
   if (!cards.length || $galleryGrid.querySelector('.gallery__empty')) {
-    showToast('La galería está vacía. ¡Agrega fotos antes de descargar!', 'info');
+    showToast('La galer�a est� vac�a. �Agrega fotos antes de descargar!', 'info');
     return;
   }
 
-  const pdfToast = showToast('Preparando imágenes para el PDF…', 'info', 0);
+  const pdfToast = showToast('Preparando im�genes para el PDF�', 'info', 0);
   $downloadPdf.disabled = true;
 
   try {
@@ -1186,8 +1216,8 @@ $downloadPdf.addEventListener('click', async () => {
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const W = 210, H = 297; // A4
 
-    // Helper: dibuja patrón de fondo con overlay
-    updateToast(pdfToast, 'Preparando diseño...');
+    // Helper: dibuja patr�n de fondo con overlay
+    updateToast(pdfToast, 'Preparando dise�o...');
     const theme = window.currentEventTheme || {};
       const bgImgStr = theme.bgImage || '/assets/talavera-pattern.jpg';
       const patternUrl = new URL(bgImgStr.replace(/^\//, ''), document.baseURI).href;
@@ -1215,9 +1245,9 @@ $downloadPdf.addEventListener('click', async () => {
       }
     }
 
-    // ══════════════════════════════════
+    // ----------------------------------
     //  PORTADA
-    // ══════════════════════════════════
+    // ----------------------------------
     const hexToRgb = (hex) => {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#1E3888');
       return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 30, g: 56, b: 136 };
@@ -1228,9 +1258,9 @@ $downloadPdf.addEventListener('click', async () => {
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(32);
-    doc.text(window.currentEventTheme?.name || 'Nuestro Álbum', W / 2, H / 2 - 20, { align: 'center' });
+    doc.text(window.currentEventTheme?.name || 'Nuestro �lbum', W / 2, H / 2 - 20, { align: 'center' });
 
-    // Línea decorativa
+    // L�nea decorativa
     doc.setDrawColor(255, 255, 255, 120);
     doc.setLineWidth(0.5);
     doc.line(W / 2 - 25, H / 2, W / 2 + 25, H / 2);
@@ -1243,10 +1273,10 @@ $downloadPdf.addEventListener('click', async () => {
     doc.setTextColor(200, 210, 230);
     doc.text(`${cards.length} ${cards.length === 1 ? 'recuerdo' : 'recuerdos'} en este album`, W / 2, H / 2 + 30, { align: 'center' });
 
-    // ══════════════════════════════════
-    //  CARGAR IMÁGENES
-    // ══════════════════════════════════
-    updateToast(pdfToast, 'Convirtiendo imágenes…');
+    // ----------------------------------
+    //  CARGAR IM�GENES
+    // ----------------------------------
+    updateToast(pdfToast, 'Convirtiendo im�genes�');
 
     const entries = [];
     for (const card of cards) {
@@ -1266,10 +1296,10 @@ $downloadPdf.addEventListener('click', async () => {
       });
     }
 
-    // ══════════════════════════════════
-    //  CUADRÍCULA 2 COLUMNAS (POLAROID)
-    // ══════════════════════════════════
-    updateToast(pdfToast, 'Generando tu álbum en PDF…');
+    // ----------------------------------
+    //  CUADR�CULA 2 COLUMNAS (POLAROID)
+    // ----------------------------------
+    updateToast(pdfToast, 'Generando tu �lbum en PDF�');
 
     const MARGIN = 20;
     const GAP_X = 15;
@@ -1288,11 +1318,11 @@ $downloadPdf.addEventListener('click', async () => {
     while (cardIndex < entries.length) {
       doc.addPage();
       
-      // Fondo de la página de contenido
+      // Fondo de la p�gina de contenido
       const oColors = (theme.overlay || '234, 240, 246').split(',').map(n => parseInt(n.trim()));
         drawBackground(oColors[0], oColors[1], oColors[2], 0.92); // Blanco-azulado difuminado
 
-      // Encabezado sutil de la página
+      // Encabezado sutil de la p�gina
       doc.setFillColor(pColor.r, pColor.g, pColor.b);
       doc.rect(0, 0, W, 6, 'F');
 
@@ -1348,40 +1378,40 @@ $downloadPdf.addEventListener('click', async () => {
       }
     }
 
-    // ══════════════════════════════════
-    //  PIE DE PÁGINA
-    // ══════════════════════════════════
+    // ----------------------------------
+    //  PIE DE P�GINA
+    // ----------------------------------
     const totalPages = doc.getNumberOfPages();
     for (let p = 2; p <= totalPages; p++) {
       doc.setPage(p);
       doc.setFontSize(7);
       doc.setTextColor(160, 170, 185);
       doc.setFont('helvetica', 'normal');
-      doc.text(`${window.currentEventTheme?.name || 'Nuestro Álbum'} - pág. ${p - 1}`, W / 2, H - 6, { align: 'center' });
+      doc.text(`${window.currentEventTheme?.name || 'Nuestro �lbum'} - p�g. ${p - 1}`, W / 2, H - 6, { align: 'center' });
     }
 
-    // ══════════════════════════════════
+    // ----------------------------------
     //  GUARDAR
-    // ══════════════════════════════════
+    // ----------------------------------
     const slug = (window.currentEventTheme?.name || 'album').toLowerCase().replace(/\s+/g, '-');
     doc.save(`${slug}.pdf`);
 
     dismissToast(pdfToast);
-    showToast('¡Álbum descargado! 📄', 'success', 4000);
+    showToast('��lbum descargado! ??', 'success', 4000);
 
   } catch (err) {
     console.error('Error generando PDF:', err);
     dismissToast(pdfToast);
-    showToast('Error al generar el PDF. Inténtalo de nuevo.', 'error', 5000);
+    showToast('Error al generar el PDF. Int�ntalo de nuevo.', 'error', 5000);
   } finally {
     $downloadPdf.disabled = false;
   }
 });
 
 
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 //  UTILS
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
 
 /** Escapa HTML para contenido de texto */
 function escapeHTML(str) {
@@ -1397,9 +1427,9 @@ function escapeAttr(str) {
   return div.innerHTML.replace(/"/g, '&quot;');
 }
 
-// ═══════════════════════════════════════════════════════════
-//  SLIDESHOW (PRESENTACIÓN EN VIVO)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  SLIDESHOW (PRESENTACI�N EN VIVO)
+// -----------------------------------------------------------
 const $btnSlideshow = document.getElementById('btn-slideshow');
 const $slideshowModal = document.getElementById('slideshow');
 const $slideshowClose = document.getElementById('slideshow-close');
@@ -1412,7 +1442,7 @@ let currentSlideIndex = 0;
 async function startOldSlideshow() {
     const cards = document.querySelectorAll('.polaroid');
     if (cards.length === 0) {
-      showToast('La galería está vacía.', 'info');
+      showToast('La galer�a est� vac�a.', 'info');
       return;
     }
     try {
@@ -1492,21 +1522,29 @@ function stopSlideshow() {
 
 $slideshowClose.addEventListener('click', stopSlideshow);
 
-// ═══════════════════════════════════════════════════════════
-//  PWA — Service Worker Registration
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  PWA � Service Worker Registration
+// -----------------------------------------------------------
 if ('serviceWorker' in navigator) {
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      window.location.reload();
+      refreshing = true;
+    }
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => console.log('PWA ServiceWorker registrado exitosamente con scope: ', registration.scope))
-      .catch(err => console.log('Falló el registro del ServiceWorker: ', err));
+      .catch(err => console.log('Fall� el registro del ServiceWorker: ', err));
   });
 }
 
 
-// ═══════════════════════════════════════════════════════════
-//  FAB — Floating Camera Button (aparece al hacer scroll)
-// ═══════════════════════════════════════════════════════════
+// -----------------------------------------------------------
+//  FAB � Floating Camera Button (aparece al hacer scroll)
+// -----------------------------------------------------------
 const $fabCamera = document.getElementById('fab-camera');
 const $uploadSection = document.getElementById('upload-section');
 
@@ -1514,7 +1552,7 @@ if ($fabCamera && $uploadSection) {
   // Show/hide FAB based on scroll position
   const fabObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      // Solo mostrar el FAB si estamos realmente en la pantalla del álbum
+      // Solo mostrar el FAB si estamos realmente en la pantalla del �lbum
       const isAlbumActive = document.getElementById('screen-album').classList.contains('screen--active');
       
       // When the upload form scrolls OUT of view, show the FAB
@@ -1528,7 +1566,7 @@ if ($fabCamera && $uploadSection) {
 
   fabObserver.observe($uploadSection);
 
-  // Click FAB → scroll up to photo button and trigger it
+  // Click FAB ? scroll up to photo button and trigger it
   $fabCamera.addEventListener('click', () => {
     $uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     // Small delay to let the scroll finish, then trigger the photo input

@@ -1,5 +1,6 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getApp } from 'firebase/app';
+import { auth } from '../app.js';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
   serverTimestamp, deleteDoc, doc, updateDoc, increment
@@ -28,7 +29,7 @@ function compressImage(file, maxWidth = 900, quality = 0.7) {
   });
 }
 
-const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '' };
+const EMPTY = { name: '', age: '', profession: '', side: 'bride', funFact: '' };
 
 export default function SinglesScreen({ eventCode, isHost }) {
   const [localLikes, setLocalLikes] = useState([]);
@@ -42,6 +43,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
 
   const handleLike = async (id, e) => {
     if (e) e.stopPropagation();
+    if (!auth.currentUser) return alert("Necesitas sesión para dar like");
     const isLiked = localLikes.includes(id);
     
     try {
@@ -88,11 +90,17 @@ export default function SinglesScreen({ eventCode, isHost }) {
   const submit = async (e) => {
     e.preventDefault();
     if (!valid) return;
+    if (!auth.currentUser) {
+      alert('Necesitas sesión para realizar esta acción.');
+      return;
+    }
     setSaving(true);
     try {
       await addDoc(collection(getDb(), 'events', eventCode, 'singles'), {
         ...Object.fromEntries(Object.entries(form).map(([k, v]) => [k, v.trim()])),
         photoUrl: photo,
+        uid: auth.currentUser.uid,
+        likes: 0,
         timestamp: serverTimestamp(),
       });
       setForm(EMPTY);
@@ -133,7 +141,8 @@ export default function SinglesScreen({ eventCode, isHost }) {
       if (backMsg) {
         let html = '';
         if (p.profession) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Ocupación:</strong> ${p.profession}</div>`;
-        if (p.side) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Invitado/a de:</strong> ${p.side}</div>`;
+        const sideLabel = { bride: 'la Novia', groom: 'el Novio', both: 'Ambos' };
+        if (p.side) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Invitado/a de:</strong> ${sideLabel[p.side] || p.side}</div>`;
         if (p.funFact) html += `<div style="margin-top:1.5rem; font-style:italic; font-size:1.2rem; background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 8px;">"${p.funFact}"</div>`;
         backMsg.innerHTML = html;
       }
@@ -205,8 +214,9 @@ export default function SinglesScreen({ eventCode, isHost }) {
             <div className="form-group">
               <label className="form-label">Vengo de parte de</label>
               <select className="form-input" value={form.side} onChange={set('side')}>
-                <option value="la Novia">La Novia</option>
-                <option value="el Novio">El Novio</option>
+                <option value="bride">La Novia</option>
+                <option value="groom">El Novio</option>
+                <option value="both">Ambos</option>
               </select>
             </div>
             <div className="form-group">
@@ -254,7 +264,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
               </p>
               <p className="single-card__fact">“{p.funFact}”</p>
               <div className="single-card__footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>De parte de {p.side}</span>
+                <span>De parte de { { bride: 'la Novia', groom: 'el Novio', both: 'Ambos' }[p.side] || p.side }</span>
                 <button 
                   type="button" 
                   onClick={(e) => handleLike(p.id, e)}

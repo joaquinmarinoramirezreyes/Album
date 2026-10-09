@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "album-fotos-80c88",
+    "production": "album-fotos-80c88",
+    "staging": "album-fotos-staging-test"
+  }
+}
