@@ -96,7 +96,7 @@ const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAN
 
 // --- Firebase SDK Imports (CDN ESM) � Solo Firestore, sin Storage ---
 import { initializeApp }       from 'firebase/app';
-import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth';
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, setPersistence, indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence, inMemoryPersistence } from 'firebase/auth';
 import {
   getFirestore,
   initializeFirestore,
@@ -150,7 +150,7 @@ onAuthStateChanged(auth, user => {
   if (!user && window.location.pathname.indexOf('admin') === -1) {
     signInAnonymously(auth).catch(err => {
       console.error(err);
-      showToast('Fallo de red o incógnito. Reintenta recargando.', 'error', 0);
+      showToast('Fallo de persistencia. Todo almacenamiento bloqueado o red caída.', 'error', 0);
     });
   }
 });
@@ -1527,10 +1527,27 @@ $slideshowClose.addEventListener('click', stopSlideshow);
 // -----------------------------------------------------------
 if ('serviceWorker' in navigator) {
   let refreshing = false;
+  let isFirstVisit = !navigator.serviceWorker.controller;
+  
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) {
-      window.location.reload();
+    if (isFirstVisit) {
+      isFirstVisit = false;
+      return;
+    }
+    if (refreshing) return;
+
+    const isUploading = document.getElementById('upload-submit')?.classList.contains('btn--loading');
+    const formName = document.getElementById('guest-name')?.value.trim();
+    const formMsg = document.getElementById('guest-message')?.value.trim();
+    const photoInput = document.getElementById('photo-input')?.files?.length > 0;
+    const hasText = formName || formMsg || photoInput;
+    const isSlideshowOpen = document.getElementById('slideshow') && !document.getElementById('slideshow').hidden;
+
+    if (isUploading || hasText || isSlideshowOpen) {
+      showToast('Nueva versión disponible. Recarga la página cuando termines.', 'info', 10000);
+    } else {
       refreshing = true;
+      window.location.reload();
     }
   });
 
