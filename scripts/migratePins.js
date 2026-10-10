@@ -1,36 +1,28 @@
 import admin from 'firebase-admin';
 import fs from 'fs';
+import readline from 'readline';
 
-/**
- * CONFIGURACIÓN DE EJECUCIÓN
- * DRY_RUN: true -> Simulación sin escrituras en base de datos.
- * DELETE_PINS_FROM_PUBLIC: false -> NO borra adminPin del doc público hasta validar.
- */
 const CONFIG = {
   DRY_RUN: true,
   DELETE_PINS_FROM_PUBLIC: false,
-  RESTORE_MODE: false, // Si es true, leerá BACKUP_FILE y restaurará los PINs al documento público
+  RESTORE_MODE: false,
   BACKUP_FILE: './backup_eventos_activos.json' 
 };
 
-// Requiere tener la llave JSON del service account descargada y su ruta en la variable de entorno
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || './service-account-key.json';
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || 'C:\\secrets\\service-account-key.json';
+
+let activeProjectId = 'unknown';
 
 if (!fs.existsSync(serviceAccountPath) && !CONFIG.DRY_RUN) {
   console.warn(`[WARNING] No se encontró ${serviceAccountPath}. La migración fallará en producción.`);
 } else if (fs.existsSync(serviceAccountPath)) {
   const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-  const projectId = process.env.VITE_FIREBASE_PROJECT_ID || JSON.parse(fs.readFileSync('.firebaserc', 'utf8'))?.projects?.default || 'unknown';
-const isProd = process.argv.includes('--allow-production');
-if (projectId.includes('prod') && !isProd) {
-  console.error("ERROR: Abortando. El proyecto detectado parece ser de producción. Usa --allow-production explícitamente.");
-  process.exit(1);
-}
-admin.initializeApp({
+  activeProjectId = serviceAccount.project_id;
+  
+  admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
 } else {
-  // Inicialización mock para Dry Run local sin credenciales
   admin.initializeApp();
 }
 
@@ -39,8 +31,27 @@ const db = admin.firestore();
 async function runMigration() {
   console.log(`=======================================================`);
   console.log(` MIGRACIÓN DE PINS A RUTA SECRETA (ADMIN SDK)`);
-  console.log(` MODO: ${CONFIG.DRY_RUN ? 'SIMULACIÓN (DRY-RUN)' : 'EN VIVO (PRODUCCIÓN/STAGING)'}`);
+  console.log(` MODO: ${CONFIG.DRY_RUN ? 'SIMULACIÓN (DRY-RUN)' : 'EN VIVO'}`);
   console.log(`=======================================================\n`);
+
+  if (activeProjectId === 'album-fotos-80c88') {
+    const isProdFlag = process.argv.includes('--allow-production');
+    if (!isProdFlag) {
+      console.error("ERROR: Abortando. El service account pertenece a PRODUCCIÓN. Usa --allow-production explícitamente.");
+      process.exit(1);
+    }
+    
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const answer = await new Promise(resolve => rl.question("ATENCIÓN: Estás a punto de migrar PRODUCCIÓN. Escribe 'album-fotos-80c88' para confirmar: ", resolve));
+    rl.close();
+    
+    if (answer.trim() !== 'album-fotos-80c88') {
+      console.error("Confirmación incorrecta. Abortando.");
+      process.exit(1);
+    }
+  } else if (activeProjectId !== 'album-barro-staging' && activeProjectId !== 'unknown') {
+    console.warn("WARNING: El proyecto no es de producción ni de staging reconocido: " + activeProjectId);
+  }
 
   if (CONFIG.RESTORE_MODE) {
     await restoreFromBackup();
