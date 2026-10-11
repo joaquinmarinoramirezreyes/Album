@@ -1,13 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
-  serverTimestamp, deleteDoc, doc, updateDoc, increment
+  serverTimestamp, deleteDoc, doc, setDoc, updateDoc, increment
 } from 'firebase/firestore';
 
 const getDb = () => getFirestore(getApp());
 
-// Generador de color de avatar según el nombre
+// Compresión de imagen para portadas y avatares
+function compressImage(file, maxWidth = 900, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Colores de avatares para invitados
 const AVATAR_COLORS = [
   '#b5533c', '#d97736', '#3b7a57', '#4a6fa5', '#7b4b94', '#b85d19', '#2e6b66', '#a13d63'
 ];
@@ -45,6 +68,23 @@ function formatRelativeTime(timestamp) {
 }
 
 export default function WallScreen({ eventCode, isHost }) {
+  // Estado del Perfil tipo Facebook (Portada, Foto de Perfil, Nombres, Bio)
+  const [profile, setProfile] = useState({
+    coverUrl: '',
+    avatarUrl: '',
+    names: 'Nuestra Boda',
+    bio: '¡Bienvenidos a nuestro muro! Déjanos tus felicitaciones y buenos deseos ❤️',
+  });
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({ names: '', bio: '' });
+
+  // Inputs ocultos para subida de imágenes
+  const coverInputRef = useRef(null);
+  const avatarInputRef = useRef(null);
+
+  // Estado de publicaciones
   const [posts, setPosts] = useState([]);
   const [authorName, setAuthorName] = useState(() => localStorage.getItem('guest_name') || '');
   const [content, setContent] = useState('');
@@ -57,7 +97,28 @@ export default function WallScreen({ eventCode, isHost }) {
     }
   });
 
-  // Escuchar publicaciones en tiempo real
+  // 1. Escuchar datos del perfil de los novios
+  useEffect(() => {
+    if (!eventCode) return;
+    const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
+    const unsub = onSnapshot(profileRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        setProfile({
+          coverUrl: data.coverUrl || '',
+          avatarUrl: data.avatarUrl || '',
+          names: data.names || 'Nuestra Boda',
+          bio: data.bio || '¡Bienvenidos a nuestro muro! Déjanos tus felicitaciones y buenos deseos ❤️',
+        });
+      }
+    }, (err) => {
+      console.warn('Error al cargar perfil de los novios:', err);
+    });
+
+    return () => unsub();
+  }, [eventCode]);
+
+  // 2. Escuchar publicaciones en tiempo real
   useEffect(() => {
     if (!eventCode) return;
     const q = query(
@@ -78,7 +139,66 @@ export default function WallScreen({ eventCode, isHost }) {
     return () => unsub();
   }, [eventCode]);
 
-  // Publicar nuevo mensaje
+  // Manejar cambio de Foto de Portada
+  const handleCoverChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const base64 = await compressImage(file, 1000, 0.72);
+      const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
+      await setDoc(profileRef, {
+        coverUrl: base64,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } catch (err) {
+      console.error('Error al subir portada:', err);
+      alert('Error al procesar la foto de portada.');
+    } finally {
+      setUploadingCover(false);
+      if (coverInputRef.current) coverInputRef.current.value = '';
+    }
+  };
+
+  // Manejar cambio de Foto de Perfil
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const base64 = await compressImage(file, 450, 0.75);
+      const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
+      await setDoc(profileRef, {
+        avatarUrl: base64,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+    } catch (err) {
+      console.error('Error al subir avatar:', err);
+      alert('Error al procesar la foto de perfil.');
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
+    }
+  };
+
+  // Guardar nombres / bio de los novios
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    try {
+      const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
+      await setDoc(profileRef, {
+        names: profileForm.names.trim() || 'Nuestra Boda',
+        bio: profileForm.bio.trim(),
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      setEditingProfile(false);
+    } catch (err) {
+      console.error('Error al guardar datos del perfil:', err);
+      alert('Error al guardar datos.');
+    }
+  };
+
+  // Publicar nuevo mensaje de invitado
   const handlePublish = async (e) => {
     e.preventDefault();
     const cleanName = authorName.trim();
@@ -145,36 +265,244 @@ export default function WallScreen({ eventCode, isHost }) {
   };
 
   return (
-    <div className="wall-container" style={{ padding: '0.5rem 1rem 3.5rem', maxWidth: '600px', margin: '0 auto' }}>
+    <div className="wall-container" style={{ padding: '0 0.75rem 4rem', maxWidth: '600px', margin: '0 auto' }}>
       
-      {/* Encabezado del Muro */}
-      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{
-          fontFamily: 'var(--font-serif, "Playfair Display", Georgia, serif)',
-          fontSize: '1.65rem',
-          margin: '0 0 0.35rem',
-          color: 'var(--color-charcoal, #2b2625)',
-          fontWeight: 700
-        }}>
-          Muro de la Boda
-        </h2>
-        <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>
-          Deja tus buenos deseos, felicitaciones y anécdotas para los anfitriones
-        </p>
+      {/* Inputs ocultos para subir fotos */}
+      <input
+        type="file"
+        ref={coverInputRef}
+        onChange={handleCoverChange}
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+      <input
+        type="file"
+        ref={avatarInputRef}
+        onChange={handleAvatarChange}
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+
+      {/* ══════════════════════════════════════════════════
+          ENCABEZADO TIPO PERFIL DE FACEBOOK
+          ══════════════════════════════════════════════════ */}
+      <div 
+        className="fb-profile-card"
+        style={{
+          background: '#FFFFFF',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          marginBottom: '1.5rem',
+          position: 'relative'
+        }}
+      >
+        {/* 1. Foto de Portada */}
+        <div 
+          style={{
+            height: '180px',
+            width: '100%',
+            position: 'relative',
+            background: profile.coverUrl
+              ? `url("${profile.coverUrl}") center center / cover no-repeat`
+              : 'linear-gradient(135deg, #b5533c 0%, #d97736 50%, #f4a261 100%)',
+            transition: 'background 0.3s ease'
+          }}
+        >
+          {/* Botón cambiar portada (Anfitrión) */}
+          {isHost && (
+            <button
+              type="button"
+              onClick={() => coverInputRef.current?.click()}
+              disabled={uploadingCover}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'rgba(0, 0, 0, 0.65)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.45rem 0.85rem',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                cursor: 'pointer',
+                backdropFilter: 'blur(6px)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              {uploadingCover ? 'Subiendo...' : 'Cambiar portada'}
+            </button>
+          )}
+        </div>
+
+        {/* 2. Avatar de Perfil y Datos */}
+        <div style={{ padding: '0 1.25rem 1.5rem', textAlign: 'center', position: 'relative' }}>
+          
+          {/* Contenedor del Avatar (Sobrepuesto a la portada) */}
+          <div style={{ position: 'relative', display: 'inline-block', marginTop: '-55px', marginBottom: '0.75rem' }}>
+            <div 
+              style={{
+                width: '105px',
+                height: '105px',
+                borderRadius: '50%',
+                border: '4px solid #FFFFFF',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+                background: profile.avatarUrl
+                  ? `url("${profile.avatarUrl}") center center / cover no-repeat`
+                  : 'linear-gradient(135deg, #f8f1ec 0%, #edd8cb 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                position: 'relative'
+              }}
+            >
+              {!profile.avatarUrl && (
+                <span style={{ fontSize: '2.5rem' }}>💍</span>
+              )}
+            </div>
+
+            {/* Botón camarita para cambiar foto de perfil (Anfitrión) */}
+            {isHost && (
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                title="Cambiar foto de perfil"
+                style={{
+                  position: 'absolute',
+                  bottom: '2px',
+                  right: '2px',
+                  background: 'var(--color-primary, #b5533c)',
+                  color: '#FFFFFF',
+                  border: '2px solid #FFFFFF',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Nombres y Bio */}
+          {!editingProfile ? (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-serif, "Playfair Display", Georgia, serif)',
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  margin: '0',
+                  color: 'var(--color-charcoal, #2b2625)'
+                }}>
+                  {profile.names}
+                </h3>
+                {isHost && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileForm({ names: profile.names, bio: profile.bio });
+                      setEditingProfile(true);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--color-primary, #b5533c)',
+                      cursor: 'pointer',
+                      padding: '4px',
+                      display: 'inline-flex'
+                    }}
+                    title="Editar nombres y biografía"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                  </button>
+                )}
+              </div>
+              <p style={{
+                fontSize: '0.9rem',
+                color: '#666',
+                margin: '0.4rem 0 0',
+                lineHeight: '1.45',
+                whiteSpace: 'pre-line'
+              }}>
+                {profile.bio}
+              </p>
+            </div>
+          ) : (
+            /* Formulario para editar Nombres y Bio (Anfitrión) */
+            <form onSubmit={handleSaveProfile} style={{ textAlign: 'left', marginTop: '0.5rem' }}>
+              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Nombres de los Novios</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={profileForm.names}
+                  onChange={(e) => setProfileForm({ ...profileForm, names: e.target.value })}
+                  maxLength={50}
+                  style={{ fontSize: '0.9rem', padding: '0.5rem 0.75rem' }}
+                />
+              </div>
+              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Frase / Biografía</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={profileForm.bio}
+                  onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                  maxLength={120}
+                  style={{ fontSize: '0.9rem', padding: '0.5rem 0.75rem' }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button type="submit" className="btn btn--primary" style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}>
+                  Guardar
+                </button>
+                <button type="button" className="btn btn--secondary" onClick={() => setEditingProfile(false)} style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          )}
+
+        </div>
       </div>
 
-      {/* Caja de publicación tipo Facebook */}
+      {/* ══════════════════════════════════════════════════
+          CAJA DE PUBLICACIÓN ("¿Qué les quieres decir?")
+          ══════════════════════════════════════════════════ */}
       <div 
         className="wall-create-card"
         style={{
-          background: 'rgba(255, 255, 255, 0.94)',
+          background: 'rgba(255, 255, 255, 0.96)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           borderRadius: '20px',
           padding: '1.25rem',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-          border: '1px solid rgba(255, 255, 255, 0.8)',
-          marginBottom: '2rem'
+          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.05)',
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          marginBottom: '1.75rem'
         }}
       >
         <form onSubmit={handlePublish}>
@@ -212,7 +540,7 @@ export default function WallScreen({ eventCode, isHost }) {
 
           <textarea
             rows={3}
-            placeholder="¿Qué les quieres decir a los novios hoy? 🎉..."
+            placeholder={`Escribe un mensaje para ${profile.names || 'los novios'} 🎉...`}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             maxLength={500}
@@ -260,7 +588,9 @@ export default function WallScreen({ eventCode, isHost }) {
         </form>
       </div>
 
-      {/* Feed de Publicaciones */}
+      {/* ══════════════════════════════════════════════════
+          FEED DE PUBLICACIONES
+          ══════════════════════════════════════════════════ */}
       <div className="wall-feed" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {posts.length === 0 ? (
           <div style={{
