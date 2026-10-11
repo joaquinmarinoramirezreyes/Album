@@ -9,7 +9,7 @@ createIcons({
   }
 });
 
-?const THEMES = {
+const THEMES = {
   default: {
     name: 'Central de Eventos',
     slogan: 'Plataforma administrativa de galer�as cer�micas.',
