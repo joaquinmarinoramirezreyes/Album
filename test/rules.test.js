@@ -421,9 +421,71 @@ describe('Firestore Rules - Seguridad de Álbum de Barro', () => {
     await assertSucceeds(deleteDoc(doc(db, 'eventos_activos', 'NUEVO_ADMIN')));
   });
 
-  it('DENEGADO: Nadie puede listar la subcolección hosts', async () => {
+  // --- 11. Listado de hosts y Borrado en Cascada ---
+  it('DENEGADO: Invitado no puede listar la subcolección hosts', async () => {
     const db = testEnv.authenticatedContext(GUEST_UID).firestore();
     await assertFails(getDocs(collection(db, 'events', 'BODA2026', 'hosts')));
+  });
+
+  it('DENEGADO: Anfitrión no puede listar la subcolección hosts', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const db = context.firestore();
+      await setDoc(doc(db, 'events', 'BODA2026', 'hosts', 'host_user_2'), {
+        pin: 'SECRETO123',
+        claimedAt: serverTimestamp()
+      });
+    });
+    const dbHost = testEnv.authenticatedContext('host_user_2').firestore();
+    await assertFails(getDocs(collection(dbHost, 'events', 'BODA2026', 'hosts')));
+  });
+
+  it('PERMITIDO: Admin sí puede listar la subcolección hosts', async () => {
+    const dbAdmin = testEnv.authenticatedContext(ADMIN_UID).firestore();
+    await assertSucceeds(getDocs(collection(dbAdmin, 'events', 'BODA2026', 'hosts')));
+  });
+
+  it('PERMITIDO: Cascada completa de borrado de un evento como admin', async () => {
+    const eventCode = 'EVENTO_A_BORRAR';
+
+    // 1. Poblamos datos en el evento y todas sus subcolecciones
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const db = context.firestore();
+      await setDoc(doc(db, 'eventos_activos', eventCode), {
+        creadoEn: serverTimestamp(),
+        fechaEvento: '2026-10-10',
+        activo: true,
+        theme: 'marli'
+      });
+      await setDoc(doc(db, 'eventos_activos', eventCode, 'secrets', 'pin'), { pin: 'PIN123456' });
+      await setDoc(doc(db, 'events', eventCode, 'guest_entries', 'foto1'), {
+        nombre: 'Ana', dedicatoria: 'Hola', imageUrl: 'data:img', uid: GUEST_UID, likes: 0, timestamp: serverTimestamp()
+      });
+      await setDoc(doc(db, 'events', eventCode, 'singles', 'soltero1'), {
+        name: 'Carlos', age: '28', profession: 'Doc', side: 'bride', funFact: 'X', photoUrl: 'data:img', uid: GUEST_UID, likes: 0, timestamp: serverTimestamp()
+      });
+      await setDoc(doc(db, 'events', eventCode, 'itinerary', 'it1'), {
+        time: '1:00 PM', title: 'Comida', desc: 'Banquete', type: 'food', timestamp: serverTimestamp()
+      });
+      await setDoc(doc(db, 'events', eventCode, 'hosts', GUEST_UID), {
+        pin: 'PIN123456', claimedAt: serverTimestamp()
+      });
+    });
+
+    // 2. Ejecutamos la cascada idéntica a como lo hace app.js autenticado como admin
+    const db = testEnv.authenticatedContext(ADMIN_UID).firestore();
+    const subcols = ['guest_entries', 'singles', 'itinerary', 'hosts'];
+    for (const col of subcols) {
+      const snap = await getDocs(collection(db, 'events', eventCode, col));
+      for (const d of snap.docs) {
+        await assertSucceeds(deleteDoc(d.ref));
+      }
+    }
+
+    // Borrado de secrets/pin
+    await assertSucceeds(deleteDoc(doc(db, 'eventos_activos', eventCode, 'secrets', 'pin')));
+
+    // Borrado del evento principal
+    await assertSucceeds(deleteDoc(doc(db, 'eventos_activos', eventCode)));
   });
 
   it('DENEGADO: Usuario intenta escribir en hosts con el UID de otro', async () => {

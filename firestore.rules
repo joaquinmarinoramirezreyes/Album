@@ -38,7 +38,7 @@ service cloud.firestore {
       // Subcolección de anfitriones validados
       match /hosts/{hostUid} {
         allow get: if isSignedIn() && request.auth.uid == hostUid;
-        allow list: if false;
+        allow list: if isAdmin();
 
         // Reclamo de Host: permite PIN de >= 4 caracteres (retrocompatibilidad)
         allow create: if isSignedIn()
