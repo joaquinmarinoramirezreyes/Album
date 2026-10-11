@@ -686,7 +686,7 @@ if (location.hash === '#album' || location.hash === '#welcome') history.replaceS
 window.addEventListener('popstate', () => {
   const albumActive = $albumScreen.classList.contains('screen--active');
   if (albumActive) {
-    if (['#welcome', '#itinerary', '#singles', '#album'].includes(location.hash)) {
+    if (['#welcome', '#itinerary', '#singles', '#album', '#wall'].includes(location.hash)) {
       window.dispatchEvent(new CustomEvent('legacy:tab', { detail: location.hash.replace('#', '') }));
       return;
     }

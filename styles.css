@@ -832,10 +832,10 @@ img {
 
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ PestaÃƒÂ±as ÃƒÂlbum / Solteros (React) Ã¢â€â‚¬Ã¢â€â‚¬ */
-#react-welcome, #react-singles, #react-itinerary { display: none; }
-body.show-welcome #react-welcome, body.show-singles #react-singles, body.show-itinerary #react-itinerary { display: block; }
-body.show-welcome #screen-album > :not(.hero):not(#react-tabs):not(#react-welcome), body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary) { display: none !important; }
-body.show-welcome #fab-camera, body.show-singles #fab-camera, body.show-itinerary #fab-camera { display: none !important; }
+#react-welcome, #react-singles, #react-itinerary, #react-wall { display: none; }
+body.show-welcome #react-welcome, body.show-singles #react-singles, body.show-itinerary #react-itinerary, body.show-wall #react-wall { display: block; }
+body.show-welcome #screen-album > :not(.hero):not(#react-tabs):not(#react-welcome), body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary), body.show-wall #screen-album > :not(.hero):not(#react-tabs):not(#react-wall) { display: none !important; }
+body.show-welcome #fab-camera, body.show-singles #fab-camera, body.show-itinerary #fab-camera, body.show-wall #fab-camera { display: none !important; }
 
 
 
@@ -1523,8 +1523,8 @@ section#screen-login.screen .btn--primary {
 }
 
 /* Fix React toggles */
-body.show-welcome #screen-album > :not(.hero):not(#react-tabs):not(#react-welcome), body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary) { display: none !important; }
-body.show-welcome #fab-camera, body.show-singles #fab-camera, body.show-itinerary #fab-camera { display: none !important; }
+body.show-welcome #screen-album > :not(.hero):not(#react-tabs):not(#react-welcome), body.show-singles #screen-album > :not(.hero):not(#react-tabs):not(#react-singles), body.show-itinerary #screen-album > :not(.hero):not(#react-tabs):not(#react-itinerary), body.show-wall #screen-album > :not(.hero):not(#react-tabs):not(#react-wall) { display: none !important; }
+body.show-welcome #fab-camera, body.show-singles #fab-camera, body.show-itinerary #fab-camera, body.show-wall #fab-camera { display: none !important; }
 
 
 .modal-card {
@@ -1703,8 +1703,8 @@ section#screen-login.screen > .login {
 /* Siempre visible si la galería está activa */
 #screen-album.screen--active ~ .fab-camera.visible { opacity: 1 !important; pointer-events: auto !important; animation: spatialFloat 4s ease-in-out forwards; }
 
-/* Ocultar en la pestaña Solteros, Itinerario y Bienvenida */
-body.show-welcome #screen-album.screen--active ~ .fab-camera, body.show-singles #screen-album.screen--active ~ .fab-camera, body.show-itinerary #screen-album.screen--active ~ .fab-camera {
+/* Ocultar en la pestaña Solteros, Itinerario, Bienvenida y Muro */
+body.show-welcome #screen-album.screen--active ~ .fab-camera, body.show-singles #screen-album.screen--active ~ .fab-camera, body.show-itinerary #screen-album.screen--active ~ .fab-camera, body.show-wall #screen-album.screen--active ~ .fab-camera {
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
@@ -1763,12 +1763,12 @@ body.show-welcome #screen-album.screen--active ~ .fab-camera, body.show-singles 
   100% { opacity: 1; transform: translateY(0);  }
 }
 
-body.show-welcome #react-welcome, body.show-singles #react-singles, body.show-itinerary #react-itinerary {
+body.show-welcome #react-welcome, body.show-singles #react-singles, body.show-itinerary #react-itinerary, body.show-wall #react-wall {
   animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-body:not(.show-welcome):not(.show-singles):not(.show-itinerary) #screen-album > .upload,
-body:not(.show-welcome):not(.show-singles):not(.show-itinerary) #screen-album > .photo-grid {
+body:not(.show-welcome):not(.show-singles):not(.show-itinerary):not(.show-wall) #screen-album > .upload,
+body:not(.show-welcome):not(.show-singles):not(.show-itinerary):not(.show-wall) #screen-album > .photo-grid {
   animation: tabFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
