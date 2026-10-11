@@ -1,4 +1,5 @@
-import admin from 'firebase-admin';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import fs from 'fs';
 import readline from 'readline';
 
@@ -12,7 +13,7 @@ const CONFIG = {
 const ALLOWED_STAGING = 'album-barro-staging';
 const PROD_PROJECT = 'album-fotos-80c88';
 
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || 'C:\\secrets\\service-account-key.json';
+const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || 'C:\\secrets\\staging-service-account.json';
 
 if (!fs.existsSync(serviceAccountPath)) {
   console.error(`ERROR: No se encontró la clave de servicio en: ${serviceAccountPath}`);
@@ -37,11 +38,11 @@ if (activeProjectId === ALLOWED_STAGING) {
   process.exit(1);
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+initializeApp({
+  credential: cert(serviceAccount)
 });
 
-const db = admin.firestore();
+const db = getFirestore();
 
 async function runMigration() {
   console.log(`=======================================================`);
@@ -99,12 +100,12 @@ async function runMigration() {
         if (CONFIG.DELETE_PINS_FROM_PUBLIC) console.log(`   [SIMULACIÓN] Borrar adminPin de eventos_activos/${item.code}`);
       } else {
         const secretRef = db.doc(`eventos_activos/${item.code}/secrets/pin`);
-        await secretRef.set({ pin: item.pin, migratedAt: admin.firestore.FieldValue.serverTimestamp() });
+        await secretRef.set({ pin: item.pin, migratedAt: FieldValue.serverTimestamp() });
         console.log(`   [OK] Guardado en ruta secreta.`);
 
         if (CONFIG.DELETE_PINS_FROM_PUBLIC) {
           const eventRef = db.doc(`eventos_activos/${item.code}`);
-          await eventRef.update({ adminPin: admin.firestore.FieldValue.delete() });
+          await eventRef.update({ adminPin: FieldValue.delete() });
           console.log(`   [OK] Eliminado adminPin del documento público.`);
         }
       }

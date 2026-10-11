@@ -1,4 +1,5 @@
-import admin from 'firebase-admin';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import fs from 'fs';
 
 const ALLOWED_STAGING = 'album-barro-staging';
@@ -20,11 +21,11 @@ if (activeProjectId !== ALLOWED_STAGING) {
   process.exit(1);
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+initializeApp({
+  credential: cert(serviceAccount)
 });
 
-const db = admin.firestore();
+const db = getFirestore();
 
 async function seedStaging() {
   console.log(`=======================================================`);
@@ -40,7 +41,7 @@ async function seedStaging() {
         date: '2026-12-15',
         theme: 'marli',
         adminPin: '4321', // PIN legacy de 4 dígitos en la raíz
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        creadoEn: FieldValue.serverTimestamp()
       }
     },
     {
@@ -50,7 +51,7 @@ async function seedStaging() {
         date: '2026-12-20',
         theme: 'shots',
         adminPin: '889900', // PIN legacy de 6 dígitos en la raíz
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
+        creadoEn: FieldValue.serverTimestamp()
       }
     }
   ];
