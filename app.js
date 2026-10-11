@@ -1,4 +1,4 @@
-﻿import '@fontsource-variable/inter';
+import '@fontsource-variable/inter';
 import { createIcons, Settings, Shield } from 'lucide';
 
 // Initialize icons immediately
@@ -349,7 +349,7 @@ $loginForm.addEventListener('submit', async (e) => {
 
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
-      history.pushState({ screen: 'album' }, '', '#album');
+      history.pushState({ screen: 'album', tab: 'welcome' }, '', '#welcome');
       window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true' } }));
 
       // Arrancar el listener de la galería en tiempo real
@@ -681,12 +681,12 @@ function transitionScreens($from, $to) {
 //  PHOTO PREVIEW
 // ═══════════════════════════════════════════════════════════
 // ── Flechas de navegación del navegador (atrás / adelante) ──
-if (location.hash === '#album') history.replaceState(null, '', location.pathname);
+if (location.hash === '#album' || location.hash === '#welcome') history.replaceState(null, '', location.pathname);
 
 window.addEventListener('popstate', () => {
   const albumActive = $albumScreen.classList.contains('screen--active');
   if (albumActive) {
-    if (location.hash === '#album' || location.hash === '#singles') {
+    if (['#welcome', '#itinerary', '#singles', '#album'].includes(location.hash)) {
       window.dispatchEvent(new CustomEvent('legacy:tab', { detail: location.hash.replace('#', '') }));
       return;
     }
