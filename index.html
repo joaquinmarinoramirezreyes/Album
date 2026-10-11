@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -45,16 +45,18 @@
         <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galería</button>
       </form>
 
-      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;" aria-label="Acceso anfitrión para moderar evento">
-    <i data-lucide="shield" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
-    Acceso Anfitrión
-  </button>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin-top: 1.5rem;">
+        <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Acceso anfitrión para moderar evento">
+          <i data-lucide="shield" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
+          Acceso Anfitrión
+        </button>
 
-      <!-- Admin link -->
-      <button type="button" id="btn-admin-modal" class="btn--text" style="margin-top: 1.5rem; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Abrir panel central para crear nuevo evento">
-    <i data-lucide="settings" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
-    Panel Central
-  </button>
+        <!-- Admin link -->
+        <button type="button" id="btn-admin-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Abrir panel central para crear nuevo evento">
+          <i data-lucide="settings" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
+          Panel Central
+        </button>
+      </div>
     </div>
 
     <!-- Modals de Admin (dentro de screen-login para mantener contexto) -->
@@ -63,8 +65,9 @@
         <button type="button" class="modal-close" aria-label="Cerrar">&times;</button>
         <h2 class="modal-title">Acceso de Administrador</h2>
         <form id="form-admin-auth">
+          <input type="email" id="input-admin-email" class="login__input" placeholder="Correo de administrador" required style="margin-bottom: 0.5rem;">
           <input type="password" id="input-admin-pass" class="login__input" placeholder="Contraseña de admin" required>
-          <small id="admin-error" class="login__hint mt-2" hidden>Contraseña incorrecta.</small>
+          <small id="admin-error" class="login__hint mt-2" hidden>Credenciales incorrectas.</small>
           <button type="submit" class="btn btn--primary btn--full mt-4">Validar</button>
         </form>
       </div>

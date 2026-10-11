@@ -85,7 +85,11 @@ function applyBrandLogin() {
   document.querySelectorAll('.hero__subtitle, .login__subtitle').forEach(el => {
     el.textContent = THEMES[BRAND || 'default'].slogan;
   });
-  if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
+  if (BRAND) {
+    document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
+  } else {
+    document.getElementById('btn-admin-modal')?.removeAttribute('hidden');
+  }
 }
 applyBrandLogin();
 const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAND;
@@ -234,6 +238,7 @@ const $modalAdminAuth = document.getElementById('modal-admin-auth');
 const $modalHostAuth = document.getElementById('modal-host-auth');
 const $formAdminAuth = document.getElementById('form-admin-auth');
 const $formHostAuth  = document.getElementById('form-host-auth');
+const $inputAdminEmail = document.getElementById('input-admin-email');
 const $inputAdminPass = document.getElementById('input-admin-pass');
 const $inputHostCode = document.getElementById('input-host-code');
 const $inputHostPin  = document.getElementById('input-host-pin');
@@ -425,14 +430,15 @@ $accessCode.addEventListener('input', () => {
 // -----------------------------------------------------------
 //  ADMIN: CREAR NUEVO EVENTO
 // -----------------------------------------------------------
-const ADMIN_PASSWORD = "ceramica"; // Contrase�a simple para el modal
 
 // Abrir modal de autenticaci�n
 $btnAdminModal.addEventListener('click', () => {
   $modalAdminAuth.hidden = false;
+  if ($inputAdminEmail) $inputAdminEmail.value = '';
   $inputAdminPass.value = '';
   $adminError.hidden = true;
-  $inputAdminPass.focus();
+  if ($inputAdminEmail) $inputAdminEmail.focus();
+  else $inputAdminPass.focus();
 });
 
 // Validar contrase�a
@@ -440,7 +446,8 @@ $formAdminAuth.addEventListener('submit', async (e) => {
   e.preventDefault();
   try {
     const { signInWithEmailAndPassword } = await import('firebase/auth');
-    await signInWithEmailAndPassword(auth, 'admin@nuestroalbum.com', $inputAdminPass.value);
+    const email = $inputAdminEmail ? $inputAdminEmail.value.trim() : '';
+    await signInWithEmailAndPassword(auth, email, $inputAdminPass.value);
     $modalAdminAuth.hidden = true;
     $modalAdminPanel.hidden = false;
     $inputNewEvent.value = '';

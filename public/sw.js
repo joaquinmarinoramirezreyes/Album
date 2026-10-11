@@ -3,7 +3,7 @@
 //  Cambia CACHE_VERSION en cada deploy para forzar actualización
 // ═══════════════════════════════════════════════════════════
 
-const CACHE_VERSION = 'album-ceramico-v7';
+const CACHE_VERSION = 'album-ceramico-v8';
 
 // Al instalarse, toma control inmediatamente (no espera a que cierren la pestaña)
 self.addEventListener('install', (e) => {
@@ -24,27 +24,47 @@ self.addEventListener('activate', (e) => {
 });
 
 // Estrategia: Network-First
-// 1. Intenta descargar de la red (siempre obtiene la versión más reciente)
-// 2. Si la red falla (offline), usa la copia en caché
-// 3. Guarda cada respuesta exitosa en caché para uso offline
+// 1. Atiende solo peticiones GET del mismo origen
+// 2. Excluye Firebase / Firestore, Google APIs, SSO de Vercel y rutas reservadas /__/
+// 3. No cachea respuestas no OK ni redirecciones
+// 4. Fallback a Response válida (Response.error()) si falla la red y no hay caché
 self.addEventListener('fetch', (e) => {
-  // Solo cachear requests GET del mismo origen
   if (e.request.method !== 'GET') return;
+
+  const url = new URL(e.request.url);
+
+  // Solo mismo origen
+  if (url.origin !== self.location.origin) return;
+
+  // Excluir rutas reservadas y APIs externas / SSO
+  if (
+    url.pathname.startsWith('/__/') ||
+    url.pathname.startsWith('/sso-api') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('googleapis.com')
+  ) {
+    return;
+  }
 
   e.respondWith(
     fetch(e.request)
       .then((networkResponse) => {
-        // Guardar copia fresca en caché
-        const clone = networkResponse.clone();
-        caches.open(CACHE_VERSION).then((cache) => {
-          cache.put(e.request, clone);
-        });
+        // No cachear respuestas no OK (status < 200 o >= 300) ni redirecciones
+        if (networkResponse && networkResponse.ok && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_VERSION).then((cache) => {
+            cache.put(e.request, clone);
+          });
+        }
         return networkResponse;
       })
-      .catch(() => {
-        // Sin red → servir desde caché (modo offline)
-        return caches.match(e.request);
+      .catch(async () => {
+        // Sin red → servir desde caché si existe
+        const cached = await caches.match(e.request);
+        if (cached) return cached;
+
+        // Fallback seguro a Response.error() para evitar "Failed to convert value to 'Response'"
+        return Response.error();
       })
   );
 });
-
