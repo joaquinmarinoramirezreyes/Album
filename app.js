@@ -1560,10 +1560,12 @@ if ('serviceWorker' in navigator) {
     const isSlideshowOpen = document.getElementById('slideshow') && !document.getElementById('slideshow').hidden;
 
     if (isUploading || hasText || isSlideshowOpen) {
-      const toast = document.createElement('div');
-      toast.className = 'toast toast--info';
-      toast.innerHTML = '<span class="toast__text">Nueva versión disponible. Guarda tu trabajo y actualiza.</span><button onclick="window.location.reload()" style="margin-left:10px;padding:5px 10px;background:var(--color-talavera);color:#fff;border:none;border-radius:4px;cursor:pointer">Actualizar</button>';
-      document.body.appendChild(toast);
+      const toast = showToast('Nueva versión disponible. Guarda tu trabajo y actualiza.', 'info', 10000);
+      const btn = document.createElement('button');
+      btn.textContent = 'Actualizar';
+      btn.style.cssText = 'margin-left:10px;padding:5px 10px;background:var(--color-talavera);color:#fff;border:none;border-radius:4px;cursor:pointer;';
+      btn.onclick = () => window.location.reload();
+      toast.querySelector('.toast__text').appendChild(btn);
     } else {
       refreshing = true;
       window.location.reload();

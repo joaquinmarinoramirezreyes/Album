@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "album-barro-staging",
-    "production": "nuestro-album-prod"
+    "staging": "album-barro-staging",
+    "production": "album-fotos-80c88"
   }
 }

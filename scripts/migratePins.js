@@ -3,54 +3,63 @@ import fs from 'fs';
 import readline from 'readline';
 
 const CONFIG = {
-  DRY_RUN: true,
-  DELETE_PINS_FROM_PUBLIC: false,
-  RESTORE_MODE: false,
-  BACKUP_FILE: './backup_eventos_activos.json' 
+  DRY_RUN: process.argv.includes('--dry-run') || !process.argv.includes('--live'),
+  DELETE_PINS_FROM_PUBLIC: process.argv.includes('--delete-public-pins'),
+  RESTORE_MODE: process.argv.includes('--restore'),
+  BACKUP_FILE: './backup_eventos_activos.json'
 };
+
+const ALLOWED_STAGING = 'album-barro-staging';
+const PROD_PROJECT = 'album-fotos-80c88';
 
 const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || 'C:\\secrets\\service-account-key.json';
 
-let activeProjectId = 'unknown';
-
-if (!fs.existsSync(serviceAccountPath) && !CONFIG.DRY_RUN) {
-  console.warn(`[WARNING] No se encontró ${serviceAccountPath}. La migración fallará en producción.`);
-} else if (fs.existsSync(serviceAccountPath)) {
-  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-  activeProjectId = serviceAccount.project_id;
-  
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-} else {
-  admin.initializeApp();
+if (!fs.existsSync(serviceAccountPath)) {
+  console.error(`ERROR: No se encontró la clave de servicio en: ${serviceAccountPath}`);
+  console.error(`Asegúrate de configurar $env:GOOGLE_APPLICATION_CREDENTIALS="C:\\secrets\\staging-service-account.json"`);
+  process.exit(1);
 }
+
+const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+const activeProjectId = serviceAccount.project_id;
+
+// Validar lista de permitidos ANTES de inicializar SDK
+if (activeProjectId === ALLOWED_STAGING) {
+  console.log(`[INFO] Proyecto verificado: Staging (${activeProjectId})`);
+} else if (activeProjectId === PROD_PROJECT) {
+  const isProdFlag = process.argv.includes('--allow-production');
+  if (!isProdFlag) {
+    console.error(`ERROR: Abortando. El service account pertenece a PRODUCCIÓN ('${PROD_PROJECT}'). Requiere bandera --allow-production.`);
+    process.exit(1);
+  }
+} else {
+  console.error(`ERROR: Project ID no autorizado ('${activeProjectId}'). Solo se permite '${ALLOWED_STAGING}', o '${PROD_PROJECT}' con autorización explícita. Abortando.`);
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const db = admin.firestore();
 
 async function runMigration() {
   console.log(`=======================================================`);
   console.log(` MIGRACIÓN DE PINS A RUTA SECRETA (ADMIN SDK)`);
-  console.log(` MODO: ${CONFIG.DRY_RUN ? 'SIMULACIÓN (DRY-RUN)' : 'EN VIVO'}`);
+  console.log(` PROYECTO: ${activeProjectId}`);
+  console.log(` MODO: ${CONFIG.DRY_RUN ? 'SIMULACIÓN (DRY-RUN - usa --live para escribir)' : 'EN VIVO (ESCRITURA REAL)'}`);
   console.log(`=======================================================\n`);
 
-  if (activeProjectId === 'album-fotos-80c88') {
-    const isProdFlag = process.argv.includes('--allow-production');
-    if (!isProdFlag) {
-      console.error("ERROR: Abortando. El service account pertenece a PRODUCCIÓN. Usa --allow-production explícitamente.");
-      process.exit(1);
-    }
-    
+  if (activeProjectId === PROD_PROJECT) {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    const answer = await new Promise(resolve => rl.question("ATENCIÓN: Estás a punto de migrar PRODUCCIÓN. Escribe 'album-fotos-80c88' para confirmar: ", resolve));
+    const answer = await new Promise(resolve => rl.question(`ATENCIÓN: Estás a punto de migrar PRODUCCIÓN. Escribe '${PROD_PROJECT}' para confirmar: `, resolve));
     rl.close();
-    
-    if (answer.trim() !== 'album-fotos-80c88') {
-      console.error("Confirmación incorrecta. Abortando.");
+
+    if (answer.trim() !== PROD_PROJECT) {
+      console.error(`Confirmación incorrecta ('${answer.trim()}'). Abortando.`);
       process.exit(1);
     }
-  } else if (activeProjectId !== 'album-barro-staging' && activeProjectId !== 'unknown') {
-    console.warn("WARNING: El proyecto no es de producción ni de staging reconocido: " + activeProjectId);
+    console.log(`[PELIGRO] Confirmación de PRODUCCIÓN aceptada. Continuando...\n`);
   }
 
   if (CONFIG.RESTORE_MODE) {
