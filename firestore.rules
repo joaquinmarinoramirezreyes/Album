@@ -117,10 +117,11 @@ service cloud.firestore {
       match /itinerary/{itemId} {
         allow read: if isSignedIn();
         allow create, update: if (isHostOf(code) || isAdmin())
-          && request.resource.data.keys().hasOnly(['time', 'title', 'type', 'timestamp'])
-          && request.resource.data.time is string && request.resource.data.time.size() <= 10
-          && request.resource.data.title is string && request.resource.data.title.size() <= 60
-          && request.resource.data.type in ['ceremony', 'party', 'food', 'other']
+          && request.resource.data.keys().hasOnly(['time', 'title', 'desc', 'type', 'timestamp'])
+          && request.resource.data.time is string && request.resource.data.time.size() > 0 && request.resource.data.time.size() <= 20
+          && request.resource.data.title is string && request.resource.data.title.size() > 0 && request.resource.data.title.size() <= 40
+          && request.resource.data.desc is string && request.resource.data.desc.size() > 0 && request.resource.data.desc.size() <= 80
+          && request.resource.data.type in ['general', 'ceremony', 'food', 'toast', 'party', 'photo']
           && request.resource.data.timestamp == request.time;
           
         allow delete: if isHostOf(code) || isAdmin();

@@ -544,12 +544,19 @@ async function loadAdminEvents() {
         if (confirm(`�Est�s seguro de ELIMINAR COMPLETAMENTE el evento "${codeToDelete}"?\n\nSi aceptas, se borrar� el acceso y TODAS las dedicatorias de la base de datos para liberar espacio en Firestore.`)) {
           try {
             btn.disabled = true;
-            // 1. Obtener y borrar todas las fotos de Firestore (liberar espacio)
-            const entriesSnap = await getDocs(collection(db, 'events', codeToDelete, 'guest_entries'));
-            const deletePromises = entriesSnap.docs.map(d => deleteDoc(d.ref));
-            await Promise.all(deletePromises);
-            
-            // 2. Borrar el acceso
+            // 1. Borrar todas las subcolecciones para no dejar huérfanos (fotos, solteros, itinerario, hosts)
+            const subcols = ['guest_entries', 'singles', 'itinerary', 'hosts'];
+            for (const col of subcols) {
+              const snap = await getDocs(collection(db, 'events', codeToDelete, col));
+              await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+            }
+
+            // 2. Borrar secrets/pin
+            try {
+              await deleteDoc(doc(db, 'eventos_activos', codeToDelete, 'secrets', 'pin'));
+            } catch (ePin) {}
+
+            // 3. Borrar el documento principal
             await deleteDoc(doc(db, 'eventos_activos', codeToDelete));
             
             showToast(`Evento y fotos de ${codeToDelete} eliminados`, 'info');
@@ -613,7 +620,6 @@ $formCreateEvent.addEventListener('submit', async (e) => {
       creadoEn: serverTimestamp(),
       fechaEvento: eventDate,
       activo: true,
-      adminPin: eventPin || null,
       theme: eventTheme
     });
     await setDoc(doc(db, 'eventos_activos', code, 'secrets', 'pin'), {
