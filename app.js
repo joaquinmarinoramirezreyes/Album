@@ -160,7 +160,6 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 }
 
 let isAuthReady = false;
-auth.onAuthStateChanged = onAuthStateChanged;
 onAuthStateChanged(auth, async user => {
   isAuthReady = true;
   if (!user && window.location.pathname.indexOf('admin') === -1) {
