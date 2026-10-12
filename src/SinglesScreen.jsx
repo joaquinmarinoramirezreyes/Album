@@ -1,9 +1,11 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getApp } from 'firebase/app';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
   serverTimestamp, deleteDoc, doc, updateDoc, increment
 } from 'firebase/firestore';
+
+import { getEventType } from './eventTypes.js';
 
 const getDb = () => getFirestore(getApp());
 
@@ -28,9 +30,10 @@ function compressImage(file, maxWidth = 900, quality = 0.7) {
   });
 }
 
-const EMPTY = { name: '', age: '', profession: '', side: 'la Novia', funFact: '' };
-
-export default function SinglesScreen({ eventCode, isHost }) {
+export default function SinglesScreen({ eventCode, isHost, type }) {
+  const cfg = getEventType(type);
+  const defaultSide = cfg.singlesOptions?.[0] || 'Invitado';
+  const EMPTY = { name: '', age: '', profession: '', side: defaultSide, funFact: '' };
   const [localLikes, setLocalLikes] = useState([]);
 
   useEffect(() => {
@@ -133,7 +136,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
       if (backMsg) {
         let html = '';
         if (p.profession) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Ocupación:</strong> ${p.profession}</div>`;
-        if (p.side) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>Invitado/a de:</strong> ${p.side}</div>`;
+        if (p.side) html += `<div style="margin-bottom:1rem; font-size:1.1rem"><strong>${cfg.singlesBadgePrefix || 'De parte de'}</strong> ${p.side}</div>`;
         if (p.funFact) html += `<div style="margin-top:1.5rem; font-style:italic; font-size:1.2rem; background: rgba(0,0,0,0.05); padding: 1rem; border-radius: 8px;">"${p.funFact}"</div>`;
         backMsg.innerHTML = html;
       }
@@ -203,10 +206,11 @@ export default function SinglesScreen({ eventCode, isHost }) {
               <input className="form-input" placeholder="Ej. Arquitecta" value={form.profession} onChange={set('profession')} maxLength={50} />
             </div>
             <div className="form-group">
-              <label className="form-label">Vengo de parte de</label>
+              <label className="form-label">{cfg.singlesLabel || 'Vengo de parte de'}</label>
               <select className="form-input" value={form.side} onChange={set('side')}>
-                <option value="la Novia">La Novia</option>
-                <option value="el Novio">El Novio</option>
+                {(cfg.singlesOptions || ['Invitado']).map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
               </select>
             </div>
             <div className="form-group">
@@ -224,7 +228,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
         </div>
       )}
 
-      <h2 className="gallery__heading">Solteros de la fiesta</h2>
+      <h2 className="gallery__heading">{cfg.singlesTitle || 'Solteros del Evento'}</h2>
       {profiles.length === 0 && (
         <p style={{ textAlign: 'center', opacity: 0.6 }}>Nadie se ha anotado todavía… ¡sé el primero!</p>
       )}
@@ -254,7 +258,7 @@ export default function SinglesScreen({ eventCode, isHost }) {
               </p>
               <p className="single-card__fact">“{p.funFact}”</p>
               <div className="single-card__footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span>De parte de {p.side}</span>
+                <span>{(cfg.singlesBadgePrefix || 'De parte de')} {p.side}</span>
                 <button 
                   type="button" 
                   onClick={(e) => handleLike(p.id, e)}

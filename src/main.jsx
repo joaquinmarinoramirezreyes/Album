@@ -143,11 +143,11 @@ function Root() {
         tabsEl
       )}
       {itineraryEl && tab === 'itinerary' && createPortal(
-        <ItineraryScreen eventCode={session.code} isHost={session.isHost} />,
+        <ItineraryScreen eventCode={session.code} isHost={session.isHost} type={session.type} />,
         itineraryEl
       )}
       {singlesEl && tab === 'singles' && createPortal(
-        <SinglesScreen eventCode={session.code} isHost={session.isHost} />,
+        <SinglesScreen eventCode={session.code} isHost={session.isHost} type={session.type} />,
         singlesEl
       )}
       {wallEl && tab === 'wall' && createPortal(

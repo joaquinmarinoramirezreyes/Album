@@ -160,7 +160,7 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
               <input
                 type="text"
                 className="form-input"
-                placeholder="Ej. ¡Bienvenidos a nuestra boda!"
+                placeholder={`Ej. ${DEFAULT_TITLE || '¡Bienvenidos!'}`}
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 maxLength={60}

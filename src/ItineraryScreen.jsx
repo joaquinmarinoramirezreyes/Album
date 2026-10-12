@@ -5,6 +5,8 @@ import {
   serverTimestamp, deleteDoc, doc,
 } from 'firebase/firestore';
 
+import { getEventType } from './eventTypes.js';
+
 const getDb = () => getFirestore(getApp());
 
 const getIcon = (type) => {
@@ -24,7 +26,8 @@ const getIcon = (type) => {
   }
 };
 
-export default function ItineraryScreen({ eventCode, isHost }) {
+export default function ItineraryScreen({ eventCode, isHost, type }) {
+  const cfg = getEventType(type);
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -74,8 +77,12 @@ export default function ItineraryScreen({ eventCode, isHost }) {
 
   return (
     <div className="itinerary-container">
-      <h2 className="gallery__heading" style={{ textAlign: 'center' }}>Itinerario de Bodas</h2>
-      <p style={{ textAlign: 'center', opacity: 0.8, marginBottom: '2rem' }}>Acompáñanos en cada momento de nuestro gran día.</p>
+      <h2 className="gallery__heading" style={{ textAlign: 'center' }}>
+        {cfg.itineraryTitle || 'Itinerario del Evento'}
+      </h2>
+      <p style={{ textAlign: 'center', opacity: 0.8, marginBottom: '2rem' }}>
+        {cfg.itinerarySubtitle || 'Acompáñanos en cada momento de nuestro evento.'}
+      </p>
       
       {isHost && !showForm && (
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
