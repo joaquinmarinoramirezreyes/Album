@@ -7,5 +7,14 @@
       "source": "/:brand((?!assets|sw\\.js|manifest\\.json|icon\\.svg)[^/.]+)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET" }
+      ]
+    }
   ]
 }
