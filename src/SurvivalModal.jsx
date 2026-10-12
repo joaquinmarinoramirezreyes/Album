@@ -108,6 +108,30 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
     };
   }, [eventCode]);
 
+  // Base styles para la cápsula flotante inferior
+  const baseCapsuleStyle = {
+    position: 'fixed',
+    bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 950,
+    borderRadius: '999px',
+    padding: '9px 18px',
+    fontSize: '0.82rem',
+    fontWeight: 600,
+    letterSpacing: '0.01em',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    whiteSpace: 'nowrap',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    border: '1px solid rgba(255, 255, 255, 0.22)',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.15)',
+    transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease',
+  };
+
   // Si no está configurado aún
   if (!config?.unlockAt) {
     return (
@@ -115,23 +139,12 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
         type="button"
         onClick={onClick}
         style={{
-          background: 'rgba(255, 255, 255, 0.9)',
-          border: '1px solid rgba(181, 83, 60, 0.25)',
-          color: 'var(--color-primary, #b5533c)',
-          borderRadius: '999px',
-          padding: '5px 14px',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          backdropFilter: 'blur(8px)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-          margin: '-20px auto 14px'
+          ...baseCapsuleStyle,
+          background: 'rgba(28, 35, 49, 0.92)',
+          color: '#FFFFFF',
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
@@ -152,22 +165,13 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
         type="button"
         onClick={onClick}
         style={{
-          background: 'linear-gradient(135deg, #1E3888 0%, #2A4DB7 100%)',
-          border: '1px solid #1E3888',
+          ...baseCapsuleStyle,
+          background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
           color: '#FFFFFF',
-          borderRadius: '999px',
-          padding: '5px 14px',
-          fontSize: '0.78rem',
-          fontWeight: 600,
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          boxShadow: '0 2px 10px rgba(30, 56, 136, 0.25)',
-          margin: '-20px auto 14px'
+          boxShadow: '0 10px 32px rgba(30, 56, 136, 0.45)',
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
         </svg>
@@ -176,30 +180,21 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
     );
   }
 
-  // Fase 2: Desbloqueado para tomar fotos
+  // Fase 2: Desbloqueado para tomar fotos (Activo con destello)
   if (isUnlocked) {
     return (
       <button
         type="button"
         onClick={onClick}
         style={{
-          background: 'linear-gradient(135deg, #b5533c 0%, #d46349 100%)',
-          border: '1px solid #b5533c',
+          ...baseCapsuleStyle,
+          background: 'linear-gradient(135deg, #b5533c 0%, #8f3e2b 100%)',
           color: '#FFFFFF',
-          borderRadius: '999px',
-          padding: '5px 14px',
-          fontSize: '0.78rem',
-          fontWeight: 700,
-          cursor: 'pointer',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          boxShadow: '0 2px 12px rgba(181, 83, 60, 0.35)',
-          margin: '-20px auto 14px',
-          animation: 'pulse 2s infinite'
+          boxShadow: '0 10px 32px rgba(181, 83, 60, 0.5)',
+          animation: 'survivalPulse 2.4s ease-in-out infinite'
         }}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
           <circle cx="12" cy="13" r="4"></circle>
         </svg>
@@ -214,23 +209,12 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
       type="button"
       onClick={onClick}
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        border: '1px solid rgba(181, 83, 60, 0.3)',
-        color: 'var(--color-primary, #b5533c)',
-        borderRadius: '999px',
-        padding: '5px 14px',
-        fontSize: '0.78rem',
-        fontWeight: 600,
-        cursor: 'pointer',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        backdropFilter: 'blur(8px)',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-        margin: '-20px auto 14px'
+        ...baseCapsuleStyle,
+        background: 'rgba(28, 35, 49, 0.92)',
+        color: '#FFFFFF',
       }}
     >
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>

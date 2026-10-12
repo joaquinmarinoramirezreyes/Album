@@ -1926,3 +1926,16 @@ body:not(.show-singles):not(.show-itinerary):not(.show-wall) #screen-album > .ph
   margin-top: 2rem;
   margin-left: 1rem;
 }
+
+/* --- PULSO BOTÓN DE SUPERVIVENCIA --- */
+@keyframes survivalPulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 10px 30px rgba(181, 83, 60, 0.45);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.04);
+    box-shadow: 0 14px 40px rgba(181, 83, 60, 0.7);
+  }
+}
+

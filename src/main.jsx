@@ -99,46 +99,36 @@ function Root() {
     <>
       {tabsEl && createPortal(
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Botones de acción superior: Carta de bienvenida + Supervivencia */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center', margin: '-20px auto 14px', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={() => setShowWelcome(true)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                border: '1px solid rgba(181, 83, 60, 0.2)',
-                color: 'var(--color-primary, #b5533c)',
-                borderRadius: '999px',
-                padding: '5px 14px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                backdropFilter: 'blur(8px)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                margin: 0
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              <span>Carta de bienvenida</span>
-            </button>
-
-            {hasSurvival && (
-              <SurvivalPillButton
-                eventCode={session.code}
-                isHost={session.isHost}
-                onClick={() => setShowSurvival(true)}
-              />
-            )}
-          </div>
+          {/* Botón sutil para volver a abrir la carta de bienvenida */}
+          <button
+            type="button"
+            onClick={() => setShowWelcome(true)}
+            style={{
+              background: 'rgba(255, 255, 255, 0.92)',
+              border: '1px solid rgba(181, 83, 60, 0.25)',
+              color: 'var(--color-primary, #b5533c)',
+              borderRadius: '999px',
+              padding: '5px 14px',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              margin: '0 auto 16px'
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Carta de bienvenida</span>
+          </button>
 
           {/* Pestañas según el tipo de evento */}
-          <nav className="tabs" style={{ display: 'grid', gridTemplateColumns: `repeat(${tabs.length}, 1fr)`, gap: '0.35rem', maxWidth: '440px', width: '92%' }}>
+          <nav className="tabs" style={{ display: 'grid', gridTemplateColumns: `repeat(${tabs.length}, 1fr)`, gap: '0.35rem', maxWidth: '440px', width: '92%', margin: '0 auto 28px' }}>
             {tabs.map((key) => (
               <button
                 key={key}
@@ -175,6 +165,14 @@ function Root() {
           type={session.type}
           isOpen={showWelcome}
           onClose={handleCloseWelcome}
+        />,
+        document.body
+      )}
+      {hasSurvival && createPortal(
+        <SurvivalPillButton
+          eventCode={session.code}
+          isHost={session.isHost}
+          onClick={() => setShowSurvival(true)}
         />,
         document.body
       )}
