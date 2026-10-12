@@ -37,9 +37,10 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
     return () => unsub();
   }, [eventCode]);
 
-  // Escuchar fotos de supervivencia
+  // Escuchar fotos de supervivencia (solo una vez revelada la bóveda)
+  const revealedForPhotos = Boolean(config?.revealAt && Date.now() >= config.revealAt);
   useEffect(() => {
-    if (!eventCode) return;
+    if (!eventCode || !revealedForPhotos) return;
     const q = query(
       collection(getDb(), 'events', eventCode, 'survival_photos'),
       orderBy('timestamp', 'asc')
@@ -50,7 +51,7 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
       setLoading(false);
     });
     return () => unsub();
-  }, [eventCode]);
+  }, [eventCode, revealedForPhotos]);
 
   const handleDeletePhoto = async (photoId, e) => {
     e.stopPropagation();

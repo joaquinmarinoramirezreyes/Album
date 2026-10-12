@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getApp } from 'firebase/app';
 import {
   getFirestore, doc, onSnapshot, setDoc, collection, addDoc,
-  deleteDoc, query, orderBy, serverTimestamp
+  deleteDoc, query, orderBy, where, serverTimestamp
 } from 'firebase/firestore';
 import { getEventType } from './eventTypes.js';
 import { generateSurvivalPdf } from './generateSurvivalPdf.js';
@@ -98,16 +98,25 @@ export function SurvivalPillButton({ eventCode, isHost, onClick, onOpenVault }) 
       if (snap.exists()) setConfig(snap.data());
       else setConfig(null);
     });
-    const unsubPhotos = onSnapshot(collection(getDb(), 'events', eventCode, 'survival_photos'), (snap) => {
-      setPhotoCount(snap.size);
-    });
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => {
       unsubConfig();
-      unsubPhotos();
       clearInterval(timer);
     };
   }, [eventCode]);
+
+  // Las fotos permanecen ocultas hasta la revelación: solo se cuentan una vez revelada la bóveda
+  const revealedForCount = Boolean(config?.revealAt && now >= config.revealAt);
+  useEffect(() => {
+    if (!eventCode || !revealedForCount) {
+      setPhotoCount(0);
+      return;
+    }
+    const unsubPhotos = onSnapshot(collection(getDb(), 'events', eventCode, 'survival_photos'), (snap) => {
+      setPhotoCount(snap.size);
+    });
+    return () => unsubPhotos();
+  }, [eventCode, revealedForCount]);
 
   // Base styles para la cápsula flotante inferior
   const baseCapsuleStyle = {
@@ -289,26 +298,31 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
         setConfigForm({
           unlockAt: toInputDateTime(tonight.getTime()),
           revealAt: toInputDateTime(tomorrowMorning.getTime()),
-          title: cfg.label === 'posada' ? 'Supervivencia de la Posada' : 'Foto de Supervivencia',
-          prompt: cfg.label === 'posada' 
+          title: type === 'posada' ? 'Supervivencia de la Posada' : 'Foto de Supervivencia',
+          prompt: type === 'posada'
             ? '¿Quién sobrevivió a la fiesta de fin de año? Tómate tu foto ahora.'
             : 'Demuestra que sigues de pie. Tómate una foto tal como estás ahora.'
         });
       }
     });
     return () => unsub();
-  }, [eventCode, cfg.label]);
+  }, [eventCode, type]);
 
-  // Escuchar fotos de supervivencia
+  // Escuchar fotos de supervivencia.
+  // Antes de la revelación solo se carga la foto propia; el resto permanece oculto.
+  const revealedNow = Boolean(config?.revealAt && now >= config.revealAt);
   useEffect(() => {
     if (!eventCode) return;
-    const q = query(collection(getDb(), 'events', eventCode, 'survival_photos'), orderBy('timestamp', 'asc'));
+    const col = collection(getDb(), 'events', eventCode, 'survival_photos');
+    const q = revealedNow
+      ? query(col, orderBy('timestamp', 'asc'))
+      : query(col, where('visitorId', '==', visitorId));
     const unsub = onSnapshot(q, (snap) => {
       const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setPhotos(items);
     });
     return () => unsub();
-  }, [eventCode]);
+  }, [eventCode, revealedNow, visitorId]);
 
   // Foto subida por este visitante
   const myPhoto = photos.find(p => p.visitorId === visitorId);

@@ -63,8 +63,16 @@ function Root() {
     return () => unsub();
   }, [session?.code, hasSurvival]);
 
+  // Reloj para que la pestaña aparezca sola en cuanto llega la hora de revelación
+  const [nowTick, setNowTick] = useState(Date.now());
+  useEffect(() => {
+    if (!survivalConfig?.revealAt) return;
+    const t = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [survivalConfig?.revealAt]);
+
   const isSurvivalRevealed = Boolean(
-    survivalConfig?.revealAt && Date.now() >= survivalConfig.revealAt
+    survivalConfig?.revealAt && nowTick >= survivalConfig.revealAt
   );
 
   // Pestaña oculta: La 'Bóveda' solo se desbloquea en la barra cuando se abre la bóveda
