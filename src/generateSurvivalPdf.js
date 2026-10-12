@@ -10,7 +10,6 @@
 function loadImageAsBase64(url) {
   return new Promise((resolve) => {
     if (!url) return resolve(null);
-    if (url.startsWith('data:')) return resolve(url);
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -29,7 +28,7 @@ function loadImageAsBase64(url) {
       }
     };
     img.onerror = () => resolve(null);
-    img.src = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+    img.src = url.startsWith('data:') ? url : url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
   });
 }
 
@@ -98,7 +97,17 @@ export async function generateSurvivalPdf({
   doc.setDrawColor(243, 199, 102);
   doc.setLineWidth(1.2);
   doc.roundedRect(W / 2 - 7, 62, 14, 10, 1.5, 1.5);
-  doc.arc(W / 2, 62, 5, 5, 0, 180);
+  // Arco superior del candado (jsPDF no tiene arc): semicírculo con segmentos
+  {
+    const r = 5, cx0 = W / 2, cy0 = 62, steps = 24;
+    let prev = [cx0 - r, cy0];
+    for (let s = 1; s <= steps; s++) {
+      const a = Math.PI - (Math.PI * s) / steps;
+      const next = [cx0 + r * Math.cos(a), cy0 - r * Math.sin(a)];
+      doc.line(prev[0], prev[1], next[0], next[1]);
+      prev = next;
+    }
+  }
 
   // Título de la Bóveda
   doc.setFont('helvetica', 'bold');
@@ -369,12 +378,17 @@ export async function generateSurvivalPdf({
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(8.5);
 
-  names.slice(0, 28).forEach((name, idx) => {
+  const MAX_NAMES = 28;
+  const shownNames = names.length > MAX_NAMES
+    ? [...names.slice(0, MAX_NAMES - 1), `y ${names.length - (MAX_NAMES - 1)} más`]
+    : names;
+  shownNames.forEach((name, idx) => {
     const colIdx = Math.floor(idx / maxPerCol);
     const rowIdx = idx % maxPerCol;
     const nx = 26 + (colIdx * colWidth) + (colWidth / 2);
     const ny = 112 + (rowIdx * 7.5);
-    doc.text(`• ${name}`, nx, ny, { align: 'center' });
+    const label = name.length > 30 ? name.slice(0, 29) + '…' : name;
+    doc.text(idx === MAX_NAMES - 1 && names.length > MAX_NAMES ? label : `• ${label}`, nx, ny, { align: 'center' });
   });
 
   // Firma / Sello
