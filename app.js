@@ -290,7 +290,7 @@ function showToast(message, type = 'info', duration = 4000) {
   toast.innerHTML = `
     <span class="toast__icon" aria-hidden="true" style="display:flex; align-items:center; justify-content:center;">${icons[type]}</span>
     <span class="toast__text">${escapeHTML(message)}</span>
-    <button class="toast__close" aria-label="Cerrar notificación">✕</button>
+    <button class="toast__close" aria-label="Cerrar notificación"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     ${duration > 0 ? '<div class="toast__progress"></div>' : ''}
   `;
 
@@ -887,7 +887,7 @@ $uploadForm.addEventListener('submit', async (e) => {
       timestamp:   serverTimestamp()
     });
 
-    // ✅ Éxito
+    // Éxito
     dismissToast(progressToast);
     showToast('¡Tu recuerdo ya está en el álbum!', 'success', 5000);
     resetForm();
@@ -1433,7 +1433,7 @@ $downloadPdf.addEventListener('click', async () => {
     doc.save(`${slug}.pdf`);
 
     dismissToast(pdfToast);
-    showToast('¡Álbum descargado! 📄', 'success', 4000);
+    showToast('¡Álbum descargado!', 'success', 4000);
 
   } catch (err) {
     console.error('Error generando PDF:', err);

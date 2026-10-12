@@ -9,7 +9,7 @@ export const DEFAULT_EVENT_TYPE = 'boda';
 
 export const EVENT_TYPES = {
   boda: {
-    label: 'Boda', emoji: '💍',
+    label: 'Boda',
     tabs: ['album', 'itinerary', 'singles', 'wall'],
     hosts: 'los novios',
     wallTitle: 'Muro de la Boda',
@@ -28,7 +28,7 @@ export const EVENT_TYPES = {
     hasSurvival: true,
   },
   xv: {
-    label: 'XV años', emoji: '👑',
+    label: 'XV años',
     tabs: ['album', 'itinerary', 'singles', 'wall'],
     hosts: 'la quinceañera',
     wallTitle: 'Muro de los XV',
@@ -47,7 +47,7 @@ export const EVENT_TYPES = {
     hasSurvival: true,
   },
   cumple: {
-    label: 'Cumpleaños', emoji: '🎂',
+    label: 'Cumpleaños',
     tabs: ['album', 'wall'],
     hosts: 'el festejado',
     wallTitle: 'Muro de Cumpleaños',
@@ -65,7 +65,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De parte de',
   },
   bautizo: {
-    label: 'Bautizo', emoji: '🕊️',
+    label: 'Bautizo',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro del Bautizo',
@@ -83,7 +83,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   comunion: {
-    label: 'Primera Comunión', emoji: '✝️',
+    label: 'Primera Comunión',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro de Primera Comunión',
@@ -101,7 +101,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   confirmacion: {
-    label: 'Confirmación', emoji: '🕯️',
+    label: 'Confirmación',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro de Confirmación',
@@ -119,7 +119,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   despedida: {
-    label: 'Despedida de soltero/a', emoji: '🥂',
+    label: 'Despedida de soltero/a',
     tabs: ['album', 'itinerary', 'singles', 'wall'],
     hosts: 'los organizadores',
     wallTitle: 'Muro de la Despedida',
@@ -137,7 +137,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'Grupo:',
   },
   babyshower: {
-    label: 'Baby shower', emoji: '🍼',
+    label: 'Baby shower',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'los papás',
     wallTitle: 'Muro del Baby Shower',
@@ -155,7 +155,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   graduacion: {
-    label: 'Graduación', emoji: '🎓',
+    label: 'Graduación',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'el graduado',
     wallTitle: 'Muro de Graduación',
@@ -173,7 +173,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   aniversario: {
-    label: 'Aniversario', emoji: '💞',
+    label: 'Aniversario',
     tabs: ['album', 'wall'],
     hosts: 'los festejados',
     wallTitle: 'Muro del Aniversario',
@@ -191,7 +191,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'De:',
   },
   corporativo: {
-    label: 'Evento corporativo', emoji: '💼',
+    label: 'Evento corporativo',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'la organización',
     wallTitle: 'Muro del Evento Corporativo',
@@ -209,7 +209,7 @@ export const EVENT_TYPES = {
     singlesBadgePrefix: 'Área:',
   },
   posada: {
-    label: 'Posada de trabajo', emoji: '🎄',
+    label: 'Posada de trabajo',
     tabs: ['album', 'itinerary', 'singles', 'wall'],
     hosts: 'el comité organizador',
     wallTitle: 'Muro de la Posada',
@@ -228,7 +228,7 @@ export const EVENT_TYPES = {
     hasSurvival: true,
   },
   otro: {
-    label: 'Otro evento', emoji: '🎉',
+    label: 'Otro evento',
     tabs: ['album', 'itinerary', 'wall'],
     hosts: 'los anfitriones',
     wallTitle: 'Muro del Evento',

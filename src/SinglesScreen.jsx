@@ -185,7 +185,7 @@ export default function SinglesScreen({ eventCode, isHost, type }) {
               ) : (
                 <div className="upload__preview">
                   <img className="upload__preview-img" src={photo} alt="Vista previa" />
-                  <button type="button" className="upload__preview-remove" onClick={() => setPhoto(null)} aria-label="Quitar foto">✕</button>
+                  <button type="button" className="upload__preview-remove" onClick={() => setPhoto(null)} aria-label="Quitar foto"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg></button>
                 </div>
               )}
             </div>

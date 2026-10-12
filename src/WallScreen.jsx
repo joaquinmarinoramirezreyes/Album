@@ -579,7 +579,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
               fontSize: '0.88rem',
               flexShrink: 0
             }}>
-              {authorName ? getInitials(authorName) : '✍️'}
+              {authorName ? getInitials(authorName) : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>}
             </div>
             <input
               type="text"
@@ -657,7 +657,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                   boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
                 }}
               >
-                ✕
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
               </button>
             </div>
           )}

@@ -33,7 +33,7 @@ http.createServer((req, res) => {
     res.end(data);
   });
 }).listen(PORT, () => {
-  console.log(`\n  🏺 Servidor activo en:\n`);
+  console.log(`\n  Servidor activo en:\n`);
   console.log(`     Local:   http://localhost:${PORT}`);
   console.log(`     Red:     http://0.0.0.0:${PORT}\n`);
 });
