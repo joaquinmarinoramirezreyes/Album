@@ -4,6 +4,7 @@ import {
   getFirestore, collection, doc, onSnapshot, query, orderBy, deleteDoc
 } from 'firebase/firestore';
 import { getEventType } from './eventTypes.js';
+import { generateSurvivalPdf } from './generateSurvivalPdf.js';
 
 const getDb = () => getFirestore(getApp());
 
@@ -19,6 +20,8 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState('');
 
   // Escuchar configuración de supervivencia
   useEffect(() => {
@@ -57,6 +60,30 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
       if (selectedPhoto?.id === photoId) setSelectedPhoto(null);
     } catch (err) {
       console.error('Error al borrar foto:', err);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (downloadingPdf) return;
+    if (photos.length === 0) {
+      alert('Aún no hay fotos en la bóveda para descargar.');
+      return;
+    }
+    setDownloadingPdf(true);
+    try {
+      await generateSurvivalPdf({
+        eventCode,
+        config,
+        photos,
+        eventTypeLabel: cfg.label,
+        onProgress: (msg) => setPdfProgress(msg)
+      });
+    } catch (err) {
+      console.error('Error generando PDF de la Bóveda:', err);
+      alert(err.message || 'Error al generar el PDF de la Bóveda.');
+    } finally {
+      setDownloadingPdf(false);
+      setPdfProgress('');
     }
   };
 
@@ -154,6 +181,37 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
               </svg>
               Hora del reto: {new Date(config.unlockAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
+          )}
+
+          {/* Botón Descargar Álbum de la Bóveda en encabezado */}
+          {photos.length > 0 && (
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf}
+              style={{
+                background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
+                color: '#FFFFFF',
+                borderRadius: '999px',
+                padding: '6px 16px',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                border: 'none',
+                cursor: downloadingPdf ? 'wait' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 14px rgba(30, 56, 136, 0.3)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>{downloadingPdf ? (pdfProgress || 'Generando PDF...') : 'Descargar Álbum (PDF)'}</span>
+            </button>
           )}
         </div>
       </div>
@@ -353,6 +411,74 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Sección Conmemorativa para Descargar todo el Álbum de la Bóveda */}
+      {photos.length > 0 && (
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '3.5rem',
+            padding: '2.5rem 1.5rem',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(244,246,251,0.96) 100%)',
+            borderRadius: '26px',
+            border: '1px solid rgba(30, 56, 136, 0.15)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+          }}
+        >
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: 'rgba(30, 56, 136, 0.08)',
+              color: '#1E3888',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <h3 style={{ margin: '0 0 8px', fontSize: '1.25rem', fontWeight: 700, color: '#2B2625' }}>
+            Edición Conmemorativa de la Bóveda
+          </h3>
+          <p style={{ margin: '0 auto 1.5rem', fontSize: '0.9rem', color: '#666', maxWidth: '480px', lineHeight: 1.5 }}>
+            Descarga el libro conmemorativo oficial en formato PDF de alta resolución. Incluye la portada de honor nocturna, todas las fotos con su hora exacta y el certificado oficial de sobrevivientes.
+          </p>
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
+            disabled={downloadingPdf}
+            className="btn btn--primary"
+            style={{
+              maxWidth: '380px',
+              width: '100%',
+              margin: '0 auto',
+              padding: '13px 24px',
+              fontSize: '0.92rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              borderRadius: '999px',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>{downloadingPdf ? (pdfProgress || 'Generando PDF...') : 'Descargar Todo el Álbum de la Bóveda (PDF)'}</span>
+          </button>
         </div>
       )}
 

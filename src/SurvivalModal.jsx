@@ -5,6 +5,7 @@ import {
   deleteDoc, query, orderBy, serverTimestamp
 } from 'firebase/firestore';
 import { getEventType } from './eventTypes.js';
+import { generateSurvivalPdf } from './generateSurvivalPdf.js';
 
 const getDb = () => getFirestore(getApp());
 
@@ -254,6 +255,8 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
   const [authorName, setAuthorName] = useState(localStorage.getItem('guest_author_name') || '');
   const [caption, setCaption] = useState('');
   const [submittingPhoto, setSubmittingPhoto] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState('');
   const fileInputRef = useRef(null);
 
   // Intervalo para actualizar el reloj en vivo cada segundo
@@ -403,6 +406,30 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
       await deleteDoc(doc(getDb(), 'events', eventCode, 'survival_photos', photoId));
     } catch (err) {
       console.error('Error al borrar foto:', err);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (downloadingPdf) return;
+    if (photos.length === 0) {
+      alert('Aún no hay fotos en la bóveda para descargar.');
+      return;
+    }
+    setDownloadingPdf(true);
+    try {
+      await generateSurvivalPdf({
+        eventCode,
+        config,
+        photos,
+        eventTypeLabel: cfg.label,
+        onProgress: (msg) => setPdfProgress(msg)
+      });
+    } catch (err) {
+      console.error('Error generando PDF de la Bóveda:', err);
+      alert(err.message || 'Error al generar el PDF de la Bóveda.');
+    } finally {
+      setDownloadingPdf(false);
+      setPdfProgress('');
     }
   };
 
@@ -641,9 +668,42 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
             <h2 style={{ fontSize: '1.35rem', margin: '0 0 0.35rem', color: '#1E3888', fontWeight: 700 }}>
               ¡La Bóveda está Abierta!
             </h2>
-            <p style={{ fontSize: '0.88rem', color: '#555', margin: '0 0 1.5rem', lineHeight: 1.45 }}>
+            <p style={{ fontSize: '0.88rem', color: '#555', margin: '0 0 1.25rem', lineHeight: 1.45 }}>
               Aquí están las fotos de los sobrevivientes tomadas en el momento cumbre del evento.
             </p>
+
+            {/* Botón Descargar Álbum de la Bóveda en Modal */}
+            {photos.length > 0 && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <button
+                  type="button"
+                  onClick={handleDownloadPdf}
+                  disabled={downloadingPdf}
+                  style={{
+                    background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
+                    color: '#FFFFFF',
+                    borderRadius: '999px',
+                    padding: '8px 18px',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    border: 'none',
+                    cursor: downloadingPdf ? 'wait' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 4px 14px rgba(30, 56, 136, 0.3)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>{downloadingPdf ? (pdfProgress || 'Generando...') : 'Descargar Álbum de la Bóveda (PDF)'}</span>
+                </button>
+              </div>
+            )}
 
             {photos.length === 0 ? (
               <p style={{ color: '#888', fontSize: '0.9rem', padding: '2rem 0' }}>
