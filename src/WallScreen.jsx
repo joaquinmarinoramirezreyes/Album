@@ -406,7 +406,10 @@ export default function WallScreen({ eventCode, isHost, type }) {
               }}
             >
               {!profile.avatarUrl && (
-                <span style={{ fontSize: '2.5rem' }}>{cfg.emoji || '🎉'}</span>
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #b5533c)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
               )}
             </div>
 
@@ -546,7 +549,9 @@ export default function WallScreen({ eventCode, isHost, type }) {
       >
         {/* Pregunta detonadora destacada */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem' }}>
-          <span style={{ fontSize: '1.25rem' }}>✨</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary, #b5533c)', flexShrink: 0 }}>
+            <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path>
+          </svg>
           <h4 style={{
             margin: 0,
             fontSize: '1rem',
@@ -732,7 +737,21 @@ export default function WallScreen({ eventCode, isHost, type }) {
             borderRadius: '20px',
             color: '#777'
           }}>
-            <p style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>✨</p>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: 'rgba(181, 83, 60, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 0.85rem',
+              color: 'var(--color-primary, #b5533c)'
+            }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
             <p style={{ fontSize: '1rem', fontWeight: 600, margin: '0 0 0.25rem', color: '#333' }}>
               El muro está esperando su primer momento favorito
             </p>

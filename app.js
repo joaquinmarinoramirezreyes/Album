@@ -100,7 +100,7 @@ import { EVENT_TYPES, DEFAULT_EVENT_TYPE, getEventType } from './src/eventTypes.
 const $inputEventType = document.getElementById('input-event-type');
 if ($inputEventType) {
   $inputEventType.innerHTML = Object.entries(EVENT_TYPES)
-    .map(([key, t]) => `<option value="${key}">${t.emoji} ${t.label}</option>`).join('');
+    .map(([key, t]) => `<option value="${key}">${t.label}</option>`).join('');
   $inputEventType.value = DEFAULT_EVENT_TYPE;
 }
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth';
