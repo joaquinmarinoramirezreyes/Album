@@ -170,30 +170,45 @@ img {
   80%      { transform: translateX(4px); }
 }
 
+.login__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.4rem;
+}
+
 .login__brand-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   color: var(--color-talavera);
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
-  padding: 7px 18px;
+  padding: 6px 13px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--color-divider);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  margin: 1.25rem auto 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .login__brand-link:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.09);
   background-color: #FFFFFF;
+}
+
+.login__brand-link[hidden] {
+  display: none !important;
 }
 
 
@@ -1083,9 +1098,11 @@ section#screen-login.screen > .login > * {
 
 section#screen-login.screen .login__title {
   font-family: var(--font-serif) !important;
-  font-size: 2.5rem !important;
+  font-size: clamp(2rem, 5.5vw, 2.5rem) !important;
   font-weight: 700 !important;
-  margin-bottom: 0.5rem !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  flex: 1;
 }
 
 section#screen-login.screen .login__subtitle {

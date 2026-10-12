@@ -18,7 +18,7 @@ createIcons({
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
     colorTerracotta: '#C46D5E', overlay: '234, 240, 246',
     charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC',
-    socialUrl: 'https://www.facebook.com/share/1GskjMFYc8/'
+    socialUrl: null
   },
   marli: {
     name: 'Marli Cerámica',
@@ -74,15 +74,31 @@ function applyTheme(themeKey) {
   window.currentThemeKey = themeKey;
 
   const brandLink = document.getElementById('link-brand-social');
-  if (brandLink && theme.socialUrl) {
-    brandLink.href = theme.socialUrl;
+  if (brandLink) {
+    const isBrand = !!(BRAND && ['marli', 'shots', 'odimar'].includes(BRAND));
+    if (isBrand && theme.socialUrl) {
+      brandLink.href = theme.socialUrl;
+      brandLink.removeAttribute('hidden');
+      brandLink.style.display = 'inline-flex';
+    } else {
+      brandLink.setAttribute('hidden', '');
+      brandLink.style.display = 'none';
+    }
   }
 }
 
-// Marca por URL: /marli, /shots  -> login propio
+// Marca por URL: /marli, /shots, /odimar (también subdominios o ?brand= / ?theme=) -> login propio
 const BRAND = (() => {
+  const host = location.hostname.toLowerCase();
+  for (const k of ['marli', 'shots', 'odimar']) {
+    if (host.startsWith(k + '.') || host === k) return k;
+  }
   const seg = location.pathname.split('/').filter(Boolean)[0]?.toLowerCase();
-  return seg && seg !== 'default' && THEMES[seg] ? seg : null;
+  if (seg && seg !== 'default' && THEMES[seg]) return seg;
+  const searchParams = new URLSearchParams(location.search);
+  const p = (searchParams.get('brand') || searchParams.get('theme'))?.toLowerCase();
+  if (p && THEMES[p] && p !== 'default') return p;
+  return null;
 })();
 window.__BRAND = BRAND;
 function applyBrandLogin() {
@@ -96,6 +112,20 @@ function applyBrandLogin() {
     el.textContent = THEMES[BRAND || 'default'].slogan;
   });
   if (BRAND) document.getElementById('btn-admin-modal')?.setAttribute('hidden', '');
+
+  // Conócenos: visible ÚNICAMENTE en los 3 logins de marca (marli, shots, odimar), oculto en la central
+  const brandLink = document.getElementById('link-brand-social');
+  if (brandLink) {
+    const isBrand = !!(BRAND && ['marli', 'shots', 'odimar'].includes(BRAND));
+    if (isBrand && THEMES[BRAND]?.socialUrl) {
+      brandLink.href = THEMES[BRAND].socialUrl;
+      brandLink.removeAttribute('hidden');
+      brandLink.style.display = 'inline-flex';
+    } else {
+      brandLink.setAttribute('hidden', '');
+      brandLink.style.display = 'none';
+    }
+  }
 }
 applyBrandLogin();
 const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAND;
