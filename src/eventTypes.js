@@ -140,6 +140,18 @@ export const EVENT_TYPES = {
     welcomeTitle: '¡Bienvenidos al evento!',
     welcomeMessage: 'Gracias por acompañarnos.\n\nConsulta el programa, revisa lo más destacado y comparte tus fotos en el álbum.',
   },
+  posada: {
+    label: 'Posada de trabajo', emoji: '🎄',
+    tabs: ['album', 'itinerary', 'singles', 'wall'],
+    hosts: 'el equipo / comité organizador',
+    wallTitle: 'Muro de la Posada',
+    wallPrompt: '¿Qué fue lo más divertido o tu momento favorito de la posada?',
+    wallPlaceholder: 'Lo más divertido de la posada fue...',
+    wallNames: 'Nuestra Posada de Trabajo',
+    wallBio: '¡Bienvenidos a la posada! Comparte tus mejores fotos, anécdotas y momentos más divertidos 🎄✨',
+    welcomeTitle: '¡Bienvenidos a nuestra Posada!',
+    welcomeMessage: '¡Llegó el momento de celebrar y cerrar el año juntos!\n\nConsulta el programa, comparte tus fotos en el álbum, conoce a tus compañeros y disfruta de la fiesta al máximo.',
+  },
   otro: {
     label: 'Otro evento', emoji: '🎉',
     tabs: ['album', 'itinerary', 'wall'],
