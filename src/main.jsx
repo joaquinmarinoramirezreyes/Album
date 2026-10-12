@@ -5,6 +5,7 @@ import SinglesScreen from './SinglesScreen.jsx';
 import ItineraryScreen from './ItineraryScreen.jsx';
 import WelcomeModal from './WelcomeModal.jsx';
 import WallScreen from './WallScreen.jsx';
+import SurvivalModal, { SurvivalPillButton } from './SurvivalModal.jsx';
 import { getEventType, DEFAULT_EVENT_TYPE } from './eventTypes.js';
 
 // Definición de cada pestaña posible (etiqueta + ícono). Qué pestañas se ven lo decide el tipo de evento.
@@ -31,6 +32,7 @@ function Root() {
   const [session, setSession] = useState(null); // { code, isHost, type }
   const [tab, setTab] = useState('album');
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showSurvival, setShowSurvival] = useState(false);
 
   const typeConfig = getEventType(session?.type || DEFAULT_EVENT_TYPE);
   const tabs = typeConfig.tabs;
@@ -48,6 +50,7 @@ function Root() {
       setSession(null);
       setTab('album');
       setShowWelcome(false);
+      setShowSurvival(false);
     };
     const onTab = (e) => { setTab(e.detail); };
     window.addEventListener('legacy:enter', onEnter);
@@ -95,33 +98,41 @@ function Root() {
     <>
       {tabsEl && createPortal(
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {/* Botón sutil para volver a abrir la carta de bienvenida */}
-          <button
-            type="button"
-            onClick={() => setShowWelcome(true)}
-            style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              border: '1px solid rgba(181, 83, 60, 0.2)',
-              color: 'var(--color-primary, #b5533c)',
-              borderRadius: '999px',
-              padding: '5px 14px',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-              margin: '-20px auto 14px'
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            <span>Carta de bienvenida</span>
-          </button>
+          {/* Botones de acción superior: Carta de bienvenida + Supervivencia */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center', margin: '-20px auto 14px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setShowWelcome(true)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.9)',
+                border: '1px solid rgba(181, 83, 60, 0.2)',
+                color: 'var(--color-primary, #b5533c)',
+                borderRadius: '999px',
+                padding: '5px 14px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                margin: 0
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <span>Carta de bienvenida</span>
+            </button>
+
+            <SurvivalPillButton
+              eventCode={session.code}
+              isHost={session.isHost}
+              onClick={() => setShowSurvival(true)}
+            />
+          </div>
 
           {/* Pestañas según el tipo de evento */}
           <nav className="tabs" style={{ display: 'grid', gridTemplateColumns: `repeat(${tabs.length}, 1fr)`, gap: '0.35rem', maxWidth: '440px', width: '92%' }}>
@@ -161,6 +172,16 @@ function Root() {
           type={session.type}
           isOpen={showWelcome}
           onClose={handleCloseWelcome}
+        />,
+        document.body
+      )}
+      {createPortal(
+        <SurvivalModal
+          eventCode={session.code}
+          isHost={session.isHost}
+          type={session.type}
+          isOpen={showSurvival}
+          onClose={() => setShowSurvival(false)}
         />,
         document.body
       )}
