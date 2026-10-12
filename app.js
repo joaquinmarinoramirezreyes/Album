@@ -17,7 +17,8 @@ createIcons({
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
     colorTerracotta: '#C46D5E', overlay: '234, 240, 246',
-    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
+    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC',
+    socialUrl: 'https://www.facebook.com/share/1GskjMFYc8/'
   },
   marli: {
     name: 'Marli Cerámica',
@@ -26,7 +27,8 @@ createIcons({
     colorBg: '#FAFAFA', colorBgWarm: '#EAF0F6',
     colorTalavera: '#1E3888', colorTalaveraDark: '#12245C',
     colorTerracotta: '#C46D5E', overlay: '234, 240, 246',
-    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC'
+    charcoal: '#1C2331', charcoalLight: '#525E75', divider: '#DFE4EC',
+    socialUrl: 'https://www.facebook.com/share/1GskjMFYc8/'
   },
   shots: {
     name: 'Cerámica Shots',
@@ -35,7 +37,8 @@ createIcons({
     colorBg: '#FBF5EE', colorBgWarm: '#F6E7D8',
     colorTalavera: '#C0582F', colorTalaveraDark: '#9A4322',
     colorTerracotta: '#2F4F8F', overlay: '251, 241, 230',
-    charcoal: '#3A2418', charcoalLight: '#7A5A48', divider: '#EAD6C3'
+    charcoal: '#3A2418', charcoalLight: '#7A5A48', divider: '#EAD6C3',
+    socialUrl: 'https://www.facebook.com/share/1FtG91G11u/'
   },
   odimar: {
     name: 'Cerámica Odimar',
@@ -45,7 +48,8 @@ createIcons({
     colorTalavera: '#D66D63', colorTalaveraDark: '#B85850', // Rosa Coral como primario
     colorTerracotta: '#4A80B4', // Azul como secundario
     overlay: '250, 243, 237',
-    charcoal: '#263440', charcoalLight: '#5A6B7C', divider: '#E6D3C5'
+    charcoal: '#263440', charcoalLight: '#5A6B7C', divider: '#E6D3C5',
+    socialUrl: 'https://www.facebook.com/share/1MKE8Bue6P/'
   }
 };
 
@@ -68,6 +72,11 @@ function applyTheme(themeKey) {
   if (heroTitle) heroTitle.textContent = theme.name;
   window.currentEventTheme = theme;
   window.currentThemeKey = themeKey;
+
+  const brandLink = document.getElementById('link-brand-social');
+  if (brandLink && theme.socialUrl) {
+    brandLink.href = theme.socialUrl;
+  }
 }
 
 // Marca por URL: /marli, /shots  -> login propio

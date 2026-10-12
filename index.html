@@ -45,16 +45,30 @@
         <button type="submit" class="btn btn--primary login__btn" style="margin-top: 1.5rem;">Entrar a la galería</button>
       </form>
 
-      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 2rem;" aria-label="Acceso anfitrión para moderar evento">
+      <!-- Enlace Conócenos de la marca -->
+      <a id="link-brand-social" href="https://www.facebook.com/share/1GskjMFYc8/" target="_blank" rel="noopener noreferrer" class="login__brand-link" title="Conoce más sobre nosotros">
+        <span>Conócenos</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+
+      <button type="button" id="btn-host-modal" class="btn--text" style="color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500; margin-top: 1.5rem;" aria-label="Acceso anfitrión para moderar evento">
     <i data-lucide="shield" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
     Acceso Anfitrión
   </button>
 
       <!-- Admin link -->
-      <button type="button" id="btn-admin-modal" class="btn--text" style="margin-top: 1.5rem; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Abrir panel central para crear nuevo evento">
+      <button type="button" id="btn-admin-modal" class="btn--text" style="margin-top: 1rem; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 500;" aria-label="Abrir panel central para crear nuevo evento">
     <i data-lucide="settings" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>
     Panel Central
   </button>
+
+      <footer class="login__footer" style="margin-top: 2.25rem; font-size: 0.8rem; color: var(--color-text-secondary, #86868B); text-align: center;">
+        <p style="margin: 0;">&copy; 2026 — GSA</p>
+      </footer>
     </div>
 
     <!-- Modals de Admin (dentro de screen-login para mantener contexto) -->
@@ -223,7 +237,7 @@
     </div>
 
     <footer class="footer">
-      <p>&copy; 2026 — Hecho con amor</p>
+      <p>&copy; 2026 — GSA</p>
     </footer>
 
   </section>
