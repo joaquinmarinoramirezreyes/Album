@@ -86,7 +86,7 @@ function getVisitorId() {
 // ═══════════════════════════════════════════════════════════════
 //  COMPONENTE: SurvivalPillButton (El botón en la barra superior)
 // ═══════════════════════════════════════════════════════════════
-export function SurvivalPillButton({ eventCode, isHost, onClick }) {
+export function SurvivalPillButton({ eventCode, isHost, onClick, onOpenVault }) {
   const [config, setConfig] = useState(null);
   const [now, setNow] = useState(Date.now());
   const [photoCount, setPhotoCount] = useState(0);
@@ -163,7 +163,10 @@ export function SurvivalPillButton({ eventCode, isHost, onClick }) {
     return (
       <button
         type="button"
-        onClick={onClick}
+        onClick={() => {
+          if (onOpenVault) onOpenVault();
+          else onClick();
+        }}
         style={{
           ...baseCapsuleStyle,
           background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
