@@ -1959,3 +1959,9 @@ body:not(.show-singles):not(.show-itinerary):not(.show-wall):not(.show-survival)
   }
 }
 
+/* Solo los organizadores pueden descargar el álbum general */
+body:not(.is-host) #download-pdf {
+  display: none !important;
+}
+
+

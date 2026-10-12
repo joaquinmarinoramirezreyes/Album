@@ -410,6 +410,10 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
   };
 
   const handleDownloadPdf = async () => {
+    if (!isHost) {
+      alert('La descarga del álbum completo de la bóveda está reservada para los organizadores.');
+      return;
+    }
     if (downloadingPdf) return;
     if (photos.length === 0) {
       alert('Aún no hay fotos en la bóveda para descargar.');
@@ -672,8 +676,8 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
               Aquí están las fotos de los sobrevivientes tomadas en el momento cumbre del evento.
             </p>
 
-            {/* Botón Descargar Álbum de la Bóveda en Modal */}
-            {photos.length > 0 && (
+            {/* Botón Descargar Álbum de la Bóveda en Modal (Solo Organizadores) */}
+            {isHost && photos.length > 0 && (
               <div style={{ marginBottom: '1.25rem' }}>
                 <button
                   type="button"

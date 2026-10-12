@@ -64,6 +64,10 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
   };
 
   const handleDownloadPdf = async () => {
+    if (!isHost) {
+      alert('La descarga del álbum completo de la bóveda está reservada para los organizadores.');
+      return;
+    }
     if (downloadingPdf) return;
     if (photos.length === 0) {
       alert('Aún no hay fotos en la bóveda para descargar.');
@@ -183,8 +187,8 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
             </span>
           )}
 
-          {/* Botón Descargar Álbum de la Bóveda en encabezado */}
-          {photos.length > 0 && (
+          {/* Botón Descargar Álbum de la Bóveda en encabezado (Solo Organizadores) */}
+          {isHost && photos.length > 0 && (
             <button
               type="button"
               onClick={handleDownloadPdf}
@@ -414,8 +418,8 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
         </div>
       )}
 
-      {/* Sección Conmemorativa para Descargar todo el Álbum de la Bóveda */}
-      {photos.length > 0 && (
+      {/* Sección Conmemorativa para Descargar todo el Álbum de la Bóveda (Solo Organizadores) */}
+      {isHost && photos.length > 0 && (
         <div
           style={{
             textAlign: 'center',

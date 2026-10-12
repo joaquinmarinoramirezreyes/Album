@@ -354,10 +354,17 @@ $loginForm.addEventListener('submit', async (e) => {
       // Aplicar tema dinámico
       applyTheme(eventSnap.data().theme || 'marli');
 
+      // Estado de anfitrión / organizador
+      const isHost = localStorage.getItem('host_' + code) === 'true';
+      document.body.classList.toggle('is-host', isHost);
+      if ($downloadPdf) {
+        $downloadPdf.style.display = isHost ? '' : 'none';
+      }
+
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album', tab: 'album' }, '', '#album');
-      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true', type: eventSnap.data().type || DEFAULT_EVENT_TYPE } }));
+      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost, type: eventSnap.data().type || DEFAULT_EVENT_TYPE } }));
 
       // Arrancar el listener de la galería en tiempo real
       startGalleryListener();
@@ -702,8 +709,12 @@ window.addEventListener('popstate', () => {
     document.querySelectorAll('.lightbox:not([hidden])').forEach(el => { el.hidden = true; });
     if (unsubscribeGallery) { unsubscribeGallery(); unsubscribeGallery = null; }
     currentEventId = null;
+    document.body.classList.remove('is-host');
+    if ($downloadPdf) {
+      $downloadPdf.style.display = 'none';
+    }
     window.dispatchEvent(new CustomEvent('legacy:exit'));
-      applyBrandLogin();
+    applyBrandLogin();
     transitionScreens($albumScreen, $loginScreen);
   } else if (history.state && history.state.screen === 'album') {
     history.replaceState(null, '', location.pathname);
@@ -1176,6 +1187,12 @@ function loadImageAsBase64(url, makeSquare = false) {
 }
 
 $downloadPdf.addEventListener('click', async () => {
+  const isHost = localStorage.getItem('host_' + currentEventId) === 'true';
+  if (!isHost) {
+    showToast('La descarga del álbum completo está reservada exclusivamente para los organizadores.', 'info');
+    return;
+  }
+
   if (typeof window.jspdf === 'undefined') {
     showToast('La librería de PDF no se pudo cargar. Revisa tu conexión.', 'error');
     return;
