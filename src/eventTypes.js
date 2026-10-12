@@ -25,6 +25,7 @@ export const EVENT_TYPES = {
     singlesLabel: 'Vengo de parte de',
     singlesOptions: ['La Novia', 'El Novio'],
     singlesBadgePrefix: 'De parte de',
+    hasSurvival: true,
   },
   xv: {
     label: 'XV años', emoji: '👑',
@@ -43,6 +44,7 @@ export const EVENT_TYPES = {
     singlesLabel: 'Conozco a la quinceañera por',
     singlesOptions: ['Familia', 'Amigos de la escuela', 'Amigos y conocidos'],
     singlesBadgePrefix: 'Invitado por',
+    hasSurvival: true,
   },
   cumple: {
     label: 'Cumpleaños', emoji: '🎂',
@@ -223,6 +225,7 @@ export const EVENT_TYPES = {
     singlesLabel: 'Área o Departamento',
     singlesOptions: ['Ventas / Comercial', 'Operaciones / Logística', 'Administración / Finanzas', 'Tecnología / Sistemas', 'Recursos Humanos', 'Dirección / Gerencia', 'Invitado Especial'],
     singlesBadgePrefix: 'Área:',
+    hasSurvival: true,
   },
   otro: {
     label: 'Otro evento', emoji: '🎉',

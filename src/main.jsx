@@ -36,6 +36,7 @@ function Root() {
 
   const typeConfig = getEventType(session?.type || DEFAULT_EVENT_TYPE);
   const tabs = typeConfig.tabs;
+  const hasSurvival = Boolean(typeConfig.hasSurvival);
 
   useEffect(() => {
     const onEnter = (e) => {
@@ -127,11 +128,13 @@ function Root() {
               <span>Carta de bienvenida</span>
             </button>
 
-            <SurvivalPillButton
-              eventCode={session.code}
-              isHost={session.isHost}
-              onClick={() => setShowSurvival(true)}
-            />
+            {hasSurvival && (
+              <SurvivalPillButton
+                eventCode={session.code}
+                isHost={session.isHost}
+                onClick={() => setShowSurvival(true)}
+              />
+            )}
           </div>
 
           {/* Pestañas según el tipo de evento */}
@@ -175,7 +178,7 @@ function Root() {
         />,
         document.body
       )}
-      {createPortal(
+      {hasSurvival && createPortal(
         <SurvivalModal
           eventCode={session.code}
           isHost={session.isHost}
