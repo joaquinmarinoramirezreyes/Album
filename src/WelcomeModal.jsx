@@ -4,13 +4,17 @@ import {
   getFirestore, doc, onSnapshot, setDoc, serverTimestamp
 } from 'firebase/firestore';
 
+import { getEventType } from './eventTypes.js';
+
 const getDb = () => getFirestore(getApp());
 
-export default function WelcomeModal({ eventCode, isHost, isOpen, onClose }) {
+export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose }) {
+  const cfg = getEventType(type);
+  const DEFAULT_TITLE = cfg.welcomeTitle;
   const [welcome, setWelcome] = useState({
-    title: '¡Bienvenidos a nuestra celebración!',
+    title: cfg.welcomeTitle,
     subtitle: '',
-    message: 'Estamos inmensamente felices de compartir este día tan especial con todos ustedes.\n\nGracias por acompañarnos, por su cariño y por ser parte de nuestra historia. ¡Disfruten cada instante, celebren con nosotros y no olviden capturar y compartir los mejores momentos en nuestro álbum!',
+    message: cfg.welcomeMessage,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -23,9 +27,9 @@ export default function WelcomeModal({ eventCode, isHost, isOpen, onClose }) {
       if (snap.exists()) {
         const data = snap.data();
         setWelcome({
-          title: data.title || '¡Bienvenidos a nuestra celebración!',
+          title: data.title || DEFAULT_TITLE,
           subtitle: data.subtitle || '',
-          message: data.message || '',
+          message: data.message || cfg.welcomeMessage,
         });
       }
     }, (err) => {
@@ -50,7 +54,7 @@ export default function WelcomeModal({ eventCode, isHost, isOpen, onClose }) {
     try {
       const welcomeRef = doc(getDb(), 'events', eventCode, 'welcome', 'info');
       await setDoc(welcomeRef, {
-        title: form.title.trim() || '¡Bienvenidos a nuestra celebración!',
+        title: form.title.trim() || DEFAULT_TITLE,
         subtitle: form.subtitle.trim(),
         message: form.message.trim(),
         updatedAt: serverTimestamp(),

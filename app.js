@@ -96,6 +96,13 @@ const eventBelongsToBrand = (data) => !BRAND || (data.theme || 'marli') === BRAN
 
 // ─── Firebase SDK Imports (CDN ESM) — Solo Firestore, sin Storage ───
 import { initializeApp }       from 'firebase/app';
+import { EVENT_TYPES, DEFAULT_EVENT_TYPE, getEventType } from './src/eventTypes.js';
+const $inputEventType = document.getElementById('input-event-type');
+if ($inputEventType) {
+  $inputEventType.innerHTML = Object.entries(EVENT_TYPES)
+    .map(([key, t]) => `<option value="${key}">${t.emoji} ${t.label}</option>`).join('');
+  $inputEventType.value = DEFAULT_EVENT_TYPE;
+}
 import { getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from 'firebase/auth';
 import {
   getFirestore,
@@ -350,7 +357,7 @@ $loginForm.addEventListener('submit', async (e) => {
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album', tab: 'album' }, '', '#album');
-      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true' } }));
+      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost: localStorage.getItem('host_' + code) === 'true', type: eventSnap.data().type || DEFAULT_EVENT_TYPE } }));
 
       // Arrancar el listener de la galería en tiempo real
       startGalleryListener();
@@ -470,7 +477,7 @@ async function loadAdminEvents() {
       li.innerHTML = `
         <div class="admin-ev">
           <a href="/${escapeAttr(data.theme || 'marli')}?code=${escapeAttr(code)}" target="_blank" class="admin-ev__code" style="text-decoration:none; color:var(--color-talavera); display:inline-flex; align-items:center; gap:4px;" title="Entrar al evento">${escapeHTML(code)} <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
-          <div class="admin-ev__meta"><span class="admin-chip">${escapeHTML(themeName)}</span>${pinHtml}</div>
+          <div class="admin-ev__meta"><span class="admin-chip">${escapeHTML(getEventType(data.type).emoji + ' ' + getEventType(data.type).label)}</span><span class="admin-chip">${escapeHTML(themeName)}</span>${pinHtml}</div>
           ${dateInfoHtml}
         </div>
         <div style="display:flex; gap:8px;">
@@ -553,6 +560,7 @@ $formCreateEvent.addEventListener('submit', async (e) => {
   const eventDate = $inputEventDate.value;
     const eventPin = $inputEventPin.value.trim();
   const eventTheme = (document.querySelector('input[name="event-theme"]:checked') || {}).value || 'marli';
+  const eventType = ($inputEventType && EVENT_TYPES[$inputEventType.value]) ? $inputEventType.value : DEFAULT_EVENT_TYPE;
   const btnSubmit = $formCreateEvent.querySelector('button[type="submit"]');
   const originalText = btnSubmit.textContent;
   
@@ -567,7 +575,8 @@ $formCreateEvent.addEventListener('submit', async (e) => {
       fechaEvento: eventDate,
         activo: true,
         adminPin: eventPin || null,
-        theme: eventTheme
+        theme: eventTheme,
+        type: eventType
     });
 
     showToast(`¡Evento ${code} creado exitosamente!`, 'success', 5000);

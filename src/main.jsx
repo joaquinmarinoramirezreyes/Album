@@ -5,16 +5,40 @@ import SinglesScreen from './SinglesScreen.jsx';
 import ItineraryScreen from './ItineraryScreen.jsx';
 import WelcomeModal from './WelcomeModal.jsx';
 import WallScreen from './WallScreen.jsx';
+import { getEventType, DEFAULT_EVENT_TYPE } from './eventTypes.js';
+
+// Definición de cada pestaña posible (etiqueta + ícono). Qué pestañas se ven lo decide el tipo de evento.
+const TAB_DEFS = {
+  album: {
+    label: 'Álbum',
+    icon: <><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></>,
+  },
+  itinerary: {
+    label: 'Itinerario',
+    icon: <><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></>,
+  },
+  singles: {
+    label: 'Solteros',
+    icon: <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>,
+  },
+  wall: {
+    label: 'Muro',
+    icon: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>,
+  },
+};
 
 function Root() {
-  const [session, setSession] = useState(null); // { code, isHost }
+  const [session, setSession] = useState(null); // { code, isHost, type }
   const [tab, setTab] = useState('album');
   const [showWelcome, setShowWelcome] = useState(false);
+
+  const typeConfig = getEventType(session?.type || DEFAULT_EVENT_TYPE);
+  const tabs = typeConfig.tabs;
 
   useEffect(() => {
     const onEnter = (e) => {
       setSession(e.detail);
-      setTab('album');
+      setTab(getEventType(e.detail.type).tabs[0]);
       const seen = sessionStorage.getItem('welcome_seen_' + e.detail.code);
       if (!seen) {
         setShowWelcome(true);
@@ -36,8 +60,13 @@ function Root() {
     };
   }, []);
 
+  // Si la pestaña activa no existe en este tipo de evento (p. ej. por un enlace/historial viejo), vuelve a la primera.
+  useEffect(() => {
+    if (session && !tabs.includes(tab)) setTab(tabs[0]);
+  }, [session, tab, tabs]);
+
   const handleSetTab = (newTab) => {
-    if (newTab === tab) return;
+    if (newTab === tab || !tabs.includes(newTab)) return;
     history.pushState({ screen: 'album', tab: newTab }, '', '#' + newTab);
     setTab(newTab);
   };
@@ -90,24 +119,21 @@ function Root() {
             <span>💌</span> Carta de bienvenida
           </button>
 
-          {/* 4 Pestañas principales */}
-          <nav className="tabs" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.35rem', maxWidth: '440px', width: '92%' }}>
-            {/* 1. Álbum */}
-            <button type="button" className={'tabs__btn' + (tab === 'album' ? ' tabs__btn--active' : '')} onClick={() => handleSetTab('album')} style={{ padding: '0.75rem 0.25rem', fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"text-bottom", marginRight:"3px"}}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Álbum
-            </button>
-            {/* 2. Itinerario */}
-            <button type="button" className={'tabs__btn' + (tab === 'itinerary' ? ' tabs__btn--active' : '')} onClick={() => handleSetTab('itinerary')} style={{ padding: '0.75rem 0.25rem', fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"text-bottom", marginRight:"3px"}}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Itinerario
-            </button>
-            {/* 3. Solteros */}
-            <button type="button" className={'tabs__btn' + (tab === 'singles' ? ' tabs__btn--active' : '')} onClick={() => handleSetTab('singles')} style={{ padding: '0.75rem 0.25rem', fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"text-bottom", marginRight:"3px"}}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Solteros
-            </button>
-            {/* 4. Muro */}
-            <button type="button" className={'tabs__btn' + (tab === 'wall' ? ' tabs__btn--active' : '')} onClick={() => handleSetTab('wall')} style={{ padding: '0.75rem 0.25rem', fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{verticalAlign:"text-bottom", marginRight:"3px"}}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Muro
-            </button>
+          {/* Pestañas según el tipo de evento */}
+          <nav className="tabs" style={{ display: 'grid', gridTemplateColumns: `repeat(${tabs.length}, 1fr)`, gap: '0.35rem', maxWidth: '440px', width: '92%' }}>
+            {tabs.map((key) => (
+              <button
+                key={key}
+                type="button"
+                className={'tabs__btn' + (tab === key ? ' tabs__btn--active' : '')}
+                onClick={() => handleSetTab(key)}
+                style={{ padding: '0.75rem 0.25rem', fontSize: '0.84rem', whiteSpace: 'nowrap' }}
+              >
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ verticalAlign: 'text-bottom', marginRight: '3px' }}>
+                  {TAB_DEFS[key].icon}
+                </svg> {TAB_DEFS[key].label}
+              </button>
+            ))}
           </nav>
         </div>,
         tabsEl
@@ -121,13 +147,14 @@ function Root() {
         singlesEl
       )}
       {wallEl && tab === 'wall' && createPortal(
-        <WallScreen eventCode={session.code} isHost={session.isHost} />,
+        <WallScreen eventCode={session.code} isHost={session.isHost} type={session.type} />,
         wallEl
       )}
       {createPortal(
         <WelcomeModal
           eventCode={session.code}
           isHost={session.isHost}
+          type={session.type}
           isOpen={showWelcome}
           onClose={handleCloseWelcome}
         />,

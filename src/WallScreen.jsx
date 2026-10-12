@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getEventType } from './eventTypes.js';
 import { getApp } from 'firebase/app';
 import {
   getFirestore, collection, addDoc, onSnapshot, query, orderBy,
@@ -67,13 +68,14 @@ function formatRelativeTime(timestamp) {
   return date.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
 }
 
-export default function WallScreen({ eventCode, isHost }) {
+export default function WallScreen({ eventCode, isHost, type }) {
+  const cfg = getEventType(type);
   // Estado del Perfil tipo Facebook (Portada, Foto de Perfil, Nombres, Bio)
   const [profile, setProfile] = useState({
     coverUrl: '',
     avatarUrl: '',
-    names: 'Nuestra Boda',
-    bio: '¡Bienvenidos a nuestro muro! Déjanos tus felicitaciones y buenos deseos ❤️',
+    names: cfg.wallNames,
+    bio: cfg.wallBio,
   });
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -107,8 +109,8 @@ export default function WallScreen({ eventCode, isHost }) {
         setProfile({
           coverUrl: data.coverUrl || '',
           avatarUrl: data.avatarUrl || '',
-          names: data.names || 'Nuestra Boda',
-          bio: data.bio || '¡Bienvenidos a nuestro muro! Déjanos tus felicitaciones y buenos deseos ❤️',
+          names: data.names || cfg.wallNames,
+          bio: data.bio ?? cfg.wallBio,
         });
       }
     }, (err) => {
@@ -187,7 +189,7 @@ export default function WallScreen({ eventCode, isHost }) {
     try {
       const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
       await setDoc(profileRef, {
-        names: profileForm.names.trim() || 'Nuestra Boda',
+        names: profileForm.names.trim() || cfg.wallNames,
         bio: profileForm.bio.trim(),
         updatedAt: serverTimestamp(),
       }, { merge: true });
@@ -454,7 +456,7 @@ export default function WallScreen({ eventCode, isHost }) {
             /* Formulario para editar Nombres y Bio (Anfitrión) */
             <form onSubmit={handleSaveProfile} style={{ textAlign: 'left', marginTop: '0.5rem' }}>
               <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Nombres de los Novios</label>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Nombre del perfil (ej. los festejados)</label>
                 <input
                   type="text"
                   className="form-input"
@@ -540,7 +542,7 @@ export default function WallScreen({ eventCode, isHost }) {
 
           <textarea
             rows={3}
-            placeholder={`Escribe un mensaje para ${profile.names || 'los novios'} 🎉...`}
+            placeholder={`Escribe un mensaje para ${profile.names || cfg.hosts} 🎉...`}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             maxLength={500}
