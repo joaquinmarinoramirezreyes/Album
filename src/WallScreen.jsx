@@ -8,7 +8,7 @@ import {
 
 const getDb = () => getFirestore(getApp());
 
-// Compresión de imagen para portadas y avatares
+// Compresión de imagen para portadas, avatares y fotos de publicaciones
 function compressImage(file, maxWidth = 900, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -70,6 +70,7 @@ function formatRelativeTime(timestamp) {
 
 export default function WallScreen({ eventCode, isHost, type }) {
   const cfg = getEventType(type);
+
   // Estado del Perfil tipo Facebook (Portada, Foto de Perfil, Nombres, Bio)
   const [profile, setProfile] = useState({
     coverUrl: '',
@@ -82,9 +83,14 @@ export default function WallScreen({ eventCode, isHost, type }) {
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ names: '', bio: '' });
 
-  // Inputs ocultos para subida de imágenes
+  // Inputs ocultos para subida de imágenes de portada y perfil
   const coverInputRef = useRef(null);
   const avatarInputRef = useRef(null);
+
+  // Input para foto en la publicación del invitado
+  const postPhotoInputRef = useRef(null);
+  const [postPhoto, setPostPhoto] = useState(null); // base64 preview
+  const [processingPhoto, setProcessingPhoto] = useState(false);
 
   // Estado de publicaciones
   const [posts, setPosts] = useState([]);
@@ -99,7 +105,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
     }
   });
 
-  // 1. Escuchar datos del perfil de los novios
+  // 1. Escuchar datos del perfil de los anfitriones
   useEffect(() => {
     if (!eventCode) return;
     const profileRef = doc(getDb(), 'events', eventCode, 'wall_profile', 'info');
@@ -114,11 +120,11 @@ export default function WallScreen({ eventCode, isHost, type }) {
         });
       }
     }, (err) => {
-      console.warn('Error al cargar perfil de los novios:', err);
+      console.warn('Error al cargar perfil del muro:', err);
     });
 
     return () => unsub();
-  }, [eventCode]);
+  }, [eventCode, cfg]);
 
   // 2. Escuchar publicaciones en tiempo real
   useEffect(() => {
@@ -183,7 +189,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
     }
   };
 
-  // Guardar nombres / bio de los novios
+  // Guardar nombres / bio de los anfitriones
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     try {
@@ -200,7 +206,23 @@ export default function WallScreen({ eventCode, isHost, type }) {
     }
   };
 
-  // Publicar nuevo mensaje de invitado
+  // Procesar foto adjunta al post del invitado
+  const handlePostPhotoSelected = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProcessingPhoto(true);
+    try {
+      const base64 = await compressImage(file, 800, 0.7);
+      setPostPhoto(base64);
+    } catch (err) {
+      console.error('Error al procesar la foto para el post:', err);
+      alert('No se pudo procesar la foto. Intenta con otra.');
+    } finally {
+      setProcessingPhoto(false);
+    }
+  };
+
+  // Publicar nuevo mensaje de invitado (con foto opcional)
   const handlePublish = async (e) => {
     e.preventDefault();
     const cleanName = authorName.trim();
@@ -211,20 +233,26 @@ export default function WallScreen({ eventCode, isHost, type }) {
       return;
     }
     if (!cleanContent) {
-      alert('Por favor escribe un mensaje o felicitación.');
+      alert('Por favor cuéntanos tu momento favorito.');
       return;
     }
 
     setPublishing(true);
     try {
       localStorage.setItem('guest_name', cleanName);
-      await addDoc(collection(getDb(), 'events', eventCode, 'wall_posts'), {
+      const newPostData = {
         author: cleanName,
         message: cleanContent,
         likes: 0,
         timestamp: serverTimestamp(),
-      });
+      };
+      if (postPhoto) {
+        newPostData.photoUrl = postPhoto;
+      }
+      await addDoc(collection(getDb(), 'events', eventCode, 'wall_posts'), newPostData);
       setContent('');
+      setPostPhoto(null);
+      if (postPhotoInputRef.current) postPhotoInputRef.current.value = '';
     } catch (err) {
       console.error('Error al publicar post en el muro:', err);
       alert('Hubo un error al publicar. Intenta nuevamente.');
@@ -269,7 +297,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
   return (
     <div className="wall-container" style={{ padding: '0 0.75rem 4rem', maxWidth: '600px', margin: '0 auto' }}>
       
-      {/* Inputs ocultos para subir fotos */}
+      {/* Inputs ocultos para subir portada y avatar */}
       <input
         type="file"
         ref={coverInputRef}
@@ -281,6 +309,15 @@ export default function WallScreen({ eventCode, isHost, type }) {
         type="file"
         ref={avatarInputRef}
         onChange={handleAvatarChange}
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+
+      {/* Input oculto para foto de la publicación del invitado */}
+      <input
+        type="file"
+        ref={postPhotoInputRef}
+        onChange={handlePostPhotoSelected}
         accept="image/*"
         style={{ display: 'none' }}
       />
@@ -369,7 +406,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
               }}
             >
               {!profile.avatarUrl && (
-                <span style={{ fontSize: '2.5rem' }}>💍</span>
+                <span style={{ fontSize: '2.5rem' }}>{cfg.emoji || '🎉'}</span>
               )}
             </div>
 
@@ -456,7 +493,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
             /* Formulario para editar Nombres y Bio (Anfitrión) */
             <form onSubmit={handleSaveProfile} style={{ textAlign: 'left', marginTop: '0.5rem' }}>
               <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Nombre del perfil (ej. los festejados)</label>
+                <label className="form-label" style={{ fontSize: '0.8rem' }}>Nombre del perfil (ej. festejados)</label>
                 <input
                   type="text"
                   className="form-input"
@@ -492,26 +529,41 @@ export default function WallScreen({ eventCode, isHost, type }) {
       </div>
 
       {/* ══════════════════════════════════════════════════
-          CAJA DE PUBLICACIÓN ("¿Qué les quieres decir?")
+          CAJA DINÁMICA: "Lo que más me gustó fue..." + Foto
           ══════════════════════════════════════════════════ */}
       <div 
         className="wall-create-card"
         style={{
-          background: 'rgba(255, 255, 255, 0.96)',
+          background: 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
-          borderRadius: '20px',
-          padding: '1.25rem',
-          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.05)',
-          border: '1px solid rgba(0, 0, 0, 0.06)',
+          borderRadius: '22px',
+          padding: '1.35rem',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
+          border: '1px solid rgba(181, 83, 60, 0.12)',
           marginBottom: '1.75rem'
         }}
       >
+        {/* Pregunta detonadora destacada */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem' }}>
+          <span style={{ fontSize: '1.25rem' }}>✨</span>
+          <h4 style={{
+            margin: 0,
+            fontSize: '1rem',
+            fontWeight: 700,
+            color: 'var(--color-primary, #b5533c)',
+            letterSpacing: '-0.01em'
+          }}>
+            {cfg.wallPrompt || '¿Qué fue lo que más te gustó?'}
+          </h4>
+        </div>
+
         <form onSubmit={handlePublish}>
+          {/* Identificación del invitado */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.85rem' }}>
             <div style={{
-              width: '38px',
-              height: '38px',
+              width: '36px',
+              height: '36px',
               borderRadius: '50%',
               background: authorName ? getAvatarColor(authorName) : '#b5533c',
               color: '#fff',
@@ -519,30 +571,31 @@ export default function WallScreen({ eventCode, isHost, type }) {
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 700,
-              fontSize: '0.9rem',
+              fontSize: '0.88rem',
               flexShrink: 0
             }}>
               {authorName ? getInitials(authorName) : '✍️'}
             </div>
             <input
               type="text"
-              placeholder="Tu nombre (ej. Tía Carmen, Juan Pérez)"
+              placeholder="Tu nombre (ej. Carlos, Tía Vero)"
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               maxLength={50}
               className="form-input"
               style={{
                 borderRadius: '12px',
-                padding: '0.6rem 0.85rem',
+                padding: '0.55rem 0.85rem',
                 fontSize: '0.9rem',
                 background: '#f8f8f9'
               }}
             />
           </div>
 
+          {/* Mensaje / Respuesta */}
           <textarea
             rows={3}
-            placeholder={`Escribe un mensaje para ${profile.names || cfg.hosts} 🎉...`}
+            placeholder={cfg.wallPlaceholder || 'Cuéntanos tu momento favorito...'}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             maxLength={500}
@@ -555,43 +608,120 @@ export default function WallScreen({ eventCode, isHost, type }) {
               lineHeight: '1.45',
               background: '#fbfbfb',
               resize: 'none',
-              marginBottom: '0.85rem'
+              marginBottom: '0.65rem'
             }}
           />
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', color: '#999' }}>
-              {content.length}/500 caracteres
-            </span>
+          {/* Vista previa de foto adjunta si seleccionó una */}
+          {postPhoto && (
+            <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.85rem' }}>
+              <img 
+                src={postPhoto} 
+                alt="Vista previa" 
+                style={{ 
+                  maxHeight: '160px', 
+                  borderRadius: '14px', 
+                  border: '2px solid var(--color-primary, #b5533c)',
+                  objectFit: 'cover',
+                  display: 'block'
+                }} 
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setPostPhoto(null);
+                  if (postPhotoInputRef.current) postPhotoInputRef.current.value = '';
+                }}
+                title="Quitar foto"
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  background: '#d32f2f',
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  borderRadius: '50%',
+                  width: '26px',
+                  height: '26px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '0.75rem',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* Barra inferior de acciones: Botón de foto + Contador + Publicar */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            
+            {/* Botón para adjuntar foto */}
             <button
-              type="submit"
-              className="btn btn--primary"
-              disabled={publishing || !content.trim() || !authorName.trim()}
+              type="button"
+              onClick={() => postPhotoInputRef.current?.click()}
+              disabled={processingPhoto || publishing}
               style={{
-                padding: '0.65rem 1.4rem',
-                fontSize: '0.9rem',
+                background: postPhoto ? 'rgba(181, 83, 60, 0.12)' : '#f4f4f6',
+                border: postPhoto ? '1px solid var(--color-primary, #b5533c)' : '1px solid #e0e0e0',
+                color: postPhoto ? 'var(--color-primary, #b5533c)' : '#555',
+                padding: '0.45rem 0.85rem',
                 borderRadius: '999px',
+                fontSize: '0.82rem',
+                fontWeight: 600,
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '5px',
+                cursor: 'pointer'
               }}
             >
-              {publishing ? 'Publicando...' : (
-                <>
-                  <span>Publicar</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-                </>
-              )}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>{processingPhoto ? 'Cargando...' : postPhoto ? 'Foto adjunta ✓' : 'Agregar foto'}</span>
             </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '0.75rem', color: '#999' }}>
+                {content.length}/500
+              </span>
+
+              <button
+                type="submit"
+                className="btn btn--primary"
+                disabled={publishing || processingPhoto || !content.trim() || !authorName.trim()}
+                style={{
+                  padding: '0.55rem 1.3rem',
+                  fontSize: '0.88rem',
+                  borderRadius: '999px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {publishing ? 'Publicando...' : (
+                  <>
+                    <span>Compartir</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </>
+                )}
+              </button>
+            </div>
+
           </div>
         </form>
       </div>
 
       {/* ══════════════════════════════════════════════════
-          FEED DE PUBLICACIONES
+          FEED DE MOMENTOS COMPARTIDOS
           ══════════════════════════════════════════════════ */}
       <div className="wall-feed" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {posts.length === 0 ? (
@@ -602,12 +732,12 @@ export default function WallScreen({ eventCode, isHost, type }) {
             borderRadius: '20px',
             color: '#777'
           }}>
-            <p style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>💌</p>
+            <p style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>✨</p>
             <p style={{ fontSize: '1rem', fontWeight: 600, margin: '0 0 0.25rem', color: '#333' }}>
-              El muro está esperando su primer mensaje
+              El muro está esperando su primer momento favorito
             </p>
             <p style={{ fontSize: '0.85rem', margin: 0 }}>
-              ¡Sé el primero en dedicarles unas palabras!
+              ¡Sé el primero en compartir qué fue lo que más te gustó!
             </p>
           </div>
         ) : (
@@ -621,12 +751,12 @@ export default function WallScreen({ eventCode, isHost, type }) {
                 className="wall-post-card"
                 style={{
                   background: '#FFFFFF',
-                  borderRadius: '18px',
+                  borderRadius: '20px',
                   padding: '1.25rem',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
+                  boxShadow: '0 4px 18px rgba(0, 0, 0, 0.05)',
                   border: '1px solid rgba(0, 0, 0, 0.05)',
                   position: 'relative',
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  overflow: 'hidden'
                 }}
               >
                 {/* Header del Post */}
@@ -684,17 +814,34 @@ export default function WallScreen({ eventCode, isHost, type }) {
                   )}
                 </div>
 
-                {/* Contenido del Post */}
+                {/* Contenido de texto del Post */}
                 <p style={{
                   fontSize: '0.98rem',
                   lineHeight: '1.55',
-                  color: '#333333',
-                  margin: '0 0 1rem',
+                  color: '#2b2625',
+                  margin: '0 0 0.85rem',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word'
                 }}>
                   {post.message}
                 </p>
+
+                {/* Foto adjunta del momento si la tiene */}
+                {post.photoUrl && (
+                  <div style={{ marginBottom: '1rem', borderRadius: '16px', overflow: 'hidden', background: '#f5f5f5' }}>
+                    <img 
+                      src={post.photoUrl} 
+                      alt="Momento compartido" 
+                      loading="lazy"
+                      style={{ 
+                        width: '100%', 
+                        maxHeight: '380px', 
+                        objectFit: 'cover', 
+                        display: 'block' 
+                      }} 
+                    />
+                  </div>
+                )}
 
                 {/* Footer del Post (Reacción tipo like) */}
                 <div style={{
