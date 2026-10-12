@@ -202,7 +202,7 @@ function Root() {
         wallEl
       )}
       {survivalEl && tab === 'survival' && createPortal(
-        <SurvivalScreen eventCode={session.code} isHost={session.isHost} type={session.type} />,
+        <SurvivalScreen eventCode={session.code} isHost={session.isHost} type={session.type} themeKey={session.theme} />,
         survivalEl
       )}
       {createPortal(
@@ -219,6 +219,7 @@ function Root() {
         <SurvivalPillButton
           eventCode={session.code}
           isHost={session.isHost}
+          themeKey={session.theme}
           onClick={() => setShowSurvival(true)}
           onOpenVault={() => handleSetTab('survival')}
         />,
@@ -229,6 +230,7 @@ function Root() {
           eventCode={session.code}
           isHost={session.isHost}
           type={session.type}
+          themeKey={session.theme}
           isOpen={showSurvival}
           onClose={() => setShowSurvival(false)}
         />,

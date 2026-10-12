@@ -241,7 +241,7 @@ export function SurvivalPillButton({ eventCode, isHost, onClick, onOpenVault }) 
 // ═══════════════════════════════════════════════════════════════
 //  COMPONENTE PRINCIPAL: SurvivalModal
 // ═══════════════════════════════════════════════════════════════
-export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose }) {
+export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'marli', isOpen, onClose }) {
   const cfg = getEventType(type);
   const visitorId = getVisitorId();
 
@@ -440,6 +440,7 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
         config,
         photos,
         eventTypeLabel: cfg.label,
+        themeKey: (themeKey || window.currentThemeKey || 'marli'),
         onProgress: (msg) => setPdfProgress(msg)
       });
     } catch (err) {
@@ -1016,7 +1017,7 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
                     boxShadow: '0 4px 16px rgba(181, 83, 60, 0.3)'
                   }}
                 >
-                  {submittingPhoto ? 'Sellando en la bóveda...' : 'Guardar en la Bóveda Secreta 🔒'}
+                  {submittingPhoto ? 'Sellando en la bóveda...' : 'Guardar en la Bóveda Secreta'}
                 </button>
               </form>
             )}
@@ -1103,7 +1104,7 @@ export default function SurvivalModal({ eventCode, isHost, type, isOpen, onClose
               lineHeight: 1.45,
               border: '1px dashed #DDD'
             }}>
-              🔒 <strong>Regla del reto:</strong> Las fotos que se suban quedarán en una bóveda secreta. <strong>Nadie podrá verlas hasta el día siguiente</strong> para revivir juntos cómo terminó la fiesta.
+              <strong>Regla del reto:</strong> Las fotos que se suban quedarán en una bóveda secreta. <strong>Nadie podrá verlas hasta el día siguiente</strong> para revivir juntos cómo terminó la fiesta.
             </div>
           </div>
         )}

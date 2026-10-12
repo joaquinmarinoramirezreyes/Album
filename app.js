@@ -67,6 +67,7 @@ function applyTheme(themeKey) {
   const heroTitle = document.querySelector('.hero__title');
   if (heroTitle) heroTitle.textContent = theme.name;
   window.currentEventTheme = theme;
+  window.currentThemeKey = themeKey;
 }
 
 // Marca por URL: /marli, /shots  -> login propio
@@ -364,7 +365,7 @@ $loginForm.addEventListener('submit', async (e) => {
       // Transición → Pantalla B
       transitionScreens($loginScreen, $albumScreen);
       history.pushState({ screen: 'album', tab: 'album' }, '', '#album');
-      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost, type: eventSnap.data().type || DEFAULT_EVENT_TYPE } }));
+      window.dispatchEvent(new CustomEvent('legacy:enter', { detail: { code, isHost, type: eventSnap.data().type || DEFAULT_EVENT_TYPE, theme: eventSnap.data().theme || 'marli' } }));
 
       // Arrancar el listener de la galería en tiempo real
       startGalleryListener();

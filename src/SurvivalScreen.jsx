@@ -14,8 +14,64 @@ function formatCaptureTime(timestamp) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export default function SurvivalScreen({ eventCode, isHost, type }) {
+const VAULT_UI_THEMES = {
+  marli: {
+    name: 'Marli Cerámica',
+    primary: '#1E3888',
+    iconBg: 'rgba(30, 56, 136, 0.12)',
+    iconColor: '#1E3888',
+    chipBg: '#1E3888',
+    badgeBg: 'rgba(30, 56, 136, 0.08)',
+    badgeColor: '#1E3888',
+    cardBorder: 'rgba(212, 175, 55, 0.45)',
+    cardBg: 'linear-gradient(145deg, #0A0E1A 0%, #141D33 100%)',
+    sealBg: 'rgba(212, 175, 55, 0.12)',
+    sealColor: '#F3C766',
+    editionTag: '#F3C766',
+    btnBg: 'linear-gradient(135deg, #D4AF37 0%, #AA820A 100%)',
+    btnColor: '#0A0E1A',
+    btnShadow: '0 8px 24px rgba(212, 175, 55, 0.35)',
+  },
+  shots: {
+    name: 'Cerámica Shots',
+    primary: '#C0582F',
+    iconBg: 'rgba(192, 88, 47, 0.12)',
+    iconColor: '#C0582F',
+    chipBg: '#C0582F',
+    badgeBg: 'rgba(192, 88, 47, 0.1)',
+    badgeColor: '#C0582F',
+    cardBorder: 'rgba(229, 169, 60, 0.45)',
+    cardBg: 'linear-gradient(145deg, #160D09 0%, #261711 100%)',
+    sealBg: 'rgba(229, 169, 60, 0.14)',
+    sealColor: '#F6C978',
+    editionTag: '#F6C978',
+    btnBg: 'linear-gradient(135deg, #E5A93C 0%, #B87B1A 100%)',
+    btnColor: '#140E0A',
+    btnShadow: '0 8px 24px rgba(229, 169, 60, 0.35)',
+  },
+  odimar: {
+    name: 'Cerámica Odimar',
+    primary: '#D66D63',
+    iconBg: 'rgba(214, 109, 99, 0.12)',
+    iconColor: '#D66D63',
+    chipBg: '#D66D63',
+    badgeBg: 'rgba(214, 109, 99, 0.1)',
+    badgeColor: '#D66D63',
+    cardBorder: 'rgba(242, 167, 157, 0.5)',
+    cardBg: 'linear-gradient(145deg, #170C15 0%, #291625 100%)',
+    sealBg: 'rgba(235, 140, 130, 0.14)',
+    sealColor: '#F8D0C7',
+    editionTag: '#F8D0C7',
+    btnBg: 'linear-gradient(135deg, #F2A79D 0%, #C97268 100%)',
+    btnColor: '#150B12',
+    btnShadow: '0 8px 24px rgba(242, 167, 157, 0.35)',
+  }
+};
+
+export default function SurvivalScreen({ eventCode, isHost, type, themeKey = 'marli' }) {
   const cfg = getEventType(type);
+  const activeTheme = VAULT_UI_THEMES[((themeKey || window.currentThemeKey || 'marli')).toLowerCase()] || VAULT_UI_THEMES.marli;
+
   const [config, setConfig] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +137,7 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
         config,
         photos,
         eventTypeLabel: cfg.label,
+        themeKey: (themeKey || window.currentThemeKey || 'marli'),
         onProgress: (msg) => setPdfProgress(msg)
       });
     } catch (err) {
@@ -103,13 +160,13 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
             width: '64px',
             height: '64px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, rgba(30, 56, 136, 0.1) 0%, rgba(30, 56, 136, 0.2) 100%)',
-            color: '#1E3888',
+            background: activeTheme.iconBg,
+            color: activeTheme.iconColor,
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '1rem',
-            boxShadow: '0 8px 24px rgba(30, 56, 136, 0.15)',
+            boxShadow: `0 8px 24px ${activeTheme.iconBg}`,
           }}
         >
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -147,13 +204,13 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span
             style={{
-              background: '#1E3888',
+              background: activeTheme.chipBg,
               color: '#FFFFFF',
               borderRadius: '999px',
               padding: '6px 14px',
               fontSize: '0.82rem',
               fontWeight: 600,
-              boxShadow: '0 4px 12px rgba(30, 56, 136, 0.2)',
+              boxShadow: `0 4px 12px ${activeTheme.iconBg}`,
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px'
@@ -186,37 +243,6 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
               </svg>
               Hora del reto: {new Date(config.unlockAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
-          )}
-
-          {/* Botón Descargar Álbum de la Bóveda en encabezado (Solo Organizadores) */}
-          {isHost && photos.length > 0 && (
-            <button
-              type="button"
-              onClick={handleDownloadPdf}
-              disabled={downloadingPdf}
-              style={{
-                background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
-                color: '#FFFFFF',
-                borderRadius: '999px',
-                padding: '6px 16px',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                border: 'none',
-                cursor: downloadingPdf ? 'wait' : 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 14px rgba(30, 56, 136, 0.3)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              <span>{downloadingPdf ? (pdfProgress || 'Generando PDF...') : 'Descargar Álbum (PDF)'}</span>
-            </button>
           )}
         </div>
       </div>
@@ -385,8 +411,8 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
                     </span>
                     <span
                       style={{
-                        background: 'rgba(30, 56, 136, 0.08)',
-                        color: '#1E3888',
+                        background: activeTheme.badgeBg,
+                        color: activeTheme.badgeColor,
                         padding: '2px 8px',
                         borderRadius: '6px',
                         fontSize: '0.7rem',
@@ -425,27 +451,31 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
           style={{
             textAlign: 'center',
             marginTop: '3.5rem',
-            padding: '2.5rem 1.5rem',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(244,246,251,0.96) 100%)',
+            padding: '2.5rem 1.6rem',
+            background: activeTheme.cardBg,
             borderRadius: '26px',
-            border: '1px solid rgba(30, 56, 136, 0.15)',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+            border: `1.5px solid ${activeTheme.cardBorder}`,
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.25)',
+            color: '#FFFFFF',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
           <div
             style={{
-              width: '52px',
-              height: '52px',
+              width: '56px',
+              height: '56px',
               borderRadius: '50%',
-              background: 'rgba(30, 56, 136, 0.08)',
-              color: '#1E3888',
+              background: activeTheme.sealBg,
+              color: activeTheme.sealColor,
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '1rem',
+              border: `1px solid ${activeTheme.cardBorder}`,
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
               <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -453,31 +483,47 @@ export default function SurvivalScreen({ eventCode, isHost, type }) {
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </div>
-          <h3 style={{ margin: '0 0 8px', fontSize: '1.25rem', fontWeight: 700, color: '#2B2625' }}>
-            Edición Conmemorativa de la Bóveda
+          <div style={{
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: activeTheme.editionTag,
+            marginBottom: '6px'
+          }}>
+            Edición Conmemorativa de Honor
+          </div>
+          <h3 style={{ margin: '0 0 10px', fontSize: '1.4rem', fontWeight: 700, color: '#FFFFFF', fontFamily: 'var(--font-serif, serif)' }}>
+            Libro de la Bóveda de Sobrevivientes
           </h3>
-          <p style={{ margin: '0 auto 1.5rem', fontSize: '0.9rem', color: '#666', maxWidth: '480px', lineHeight: 1.5 }}>
-            Descarga el libro conmemorativo oficial en formato PDF de alta resolución. Incluye la portada de honor nocturna, todas las fotos con su hora exacta y el certificado oficial de sobrevivientes.
+          <p style={{ margin: '0 auto 1.6rem', fontSize: '0.9rem', color: '#CBD5E1', maxWidth: '480px', lineHeight: 1.55 }}>
+            Descarga el libro conmemorativo oficial en formato PDF de alta resolución. Incluye la portada de honor nocturna con sello de la marca, cada foto con su hora exacta y el Certificado Oficial de Supervivencia.
           </p>
           <button
             type="button"
             onClick={handleDownloadPdf}
             disabled={downloadingPdf}
-            className="btn btn--primary"
             style={{
               maxWidth: '380px',
               width: '100%',
               margin: '0 auto',
-              padding: '13px 24px',
+              padding: '14px 24px',
               fontSize: '0.92rem',
+              fontWeight: 700,
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
               borderRadius: '999px',
+              background: activeTheme.btnBg,
+              color: activeTheme.btnColor,
+              border: 'none',
+              cursor: downloadingPdf ? 'wait' : 'pointer',
+              boxShadow: activeTheme.btnShadow,
+              transition: 'transform 0.2s, box-shadow 0.2s',
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
