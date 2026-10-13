@@ -41,7 +41,17 @@ export default function ItineraryScreen({ eventCode, isHost, type }) {
     if (!eventCode) return;
     const q = query(collection(getDb(), 'events', eventCode, 'itinerary'), orderBy('timestamp', 'asc'));
     const unsub = onSnapshot(q, (snap) => {
-      setEvents(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      const raw = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      raw.sort((a, b) => {
+        if (a.time && b.time) {
+          const comp = a.time.localeCompare(b.time, undefined, { numeric: true });
+          if (comp !== 0) return comp;
+        }
+        const tA = a.timestamp?.toMillis ? a.timestamp.toMillis() : (a.timestamp || 0);
+        const tB = b.timestamp?.toMillis ? b.timestamp.toMillis() : (b.timestamp || 0);
+        return tA - tB;
+      });
+      setEvents(raw);
     });
     return () => unsub();
   }, [eventCode]);

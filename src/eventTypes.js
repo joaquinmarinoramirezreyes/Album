@@ -10,7 +10,7 @@ export const DEFAULT_EVENT_TYPE = 'boda';
 export const EVENT_TYPES = {
   boda: {
     label: 'Boda',
-    tabs: ['album', 'itinerary', 'singles', 'wall'],
+    tabs: ['itinerary', 'singles', 'album', 'wall'],
     hosts: 'los novios',
     wallTitle: 'Muro de la Boda',
     wallPrompt: '¿Qué fue lo que más te gustó de la boda?',
@@ -29,7 +29,7 @@ export const EVENT_TYPES = {
   },
   xv: {
     label: 'XV años',
-    tabs: ['album', 'itinerary', 'singles', 'wall'],
+    tabs: ['itinerary', 'singles', 'album', 'wall'],
     hosts: 'la quinceañera',
     wallTitle: 'Muro de los XV',
     wallPrompt: '¿Qué fue lo que más te gustó de la fiesta?',
@@ -66,7 +66,7 @@ export const EVENT_TYPES = {
   },
   bautizo: {
     label: 'Bautizo',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro del Bautizo',
     wallPrompt: '¿Cuál fue tu momento favorito del bautizo?',
@@ -84,7 +84,7 @@ export const EVENT_TYPES = {
   },
   comunion: {
     label: 'Primera Comunión',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro de Primera Comunión',
     wallPrompt: '¿Cuál fue tu momento más emotivo?',
@@ -102,7 +102,7 @@ export const EVENT_TYPES = {
   },
   confirmacion: {
     label: 'Confirmación',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'la familia',
     wallTitle: 'Muro de Confirmación',
     wallPrompt: '¿Cuál fue tu momento favorito?',
@@ -120,7 +120,7 @@ export const EVENT_TYPES = {
   },
   despedida: {
     label: 'Despedida de soltero/a',
-    tabs: ['album', 'itinerary', 'singles', 'wall'],
+    tabs: ['itinerary', 'singles', 'album', 'wall'],
     hosts: 'los organizadores',
     wallTitle: 'Muro de la Despedida',
     wallPrompt: '¿Qué fue lo más divertido de la noche?',
@@ -138,7 +138,7 @@ export const EVENT_TYPES = {
   },
   babyshower: {
     label: 'Baby shower',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'los papás',
     wallTitle: 'Muro del Baby Shower',
     wallPrompt: '¿Cuál fue la mejor dinámica o momento?',
@@ -156,7 +156,7 @@ export const EVENT_TYPES = {
   },
   graduacion: {
     label: 'Graduación',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'el graduado',
     wallTitle: 'Muro de Graduación',
     wallPrompt: '¿Qué es lo que más celebras de este logro?',
@@ -192,7 +192,7 @@ export const EVENT_TYPES = {
   },
   corporativo: {
     label: 'Evento corporativo',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'la organización',
     wallTitle: 'Muro del Evento Corporativo',
     wallPrompt: '¿Qué fue lo más destacado de la reunión o sesión?',
@@ -210,7 +210,7 @@ export const EVENT_TYPES = {
   },
   posada: {
     label: 'Posada de trabajo',
-    tabs: ['album', 'itinerary', 'singles', 'wall'],
+    tabs: ['itinerary', 'singles', 'album', 'wall'],
     hosts: 'el comité organizador',
     wallTitle: 'Muro de la Posada',
     wallPrompt: '¿Qué fue lo más divertido o tu momento favorito de la posada?',
@@ -229,7 +229,7 @@ export const EVENT_TYPES = {
   },
   otro: {
     label: 'Otro evento',
-    tabs: ['album', 'itinerary', 'wall'],
+    tabs: ['itinerary', 'album', 'wall'],
     hosts: 'los anfitriones',
     wallTitle: 'Muro del Evento',
     wallPrompt: '¿Qué fue lo que más te gustó del evento?',

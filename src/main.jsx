@@ -39,7 +39,7 @@ const TAB_DEFS = {
 
 function Root() {
   const [session, setSession] = useState(null); // { code, isHost, type }
-  const [tab, setTab] = useState('album');
+  const [tab, setTab] = useState('itinerary');
   const [showWelcome, setShowWelcome] = useState(false);
   const [showSurvival, setShowSurvival] = useState(false);
   const [survivalConfig, setSurvivalConfig] = useState(null);
@@ -91,7 +91,7 @@ function Root() {
     };
     const onExit = () => {
       setSession(null);
-      setTab('album');
+      setTab('itinerary');
       setShowWelcome(false);
       setShowSurvival(false);
     };
