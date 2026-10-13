@@ -345,7 +345,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
             position: 'relative',
             background: profile.coverUrl
               ? `url("${profile.coverUrl}") center center / cover no-repeat`
-              : 'linear-gradient(135deg, #b5533c 0%, #d97736 50%, #f4a261 100%)',
+              : 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)',
             transition: 'background 0.3s ease'
           }}
         >
@@ -406,7 +406,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
               }}
             >
               {!profile.avatarUrl && (
-                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary, #b5533c)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -424,7 +424,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                   position: 'absolute',
                   bottom: '2px',
                   right: '2px',
-                  background: 'var(--color-primary, #b5533c)',
+                  background: 'var(--color-primary)',
                   color: '#FFFFFF',
                   border: '2px solid #FFFFFF',
                   borderRadius: '50%',
@@ -468,7 +468,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--color-primary, #b5533c)',
+                      color: 'var(--color-primary)',
                       cursor: 'pointer',
                       padding: '4px',
                       display: 'inline-flex'
@@ -543,20 +543,20 @@ export default function WallScreen({ eventCode, isHost, type }) {
           borderRadius: '22px',
           padding: '1.35rem',
           boxShadow: '0 8px 24px rgba(0, 0, 0, 0.06)',
-          border: '1px solid rgba(181, 83, 60, 0.12)',
+          border: '1px solid color-mix(in srgb, var(--color-primary) 12%, transparent)',
           marginBottom: '1.75rem'
         }}
       >
         {/* Pregunta detonadora destacada */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.85rem' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary, #b5533c)', flexShrink: 0 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary)', flexShrink: 0 }}>
             <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path>
           </svg>
           <h4 style={{
             margin: 0,
             fontSize: '1rem',
             fontWeight: 700,
-            color: 'var(--color-primary, #b5533c)',
+            color: 'var(--color-primary)',
             letterSpacing: '-0.01em'
           }}>
             {cfg.wallPrompt || '¿Qué fue lo que más te gustó?'}
@@ -570,7 +570,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              background: authorName ? getAvatarColor(authorName) : '#b5533c',
+              background: authorName ? getAvatarColor(authorName) : 'var(--color-primary)',
               color: '#fff',
               display: 'flex',
               alignItems: 'center',
@@ -626,7 +626,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                 style={{ 
                   maxHeight: '160px', 
                   borderRadius: '14px', 
-                  border: '2px solid var(--color-primary, #b5533c)',
+                  border: '2px solid var(--color-primary)',
                   objectFit: 'cover',
                   display: 'block'
                 }} 
@@ -671,9 +671,9 @@ export default function WallScreen({ eventCode, isHost, type }) {
               onClick={() => postPhotoInputRef.current?.click()}
               disabled={processingPhoto || publishing}
               style={{
-                background: postPhoto ? 'rgba(181, 83, 60, 0.12)' : '#f4f4f6',
-                border: postPhoto ? '1px solid var(--color-primary, #b5533c)' : '1px solid #e0e0e0',
-                color: postPhoto ? 'var(--color-primary, #b5533c)' : '#555',
+                background: postPhoto ? 'color-mix(in srgb, var(--color-primary) 12%, transparent)' : '#f4f4f6',
+                border: postPhoto ? '1px solid var(--color-primary)' : '1px solid #e0e0e0',
+                color: postPhoto ? 'var(--color-primary)' : '#555',
                 padding: '0.45rem 0.85rem',
                 borderRadius: '999px',
                 fontSize: '0.82rem',
@@ -741,12 +741,12 @@ export default function WallScreen({ eventCode, isHost, type }) {
               width: '48px',
               height: '48px',
               borderRadius: '50%',
-              background: 'rgba(181, 83, 60, 0.08)',
+              background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 0.85rem',
-              color: 'var(--color-primary, #b5533c)'
+              color: 'var(--color-primary)'
             }}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -813,9 +813,9 @@ export default function WallScreen({ eventCode, isHost, type }) {
                       onClick={() => handleDeletePost(post.id)}
                       title="Eliminar publicación"
                       style={{
-                        background: 'rgba(181, 83, 60, 0.1)',
+                        background: 'color-mix(in srgb, var(--color-primary) 10%, transparent)',
                         border: 'none',
-                        color: 'var(--color-primary, #b5533c)',
+                        color: 'var(--color-primary)',
                         width: '30px',
                         height: '30px',
                         borderRadius: '50%',
@@ -873,7 +873,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                     type="button"
                     onClick={(e) => handleLike(post.id, e)}
                     style={{
-                      background: isLiked ? 'rgba(181, 83, 60, 0.1)' : 'transparent',
+                      background: isLiked ? 'color-mix(in srgb, var(--color-primary) 10%, transparent)' : 'transparent',
                       border: 'none',
                       borderRadius: '999px',
                       padding: '0.4rem 0.85rem',
@@ -883,7 +883,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                       cursor: 'pointer',
                       fontSize: '0.88rem',
                       fontWeight: 600,
-                      color: isLiked ? 'var(--color-primary, #b5533c)' : '#666',
+                      color: isLiked ? 'var(--color-primary)' : '#666',
                       transition: 'all 0.2s ease'
                     }}
                   >
@@ -902,7 +902,7 @@ export default function WallScreen({ eventCode, isHost, type }) {
                     <span>{isLiked ? 'Te gusta' : 'Me gusta'}</span>
                     {likesCount > 0 && (
                       <span style={{
-                        background: isLiked ? 'var(--color-primary, #b5533c)' : '#e5e5ea',
+                        background: isLiked ? 'var(--color-primary)' : '#e5e5ea',
                         color: isLiked ? '#fff' : '#444',
                         borderRadius: '999px',
                         padding: '1px 6px',

@@ -66,6 +66,10 @@ function applyTheme(themeKey) {
   r.setProperty('--color-charcoal', theme.charcoal);
   r.setProperty('--color-charcoal-light', theme.charcoalLight);
   r.setProperty('--color-divider', theme.divider);
+  r.setProperty('--color-accent', theme.colorTalavera);
+  r.setProperty('--color-primary', theme.colorTalavera);
+  r.setProperty('--color-primary-dark', theme.colorTalaveraDark);
+  r.setProperty('--color-secondary', theme.colorTerracotta);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.colorTalavera);
   document.title = theme.name;
   const heroTitle = document.querySelector('.hero__title');
@@ -1021,7 +1025,7 @@ function renderPolaroidCard(id, data) {
     const delBtn = document.createElement('button');
     delBtn.className = 'btn-delete-photo';
     delBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>';
-    delBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); color: #B5533C; border: 1px solid rgba(181,83,60,0.3); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.18); backdrop-filter: blur(4px);';
+    delBtn.style.cssText = 'position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); color: var(--color-primary); border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.18); backdrop-filter: blur(4px);';
     delBtn.title = 'Borrar foto';
     
     delBtn.addEventListener('click', async (e) => {

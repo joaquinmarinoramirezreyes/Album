@@ -135,12 +135,12 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
           width: '58px',
           height: '58px',
           borderRadius: '50%',
-          background: 'rgba(181, 83, 60, 0.08)',
+          background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           margin: '0 auto 1.25rem',
-          color: 'var(--color-primary, #b5533c)'
+          color: 'var(--color-primary)'
         }}>
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -151,7 +151,7 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
         {/* Modo edición para anfitrión */}
         {isEditing ? (
           <form onSubmit={handleSave} style={{ textAlign: 'left' }} noValidate>
-            <h3 style={{ margin: '0 0 1rem', fontSize: '1.15rem', color: 'var(--color-primary, #b5533c)', textAlign: 'center', fontWeight: '600' }}>
+            <h3 style={{ margin: '0 0 1rem', fontSize: '1.15rem', color: 'var(--color-primary)', textAlign: 'center', fontWeight: '600' }}>
               Personalizar Bienvenida
             </h3>
 
@@ -216,7 +216,7 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
                 letterSpacing: '0.12em', 
                 textTransform: 'uppercase', 
                 fontWeight: '600', 
-                color: 'var(--color-primary, #b5533c)',
+                color: 'var(--color-primary)',
                 margin: '0 0 0.4rem'
               }}>
                 {welcome.subtitle}
@@ -234,7 +234,7 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
               {welcome.title}
             </h2>
 
-            <div style={{ width: '40px', height: '2px', background: 'var(--color-primary, #b5533c)', opacity: 0.35, margin: '0 auto 1.25rem' }} />
+            <div style={{ width: '40px', height: '2px', background: 'var(--color-primary)', opacity: 0.35, margin: '0 auto 1.25rem' }} />
 
             <p style={{ 
               fontSize: '0.98rem', 
@@ -282,7 +282,7 @@ export default function WelcomeModal({ eventCode, isHost, type, isOpen, onClose 
                 fontSize: '0.98rem',
                 fontWeight: 600,
                 borderRadius: '16px',
-                boxShadow: '0 6px 20px rgba(181, 83, 60, 0.28)',
+                boxShadow: '0 6px 20px color-mix(in srgb, var(--color-primary) 28%, transparent)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',

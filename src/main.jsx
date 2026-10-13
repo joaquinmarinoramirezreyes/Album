@@ -149,8 +149,8 @@ function Root() {
             onClick={() => setShowWelcome(true)}
             style={{
               background: 'rgba(255, 255, 255, 0.92)',
-              border: '1px solid rgba(181, 83, 60, 0.25)',
-              color: 'var(--color-primary, #b5533c)',
+              border: '1px solid color-mix(in srgb, var(--color-primary) 25%, transparent)',
+              color: 'var(--color-primary)',
               borderRadius: '999px',
               padding: '5px 14px',
               fontSize: '0.78rem',

@@ -11,10 +11,14 @@
   /* Overlay Base para marcas */
   --overlay-rgb:        245, 245, 247;
 
-  /* Colores de Marca (Solo como acento, definidos dinÃƒ¡micamente en app.js) */
+  /* Colores de Marca (Solo como acento, definidos dinámicamente en app.js) */
   --color-talavera:     #1E3888;
   --color-talavera-dark:#12245C;
+  --color-terracotta:   #C46D5E;
   --color-accent:       var(--color-talavera); /* Por defecto */
+  --color-primary:      var(--color-talavera);
+  --color-primary-dark: var(--color-talavera-dark);
+  --color-secondary:    var(--color-terracotta);
 
   /* TipografÃƒÂ­a Escalonada (Accesibilidad y JerarquÃƒÂ­a) */
   --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -240,26 +244,26 @@ img {
 }
 
 .btn:focus-visible {
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .3);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .btn--primary {
-  background-color: var(--color-talavera);
-  color: var(--color-white);
+  background-color: var(--color-primary);
+  color: var(--color-surface, #FFFFFF);
 }
 
 .btn--primary:hover {
-  background-color: var(--color-talavera-dark);
+  background-color: var(--color-primary-dark);
 }
 
 .btn--secondary {
   background-color: transparent;
-  color: var(--color-talavera);
-  border: 1.5px solid var(--color-talavera);
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
 }
 
 .btn--secondary:hover {
-  background-color: rgba(30, 56, 136, .06);
+  background-color: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
 .btn--full {
@@ -352,8 +356,8 @@ img {
 }
 
 .form-input:focus {
-  border-color: var(--color-talavera);
-  box-shadow: 0 0 0 3px rgba(30, 56, 136, .12);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 .form-input--textarea {
@@ -387,8 +391,8 @@ img {
 
 .upload__photo-btn:hover,
 .upload__photo-btn:focus-visible {
-  border-color: var(--color-talavera);
-  background-color: rgba(30, 56, 136, .04);
+  border-color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 4%, transparent);
 }
 
 .upload__photo-icon {
@@ -807,7 +811,7 @@ img {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(30, 56, 136, 0.05);
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
   border-radius: var(--radius-md);
   margin-bottom: 6px;
   font-family: var(--font-sans);
@@ -978,8 +982,8 @@ body.show-singles #fab-camera, body.show-itinerary #fab-camera, body.show-wall #
 
 
 .btn--primary {
-  background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
-  color: var(--color-surface) !important;
+  background-color: var(--color-primary) !important;
+  color: var(--color-surface, #FFFFFF) !important;
   font-family: var(--font-sans);
   font-weight: 500;
   font-size: var(--text-base);
@@ -987,15 +991,16 @@ body.show-singles #fab-camera, body.show-itinerary #fab-camera, body.show-wall #
   border-radius: var(--radius-pill);
   padding: 16px 24px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
   width: 100%;
   box-shadow: var(--shadow-md);
 }
 
 .btn--primary:hover {
+  background-color: var(--color-primary-dark) !important;
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 /* Esconder ornamentos para mantener estilo minimalista */
@@ -1037,7 +1042,7 @@ body {
 
 .btn--primary {
   border-radius: 9999px !important; /* Pastilla */
-  background-color: color-mix(in srgb, var(--color-accent) 80%, black) !important;
+  background-color: var(--color-primary) !important;
 }
 
 /* Escritorio (Ã¢â€°Â¥900px) */
@@ -1243,7 +1248,7 @@ section#screen-login.screen .btn--primary {
 
 .tabs__btn--active {
   background: #FFFFFF;
-  color: var(--color-charcoal);
+  color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
@@ -1857,7 +1862,7 @@ body:not(.show-singles):not(.show-itinerary):not(.show-wall):not(.show-survival)
 .login__input:focus {
   transform: scale(1.01);
   box-shadow: 0 4px 12px rgba(0,0,0,0.05), inset 0 1px 2px rgba(255,255,255,1);
-  border-color: rgba(30, 56, 136, 0.4);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
 /* Botones con Shimmer */
@@ -1994,11 +1999,11 @@ body:not(.show-singles):not(.show-itinerary):not(.show-wall):not(.show-survival)
 @keyframes survivalPulse {
   0%, 100% {
     transform: translateX(-50%) scale(1);
-    box-shadow: 0 10px 30px rgba(181, 83, 60, 0.45);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--color-primary) 45%, transparent);
   }
   50% {
     transform: translateX(-50%) scale(1.04);
-    box-shadow: 0 14px 40px rgba(181, 83, 60, 0.7);
+    box-shadow: 0 14px 40px color-mix(in srgb, var(--color-primary) 70%, transparent);
   }
 }
 

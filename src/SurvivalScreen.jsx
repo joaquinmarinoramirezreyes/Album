@@ -272,8 +272,8 @@ export default function SurvivalScreen({ eventCode, isHost, type, themeKey = 'ma
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              background: 'rgba(30, 56, 136, 0.08)',
-              color: '#1E3888',
+              background: themeConfig.badgeBg || 'rgba(30, 56, 136, 0.08)',
+              color: themeConfig.primary || '#1E3888',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -616,8 +616,8 @@ export default function SurvivalScreen({ eventCode, isHost, type, themeKey = 'ma
                 {selectedPhoto.timestamp && (
                   <span
                     style={{
-                      background: 'rgba(30, 56, 136, 0.08)',
-                      color: '#1E3888',
+                      background: themeConfig.badgeBg || 'rgba(30, 56, 136, 0.08)',
+                      color: themeConfig.badgeColor || '#1E3888',
                       padding: '4px 10px',
                       borderRadius: '999px',
                       fontSize: '0.78rem',

@@ -179,9 +179,9 @@ export function SurvivalPillButton({ eventCode, isHost, onClick, onOpenVault }) 
         }}
         style={{
           ...baseCapsuleStyle,
-          background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
           color: '#FFFFFF',
-          boxShadow: '0 10px 32px rgba(30, 56, 136, 0.45)',
+          boxShadow: '0 10px 32px color-mix(in srgb, var(--color-primary) 45%, transparent)',
         }}
       >
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -201,9 +201,9 @@ export function SurvivalPillButton({ eventCode, isHost, onClick, onOpenVault }) 
         onClick={onClick}
         style={{
           ...baseCapsuleStyle,
-          background: 'linear-gradient(135deg, #b5533c 0%, #8f3e2b 100%)',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
           color: '#FFFFFF',
-          boxShadow: '0 10px 32px rgba(181, 83, 60, 0.5)',
+          boxShadow: '0 10px 32px color-mix(in srgb, var(--color-primary) 50%, transparent)',
           animation: 'survivalPulse 2.4s ease-in-out infinite'
         }}
       >
@@ -525,7 +525,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               position: 'absolute',
               top: '16px',
               left: '16px',
-              background: isEditingConfig ? 'var(--color-primary, #b5533c)' : 'rgba(0, 0, 0, 0.05)',
+              background: isEditingConfig ? 'var(--color-primary)' : 'rgba(0, 0, 0, 0.05)',
               color: isEditingConfig ? '#FFFFFF' : '#666',
               border: 'none',
               borderRadius: '50%',
@@ -547,7 +547,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
         {/* MODO EDICIÓN ANFITRIÓN */}
         {isEditingConfig ? (
           <form onSubmit={handleSaveConfig} style={{ textAlign: 'left', marginTop: '1.25rem' }}>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.15rem', color: 'var(--color-primary, #b5533c)', fontWeight: 700, textAlign: 'center' }}>
+            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.15rem', color: 'var(--color-primary)', fontWeight: 700, textAlign: 'center' }}>
               Configurar Reto de Supervivencia
             </h3>
             <p style={{ fontSize: '0.82rem', color: '#666', textAlign: 'center', margin: '0 0 1.25rem' }}>
@@ -634,8 +634,8 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(181, 83, 60, 0.08)',
-              color: 'var(--color-primary, #b5533c)',
+              background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
+              color: 'var(--color-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -672,8 +672,8 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              background: 'rgba(30, 56, 136, 0.08)',
-              color: '#1E3888',
+              background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
+              color: 'var(--color-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -684,7 +684,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                 <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
               </svg>
             </div>
-            <h2 style={{ fontSize: '1.35rem', margin: '0 0 0.35rem', color: '#1E3888', fontWeight: 700 }}>
+            <h2 style={{ fontSize: '1.35rem', margin: '0 0 0.35rem', color: 'var(--color-primary)', fontWeight: 700 }}>
               ¡La Bóveda está Abierta!
             </h2>
             <p style={{ fontSize: '0.88rem', color: '#555', margin: '0 0 1.25rem', lineHeight: 1.45 }}>
@@ -699,7 +699,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                   onClick={handleDownloadPdf}
                   disabled={downloadingPdf}
                   style={{
-                    background: 'linear-gradient(135deg, #1E3888 0%, #15275e 100%)',
+                    background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
                     color: '#FFFFFF',
                     borderRadius: '999px',
                     padding: '8px 18px',
@@ -710,7 +710,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '6px',
-                    boxShadow: '0 4px 14px rgba(30, 56, 136, 0.3)',
+                    boxShadow: '0 4px 14px color-mix(in srgb, var(--color-primary) 30%, transparent)',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                   }}
                 >
@@ -805,8 +805,8 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               width: '56px',
               height: '56px',
               borderRadius: '50%',
-              background: 'rgba(181, 83, 60, 0.1)',
-              color: 'var(--color-primary, #b5533c)',
+              background: 'color-mix(in srgb, var(--color-primary) 10%, transparent)',
+              color: 'var(--color-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -818,7 +818,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               </svg>
             </div>
 
-            <h2 style={{ fontSize: '1.35rem', margin: '0 0 0.35rem', color: 'var(--color-primary, #b5533c)', fontWeight: 700 }}>
+            <h2 style={{ fontSize: '1.35rem', margin: '0 0 0.35rem', color: 'var(--color-primary)', fontWeight: 700 }}>
               {config.title || '¡Foto de Supervivencia!'}
             </h2>
             <p style={{ fontSize: '0.88rem', color: '#555', margin: '0 0 1.25rem', lineHeight: 1.45 }}>
@@ -829,7 +829,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
             {myPhoto ? (
               <div style={{
                 background: '#FAF6F4',
-                border: '1px solid rgba(181, 83, 60, 0.2)',
+                border: '1px solid color-mix(in srgb, var(--color-primary) 20%, transparent)',
                 borderRadius: '18px',
                 padding: '1.25rem 1rem',
                 textAlign: 'center'
@@ -842,7 +842,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                       maxHeight: '180px',
                       borderRadius: '14px',
                       display: 'block',
-                      border: '2px solid var(--color-primary, #b5533c)',
+                      border: '2px solid var(--color-primary)',
                       filter: 'contrast(1.05)'
                     }}
                   />
@@ -886,7 +886,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                   alignItems: 'center',
                   gap: '6px',
                   fontSize: '0.8rem',
-                  color: 'var(--color-primary, #b5533c)',
+                  color: 'var(--color-primary)',
                   fontWeight: 600
                 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -919,7 +919,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                           maxHeight: '190px',
                           borderRadius: '16px',
                           display: 'block',
-                          border: '2px solid var(--color-primary, #b5533c)'
+                          border: '2px solid var(--color-primary)'
                         }}
                       />
                       <button
@@ -953,7 +953,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                       style={{
                         width: '100%',
                         padding: '1.75rem 1rem',
-                        border: '2px dashed rgba(181, 83, 60, 0.35)',
+                        border: '2px dashed color-mix(in srgb, var(--color-primary) 35%, transparent)',
                         borderRadius: '18px',
                         background: '#FAF6F4',
                         cursor: 'pointer',
@@ -961,7 +961,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                         flexDirection: 'column',
                         alignItems: 'center',
                         gap: '8px',
-                        color: 'var(--color-primary, #b5533c)'
+                        color: 'var(--color-primary)'
                       }}
                     >
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -1014,7 +1014,7 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                     borderRadius: '16px',
                     fontSize: '0.95rem',
                     fontWeight: 700,
-                    boxShadow: '0 4px 16px rgba(181, 83, 60, 0.3)'
+                    boxShadow: '0 4px 16px color-mix(in srgb, var(--color-primary) 30%, transparent)'
                   }}
                 >
                   {submittingPhoto ? 'Sellando en la bóveda...' : 'Guardar en la Bóveda Secreta'}
@@ -1029,8 +1029,8 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(181, 83, 60, 0.08)',
-              color: 'var(--color-primary, #b5533c)',
+              background: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
+              color: 'var(--color-primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1061,9 +1061,9 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                 borderRadius: '16px',
                 padding: '12px 14px',
                 minWidth: '65px',
-                border: '1px solid rgba(181, 83, 60, 0.15)'
+                border: '1px solid color-mix(in srgb, var(--color-primary) 15%, transparent)'
               }}>
-                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary, #b5533c)' }}>
+                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary)' }}>
                   {countdownUnlock.h}
                 </span>
                 <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: '#888', fontWeight: 600 }}>Horas</span>
@@ -1073,9 +1073,9 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                 borderRadius: '16px',
                 padding: '12px 14px',
                 minWidth: '65px',
-                border: '1px solid rgba(181, 83, 60, 0.15)'
+                border: '1px solid color-mix(in srgb, var(--color-primary) 15%, transparent)'
               }}>
-                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary, #b5533c)' }}>
+                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary)' }}>
                   {countdownUnlock.m}
                 </span>
                 <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: '#888', fontWeight: 600 }}>Min</span>
@@ -1085,9 +1085,9 @@ export default function SurvivalModal({ eventCode, isHost, type, themeKey = 'mar
                 borderRadius: '16px',
                 padding: '12px 14px',
                 minWidth: '65px',
-                border: '1px solid rgba(181, 83, 60, 0.15)'
+                border: '1px solid color-mix(in srgb, var(--color-primary) 15%, transparent)'
               }}>
-                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary, #b5533c)' }}>
+                <span style={{ display: 'block', fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-primary)' }}>
                   {countdownUnlock.s}
                 </span>
                 <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', color: '#888', fontWeight: 600 }}>Seg</span>
