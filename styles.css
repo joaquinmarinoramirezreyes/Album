@@ -188,7 +188,7 @@ img {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  color: var(--color-talavera);
+  color: var(--color-primary);
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
@@ -576,7 +576,7 @@ img {
   border-radius: var(--radius-md);
   background: var(--color-white);
   box-shadow: var(--shadow-float);
-  border-left: 4px solid var(--color-talavera);
+  border-left: 4px solid var(--color-primary);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   color: var(--color-charcoal);
@@ -592,7 +592,7 @@ img {
 
 /* Variants */
 .toast--info {
-  border-left-color: var(--color-talavera);
+  border-left-color: var(--color-primary);
 }
 
 .toast--success {
@@ -645,7 +645,7 @@ img {
   bottom: 0;
   left: 0;
   height: 3px;
-  background: var(--color-talavera);
+  background: var(--color-primary);
   border-radius: 0 0 0 var(--radius-md);
   animation: toastProgress var(--toast-duration, 4s) linear forwards;
 }
@@ -783,7 +783,7 @@ img {
 .btn--text {
   background: transparent;
   border: none;
-  color: var(--color-talavera);
+  color: var(--color-primary);
   font-family: var(--font-sans);
   font-weight: 500;
   font-size: 0.875rem;
@@ -915,7 +915,7 @@ body.show-singles #fab-camera, body.show-itinerary #fab-camera, body.show-wall #
 .theme-opt input { position: absolute; opacity: 0; pointer-events: none; }
 .theme-opt__swatch { height: 56px; background-size: 140px; background-position: center; }
 .theme-opt__name { font: 600 .8rem var(--font-sans); padding: 8px; text-align: center; color: var(--color-charcoal); }
-.theme-opt:has(input:checked) { border-color: var(--color-talavera); box-shadow: 0 0 0 3px rgba(30,56,136,.15); }
+.theme-opt:has(input:checked) { border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent); }
 .admin-grid .admin-list { max-height: 420px; overflow-y: auto; margin: 0; }
 .admin-ev { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .admin-ev__code { font-weight: 700; font-size: .95rem; }
